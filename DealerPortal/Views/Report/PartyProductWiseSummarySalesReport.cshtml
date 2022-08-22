@@ -1,0 +1,1262 @@
+﻿
+@{
+    ViewBag.Title = "PartyProductWiseSummarySalesReport";
+}
+
+
+@Html.AntiForgeryToken()
+
+<div class="box box-warning">
+    <div class="box-header with-border">
+        <div class="box-header-left">
+            <h3 class="box-title" style="line-height:2px;">Party ProductWise Summary Report</h3>
+        </div>
+        <div class="box-header-right">
+            <ul>
+                <li>
+                    <a href="javascript:void(0)" title="Excel" class="cart" onclick="Excel()"><i class="fa fa-file-excel-o"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="box-body">
+        <form class="form-horizontal">
+            <div class="row" id="DivddlCustomer" style="display:none">
+                <div class="col-md-6">
+                    <div id="ddlCustomer"></div>
+                </div><br /><br />
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <div id="txtFromDate"></div>
+                </div>
+                <div class="col-md-2">
+                    <div id="txtToDate"></div>
+                </div>
+                <div class="col-md-4">
+                    <div id="txtBuyer"></div>
+                </div>
+                <div class="col-md-2">
+                    <div id="ddlReportType"></div>
+                </div>
+                <div class="col-md-3">
+                    <div id="ddlSubCategory"></div>
+                </div>
+                <div class="col-md-3">
+                    <div id="ddlItem"></div>
+                </div>
+                <div class="col-md-2">
+                    <a href='javascript:void(0)' class='btn btn-danger btn-flat' style='background: #e32228;' onclick='PartyProductWiseSummarySalesReportFromDateToDateReport()'>Get Data</a><input type="hidden" id="HdnUserTypeId"><input type="hidden" id="HdnSelectedUser">
+                </div>
+                <div class="col-md-8" id="DivRadio">
+                    <input type="radio" id="rbtRptGroup1" name="rbtRptGroup" value="0" checked onchange="SetGridData(0)" /> Customer Wise&nbsp;&nbsp;&nbsp;
+                    <input type="radio" id="rbtRptGroup2" name="rbtRptGroup" value="1" onchange="SetGridData(1)" /> Sales Person Wise
+                </div>
+            </div>
+        </form>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive ">
+                    <div id="tblitem">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var RetailCategoryList = [];
+    var varddlSubCategory = "";
+    var ItemList = [];
+    var SalesReportList = [];
+    var InventoryitemDetails = [];
+    var varddlCategory = "";
+    var varddlItem = "";
+    var Now = new Date()
+    var FDate = new Date()
+    var CustomerList = [];
+    var varddlCustomer = "";
+    var varddlBuyer = "";
+    var ReportTypeList = [];
+    var varddlReportType = "";
+
+    arrayCr = @Html.Raw(Json.Encode(@ViewBag.RetailCategoryList));
+    if(arrayCr !=null)
+    {
+        for(var i = 0; i < arrayCr.length; i++){
+            RetailCategoryList[i] = arrayCr[i];
+        }
+         //model = {};
+         //model.RetailCategoryID = -1
+         //model.RetailCategory = "All"
+         //RetailCategoryList.push(model);
+
+    }
+
+    strUserTypeId = @Html.Raw(@ViewBag.UserTypeID);
+    arrayCr1 = @Html.Raw(Json.Encode(@ViewBag.CustomerList));
+    arrayRT = @Html.Raw("[{\"ReportType\":\"Summary\",\"ReportID\":2}, {\"ReportType\":\"Detail\",\"ReportID\":3}, {\"ReportType\":\"Party Productwise Summary\",\"ReportID\":1}, {\"ReportType\":\"Productwise Summary\",\"ReportID\":4}]");
+    if(arrayCr1 !=null)
+    {
+        for(var i = 0; i < arrayCr1.length; i++){
+            CustomerList[i] = arrayCr1[i];
+        }
+         //model = {};
+         //model.PartyId = -1
+         //model.Party = "All"
+         //CustomerList.push(model);
+
+    }
+    //alert(strUserTypeId);
+    if (strUserTypeId == "22" || strUserTypeId == "23") {
+        $("#DivddlCustomer").removeAttr("style");
+    }
+
+    for (var j = 0; j < arrayRT.length; j++) {
+        ReportTypeList[j] = arrayRT[j];
+    }
+
+    $(document).ready(function () {
+        $("#ddlSubCategory").dxSelectBox({
+            height: 30,
+            dataSource: new DevExpress.data.ArrayStore({
+                data: RetailCategoryList,
+                key: "RetailCategoryID"
+            }),
+            displayExpr: "RetailCategory",
+            valueExpr: "RetailCategoryID",
+            placeholder: "Select Category",
+            searchEnabled: true,
+            onValueChanged: function (data) {
+                varddlSubCategory = data.value
+                ItemMasterGetByRetailCategoryId()
+            }
+        });
+        $("#ddlItem").dxSelectBox({
+            height: 30,
+            dataSource: new DevExpress.data.ArrayStore({
+                data: ItemList,
+                key: "ItemId"
+            }),
+            displayExpr: "ItemName",
+            valueExpr: "ItemId",
+            placeholder: "Select Item",
+            searchEnabled: true,
+            onValueChanged: function (data) {
+                varddlItem = data.value
+            }
+        });
+
+
+        $("#txtFromDate").dxDateBox({
+            height: 30,
+            type: "date",
+            value: FDate.setDate(FDate.getDate() - 7),
+            placeholder: "From Date",
+            displayFormat: "dd/MM/yyyy"
+        });
+        $("#txtToDate").dxDateBox({
+            height: 30,
+            type: "date",
+            value: Now,
+            placeholder: "To Date",
+            displayFormat: "dd/MM/yyyy"
+        });
+        //dxSelectBox
+        $("#ddlCustomer").dxTagBox({
+            height: 30,
+            dataSource: new DevExpress.data.ArrayStore({
+                data: CustomerList,
+                key: "PartyID"
+            }),
+            displayExpr: "Party",
+            valueExpr: "PartyID",
+            placeholder: "Select Stockist",
+            searchEnabled: true,
+            showSelectionControls: true,
+            onValueChanged: function (data) {
+                varddlCustomer = data.value
+                GetBuyersbyPartyID();
+            }
+        });
+        $("#ddlReportType").dxSelectBox({
+            height: 30,
+            dataSource: new DevExpress.data.ArrayStore({
+                data: ReportTypeList,
+                key: "ReportID"
+            }),
+            displayExpr: "ReportType",
+            valueExpr: "ReportID",
+            placeholder: "Select Report Type",
+            searchEnabled: true,
+            onValueChanged: function (data) {
+                varddlReportType = data.value
+                BindReportdata(varddlReportType)
+            }
+        });
+        GetBuyersbyPartyID();
+    });
+
+    function SetDate(dateStr) {
+        var strDate
+        var now = new Date(dateStr);
+        var Day = now.getDate()
+        var Month = (now.getMonth() + 1)
+        var Year = now.getFullYear()
+        if (Day < 10) {
+            Day = "0" + Day;
+        }
+        if (Month < 10) {
+            Month = "0" + Month;
+        }
+        strDate = Month + "/" + Day + "/" + Year
+        return strDate;
+    }
+
+
+    function ItemMasterGetByRetailCategoryId() {
+        try {
+            debugger;
+            if (varddlSubCategory == undefined || varddlSubCategory == null || varddlSubCategory == "") {
+                return true
+            }
+            loadPanel.show();
+            var data = { 'RetailCategoryId': varddlSubCategory };
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Report/ItemMasterGetByRetailCategoryId",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: dataWithAntiforgeryToken,
+                success: function (Response) {
+                    loadPanel.hide();
+                    if (Response.StatusId != "99") {
+                        ItemList = Response.Result;
+                        //model = {};
+                        //model.ItemId = -1
+                        //model.ItemName = "All"
+                        //ItemList.push(model);
+                        $("#ddlItem").dxSelectBox('instance').option("dataSource", ItemList);
+                    }
+                    else {
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+
+    function GetBuyersbyPartyID() {
+        try {
+            debugger;
+            //commented by Kamini for multiselect of dropdown on 23 July 2022
+            //var strParty = $("#ddlCustomer").dxSelectBox('instance').option('value');
+            var strParty = $("#ddlCustomer").dxTagBox("instance").option("selectedItems");
+            var PartyVal = "";
+            //if (strParty.length == 1) {
+            //    PartyVal = strParty[0].PartyID;
+            //}
+            //else {
+            //    PartyVal = "0";
+            //}
+            var data = { 'PartyID': PartyVal };
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Home/GetBuyersbyPartyID",
+                type: 'POST',
+                dataType: 'json',
+                data: dataWithAntiforgeryToken,
+                async: true,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        BuyerList = Response.Result;
+                        //model = {};
+                        //model.PartyId = 0
+                        //model.Party = "All"
+                        //BuyerList.push(model);
+
+                        $("#txtBuyer").dxSelectBox({
+                            dataSource: new DevExpress.data.ArrayStore({
+                                data: BuyerList,
+                                key: "PartyID"
+                            }),
+                            displayExpr: "Party",
+                            valueExpr: "PartyID",
+                            placeholder: "Buyer",
+                            searchEnabled: true,
+                            onValueChanged: function (data) {
+                                varddlBuyer = data.value;
+                            }
+                        });
+                    }
+                    else {
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            alert("Data size is too large!");
+        }
+    }
+
+    function PartyProductWiseSummarySalesReportFromDateToDateReport() {
+        debugger;
+        try
+        {
+            var PartyIdList = "";
+            var SelCat = "";
+            var SelItem = "";
+            //alert("0" + strUserTypeId + "   ---    " + varddlCustomer);
+            if (strUserTypeId == "22" || strUserTypeId == "23") {
+                if (varddlCustomer == "" && (strUserTypeId == "22" || strUserTypeId == "23")) {
+                    alert("Please select Stockist.");
+                    $('#ddlCustomer').focus();
+                    return false;
+                }
+                if (varddlCustomer == undefined || varddlCustomer == null) {
+                    return true
+                }
+            }
+            //alert("1");
+            if (varddlReportType == "") {
+                alert("Please select ReportType");
+                $('#ddlReportType').focus();
+                return false;
+            }
+            //alert("2");
+            loadPanel.show();
+            var VarFromdate = SetDate($("#txtFromDate").dxDateBox('instance').option('value'));
+            var VarToDate = SetDate($("#txtToDate").dxDateBox('instance').option('value'));
+
+            var VarPartyId = "0";
+            var VarBuyerId = "0";
+            if (varddlBuyer != "")
+                {
+                VarBuyerId = varddlBuyer;
+            }
+            if (strUserTypeId == "22" || strUserTypeId == "23") {
+
+                //added by Kamini on 22 July 2022 for multiple super stockist selection
+                var strParty = $("#ddlCustomer").dxTagBox("instance").option("selectedItems");
+                if (strParty.length == 1) {
+                    VarPartyId = strParty[0].PartyID;
+                }
+                else {
+                    for (z = 0; z < strParty.length; z++) {
+                        PartyIdList = PartyIdList + strParty[z].PartyID + ",";
+                    }
+                    VarPartyId = PartyIdList.substring(0, PartyIdList.length - 1);
+                }
+                //commented by Kamini on 22 July 2022 for multiple super stockist selection
+                //VarPartyId = varddlCustomer;
+            }
+            //alert(VarPartyId);
+            //alert(VarFromdate);
+            //alert(VarToDate);
+            //alert(VarBuyerId);
+            if (strUserTypeId == "22" || strUserTypeId == "23") {
+                if (VarPartyId == "")
+                    VarPartyId = "0";
+            }
+
+            if (varddlSubCategory == "") {
+                SelCat = "-1";
+            }
+            else {
+                SelCat = varddlSubCategory;
+            }
+
+            if (varddlItem == "") {
+                SelItem = "-1";
+            }
+            else {
+                SelItem = varddlItem;
+            }
+
+            var data = {
+                'SuperStockistID': VarPartyId, 'Fromdate': VarFromdate, 'Todate': VarToDate, 'CustomerID': VarBuyerId, 'ReportType': varddlReportType, 'SubCategoryId': SelCat, 'ItemId': SelItem };
+
+
+
+            //var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            //alert(dataWithAntiforgeryToken);
+            $.ajax({
+                url: "../Report/PartyProductWiseSummarySalesReportFromDateToDateReport",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: data,
+                success: function (Response) {
+                    loadPanel.hide();
+                    if (Response.StatusId != "99") {
+                        SalesReportList = Response.Result;
+                        $("#tblitem").dxDataGrid('instance').option("dataSource", SalesReportList);
+                    }
+                    else {
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+
+    function BindReportdata(rptVal) {
+        //alert(rptVal + "----Main");
+        var selValue = $('input[name=rbtRptGroup]:checked').attr('id');
+        //var selValue = $('#rbtRptGroup:checked').val();
+        //alert(selValue);
+        if (Number(rptVal) == 1) {
+            $("#DivRadio").attr("style", "display:none");
+            $("#tblitem").dxDataGrid({
+                dataSource: SalesReportList,
+                loadPanel: {
+                    enabled: true
+                },
+                height: 500,
+                allowSorting: true,
+                columnAutoWidth: true,
+                allowColumnResizing: true,
+                filterRow: { visible: true },
+                headerFilter: {
+                    visible: true,
+                    allowSearch: true
+                },
+                paging: {
+                    pageSize: 20,
+                    enabled: false
+                },
+                columnFixing: {
+                    enabled: true
+                },
+                groupPanel: {
+                    visible: true,
+                    allowColumnDragging: true
+                },
+                columns: [
+                    //{
+                    //dataField: "ItemCode", width: '10%', caption: "Item Code", cellTemplate: function (container, options) {
+                    //    $('<a style="color:#333; text-decoration: underline;" />').addClass('dx-link')
+                    //        .text(options.value)
+                    //        .on('dxclick', function (e) {
+                    //            PopShowitemDetails(options.data.ItemCode, options.data.ItemName, options.data.OpeningBalanceQty, options.data.ClosingBalanceQty)
+                    //            ItemLedgerDetailGetByItemIdFromDateToDate(options.data.ItemId)
+                    //        })
+                    //        .appendTo(container);
+                    //}
+                    //},
+                    { dataField: "SuperStockist", groupIndex: 0, caption: "SuperStockist", displayFormat: "SuperStockist: {0}",
+                    sortOrder: 'asc' },
+                    { dataField: "Customer", groupIndex: 1, caption: "Customer", displayFormat: "Customer: {0}" },
+                    { dataField: "ParentProductType", caption: "Parent Category" }, //, groupIndex: 2, displayFormat: "{0}"
+                    { dataField: "ProductType", caption: "Category" }, //, groupIndex: 3, , displayFormat: "{0}"
+                    { dataField: "itemcode", caption: "Item Code" },
+                    { dataField: "ItemName", caption: "Product Name" },
+                    { dataField: "CustomerState", caption: "State" },
+                    { dataField: "Quantity", caption: "Quantity", format: { type: "fixedPoint", precision: 2 } },
+                    { dataField: "GrossItemAmount", caption: "Amount", format: { type: "fixedPoint", precision: 2 } },
+                    { dataField: "TotalItemDiscount", caption: "Disc Amount", format: { type: "fixedPoint", precision: 2 } },
+                    {
+                        dataField: "TaxableValue", caption: "Amount after Disc.",
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Amount after<br/>Disc").css('text-align', 'center').appendTo(header);
+                        },
+                        format: { type: "fixedPoint", precision: 2 }
+                    },
+                    { dataField: "CGST", caption: "CGST", format: { type: "fixedPoint", precision: 2 } },
+                    { dataField: "SGST", caption: "SGST/UGST", format: { type: "fixedPoint", precision: 2 } },
+                    { dataField: "IGST", caption: "IGST", format: { type: "fixedPoint", precision: 2 } },
+                    {
+                        dataField: "TotalItemAmount", caption: "Amount after Tax",
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Amount after<br/>Tax").css('text-align', 'center').appendTo(header);
+                        },
+                        format: { type: "fixedPoint", precision: 2 }
+                    },
+                ],
+                export: {
+                    fileName: "Party Productwise Summary Report"
+                },
+                showRowLines: true,
+                showBorders: true,
+                summary: {
+                    totalItems: [
+                        { name: "CustomerState", column: "CustomerState", displayFormat: "Combined SuperStockist Total" },
+                        { name: "Quantity", column: "Quantity", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                        { name: "GrossItemAmount", column: "GrossItemAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                        { name: "TotalItemDiscount", column: "TotalItemDiscount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                        { name: "TaxableValue", column: "TaxableValue", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                        { name: "CGST", column: "CGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                        { name: "SGST/UGST", column: "SGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                        { name: "IGST", column: "IGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                        { name: "TotalItemAmount", column: "TotalItemAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+
+                    ],
+                    groupItems: [
+                        //{ name: "ParentProductType", column: "ParentProductType", showInColumn: "ParentProductType", showInGroupFooter: true, displayFormat: "{0}" },
+                        //{ name: "ProductType", column: "ProductType", showInColumn: "ProductType", showInGroupFooter: true, displayFormat: "{0}" },
+                        { name: "CustomerState", column: "CustomerState", showInColumn: "CustomerState", showInGroupFooter: true, displayFormat: "Total" },
+                        { name: "Quantity", column: "Quantity", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                        { name: "GrossItemAmount", column: "GrossItemAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                        { name: "TotalItemDiscount", column: "TotalItemDiscount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                        { name: "TaxableValue", column: "TaxableValue", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                        { name: "CGST", column: "CGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                        { name: "SGST/UGST", column: "SGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                        { name: "IGST", column: "IGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                        { name: "TotalItemAmount", column: "TotalItemAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+
+                    ]
+                    //calculateCustomSummary: function (options) {
+                    //    (
+                    //        options.name === "Opening Balance Qty"
+                    //        || options.name === "Opening Balance Amt"
+                    //        || options.name === "Quantity In"
+                    //        || options.name === "Amount In"
+                    //        || options.name === "Quantity Out"
+                    //        || options.name === "Amount Out"
+                    //        || options.name === "Closing Balance Qty"
+                    //        || options.name === "Closing Balance Amt"
+
+                    //    )
+                    //    if (options.summaryProcess === "start") {
+                    //        options.totalValue = 0;
+                    //    }
+                    //    if (options.summaryProcess === "calculate") {
+                    //        if (options.value > 0) {
+                    //            options.totalValue = options.totalValue + options.value;
+                    //        }
+                    //    }
+                    //}
+                }
+                //,
+                //onCellPrepared: function (e) {
+                //    if (e.rowType === "groupFooter") {
+                //        if (e.cellElement.text().trim()) {
+                //            e.cellElement.text("Superstockist Total");
+                //        }
+                //    }
+                //}
+
+            });
+        }
+
+        if (Number(rptVal) == 2) {
+            $("#DivRadio").attr("style", "display:block");
+            //alert("report2");
+            if (selValue == "rbtRptGroup1")
+                BindReportdata2CustomerWise();
+            else
+                BindReportdata2();
+        }
+
+        if (Number(rptVal) == 3) {
+            //alert("report3");
+            //alert(selValue == "rbtRptGroup1");
+            $("#DivRadio").attr("style", "display:block");
+            if (selValue == "rbtRptGroup1")
+                BindReportdata3CustomerWise();
+            else
+                BindReportdata3();
+        }
+
+        if (Number(rptVal) == 4) {
+            //alert("report3");
+            //alert(selValue == "rbtRptGroup1");
+            $("#DivRadio").attr("style", "display:none");
+            BindReportdata4();
+        }
+    }
+
+
+    function BindReportdata2() {
+        //alert("Sales 2");
+        $("#tblitem").dxDataGrid({
+            dataSource: SalesReportList,
+            loadPanel: {
+                enabled: true
+            },
+            height: 500,
+            allowSorting: true,
+            columnAutoWidth: true,
+            allowColumnResizing: true,
+            filterRow: { visible: true },
+            headerFilter: {
+                visible: true,
+                allowSearch: true
+            },
+            paging: {
+                pageSize: 20,
+                enabled: false
+            },
+            columnFixing: {
+                enabled: true
+            },
+            groupPanel: {
+                visible: true,
+                allowColumnDragging: true
+            },
+            columns: [
+                {
+                    dataField: "SuperStockist", groupIndex: 0, caption: "SuperStockist", displayFormat: "SuperStockist: {0}",
+                    sortOrder: 'asc' },
+                { dataField: "SalesPerson", groupIndex: 1, caption: "Sales Person", displayFormat: "Sales Person" },
+                { dataField: "Customer", caption: "Customer" },
+                { dataField: "CustomerState", caption: "State" },
+                { dataField: "InvoiceNo", caption: "Invoice No" },
+                { dataField: "InvoiceDate", caption: "Invoice Date" },
+                { dataField: "CustomerGST", caption: "CustomerGST" },
+                { dataField: "Consignee", caption: "Consignee" },
+                { dataField: "ConsigneeGST", caption: "ConsigneeGST" },
+                {
+                    dataField: "NoOfBoxes", caption: "NoOfBoxes", headerCellTemplate: function (header, info) {
+                        $('<div>').html("No Of<br/>Boxes").css('text-align', 'center').appendTo(header);
+                    },
+                },
+                {
+                    dataField: "Quantity", caption: "Qty"
+                },
+                {
+                    dataField: "GrossItemAmount", caption: "GrossItemAmountSum", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Gross Item<br/>Amount").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "TotalItemDiscount", caption: "TotalItemDiscountSum", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Discount <br/>Amount").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "TaxableValue", caption: "TaxableValueSum", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Taxable <br/>Value").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "CGST", caption: "CGST", format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "SGST", caption: "SGST", format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "IGST", caption: "IGST", format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "TotalItemAmount", caption: "TotalItemAmountSum", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Item <br/>Amount").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "OtherCharge", caption: "OtherChargeSum", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Other<br/>Charge").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "TCSAmount", caption: "TCS", format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "RoundOff", caption: "RoundOff", format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "GrandTotal", caption: "Grand Total", format: { type: "fixedPoint", precision: 2 }
+                },
+            ],
+            export: {
+                fileName: "Sales Summary Report"
+            },
+            showRowLines: true,
+            showBorders: true,
+            summary: {
+                totalItems: [
+                    { name: "ConsigneeGST", column: "ConsigneeGST", displayFormat: "Grand Total" },
+                    { name: "Quantity", column: "Quantity", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}"},
+                    { name: "GrossItemAmount", column: "GrossItemAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}"},
+                    { name: "TotalItemDiscount", column: "TotalItemDiscount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "TaxableValue", column: "TaxableValue", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "CGST", column: "CGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "SGST", column: "SGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}"},
+                    { name: "IGST", column: "IGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "TotalItemAmount", column: "TotalItemAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}"},
+                    { name: "OtherCharge", column: "OtherCharge", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}"},
+                    { name: "TCSAmount", column: "TCSAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}"},
+                    { name: "RoundOff", column: "RoundOff", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}"},
+                    { name: "GrandTotal", column: "GrandTotal", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}"},
+
+                ],
+                groupItems: [
+                    { name: "ConsigneeGST", column: "ConsigneeGST", showInGroupFooter: true, displayFormat: "Total" },
+                    { name: "Quantity", column: "Quantity", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "GrossItemAmount", column: "GrossItemAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "TotalItemDiscount", column: "TotalItemDiscount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "TaxableValue", column: "TaxableValue", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "CGST", column: "CGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "SGST", column: "SGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "IGST", column: "IGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "TotalItemAmount", column: "TotalItemAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "OtherCharge", column: "OtherCharge", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "TCSAmount", column: "TCSAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "RoundOff", column: "RoundOff", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "GrandTotal", column: "GrandTotal", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+
+                ]
+            }
+
+        });
+    }
+
+
+    function BindReportdata2CustomerWise() {
+        //alert("Customerwise 2");
+        $("#tblitem").dxDataGrid({
+            dataSource: SalesReportList,
+            loadPanel: {
+                enabled: true
+            },
+            height: 500,
+            allowSorting: true,
+            columnAutoWidth: true,
+            allowColumnResizing: true,
+            filterRow: { visible: true },
+            headerFilter: {
+                visible: true,
+                allowSearch: true
+            },
+            paging: {
+                pageSize: 20,
+                enabled: false
+            },
+            columnFixing: {
+                enabled: true
+            },
+            groupPanel: {
+                visible: true,
+                allowColumnDragging: true
+            },
+            columns: [
+                {
+                    dataField: "SuperStockist", groupIndex: 0, caption: "SuperStockist", displayFormat: "SuperStockist: {0}",
+                    sortOrder: 'asc' },
+                { dataField: "Customer", groupIndex: 1, caption: "Customer", displayFormat: "Customer" },
+                { dataField: "InvoiceNo", caption: "Invoice No" },
+                { dataField: "InvoiceDate", caption: "Invoice Date" },
+                { dataField: "SalesPerson", caption: "Sales Person" },
+                { dataField: "CustomerState", caption: "State" },
+                { dataField: "CustomerGST", caption: "CustomerGST" },
+                { dataField: "Consignee", caption: "Consignee" },
+                { dataField: "ConsigneeGST", caption: "ConsigneeGST" },
+                {
+                    dataField: "NoOfBoxes", caption: "NoOfBoxes", headerCellTemplate: function (header, info) {
+                        $('<div>').html("No Of<br/>Boxes").css('text-align', 'center').appendTo(header);
+                    },
+                },
+                {
+                    dataField: "Quantity", caption: "Qty"
+                },
+                {
+                    dataField: "GrossItemAmount", caption: "GrossItemAmountSum", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Gross Item<br/>Amount").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "TotalItemDiscount", caption: "TotalItemDiscountSum", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Discount <br/>Amount").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "TaxableValue", caption: "TaxableValueSum", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Taxable <br/>Value").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "CGST", caption: "CGST", format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "SGST", caption: "SGST", format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "IGST", caption: "IGST", format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "TotalItemAmount", caption: "TotalItemAmountSum", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Item <br/>Amount").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "OtherCharge", caption: "OtherChargeSum", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Other<br/>Charge").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "TCSAmount", caption: "TCS", format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "RoundOff", caption: "RoundOff", format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "GrandTotal", caption: "Grand Total", format: { type: "fixedPoint", precision: 2 }
+                },
+            ],
+            export: {
+                fileName: "Sales Summary Report"
+            },
+            showRowLines: true,
+            showBorders: true,
+            summary: {
+                totalItems: [
+                    { name: "ConsigneeGST", column: "ConsigneeGST", displayFormat: "Grand Total" },
+                    { name: "Quantity", column: "Quantity", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "GrossItemAmount", column: "GrossItemAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "TotalItemDiscount", column: "TotalItemDiscount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "TaxableValue", column: "TaxableValue", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "CGST", column: "CGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "SGST", column: "SGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "IGST", column: "IGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "TotalItemAmount", column: "TotalItemAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "OtherCharge", column: "OtherCharge", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "TCSAmount", column: "TCSAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "RoundOff", column: "RoundOff", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "GrandTotal", column: "GrandTotal", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+
+                ],
+                groupItems: [
+                    { name: "ConsigneeGST", column: "ConsigneeGST", showInGroupFooter: true, displayFormat: "Total" },
+                    { name: "Quantity", column: "Quantity", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "GrossItemAmount", column: "GrossItemAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "TotalItemDiscount", column: "TotalItemDiscount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "TaxableValue", column: "TaxableValue", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "CGST", column: "CGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "SGST", column: "SGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "IGST", column: "IGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "TotalItemAmount", column: "TotalItemAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "OtherCharge", column: "OtherCharge", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "TCSAmount", column: "TCSAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "RoundOff", column: "RoundOff", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "GrandTotal", column: "GrandTotal", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+
+                ]
+            }
+
+        });
+    }
+
+
+    function BindReportdata3() {
+        //alert("Sales 3");
+        $("#tblitem").dxDataGrid({
+            dataSource: SalesReportList,
+            loadPanel: {
+                enabled: true
+            },
+            height: 500,
+            allowSorting: true,
+            columnAutoWidth: true,
+            allowColumnResizing: true,
+            filterRow: { visible: true },
+            headerFilter: {
+                visible: true,
+                allowSearch: true
+            },
+            columnFixing: {
+                enabled: true
+            },
+            paging: {
+                pageSize: 20,
+                enabled: false
+            },
+            groupPanel: {
+                visible: true,
+                allowColumnDragging: true
+            },
+            columns: [
+                {
+                    dataField: "SuperStockist", groupIndex: 0, caption: "SuperStockist", displayFormat: "SuperStockist: {0}",
+                    sortOrder: 'asc' },
+                { dataField: "SalesPerson", groupIndex: 1, caption: "Sales Person", displayFormat: "Sales Person" },
+                //{ dataField: "InvoiceNo", groupIndex: 0, caption: "InvoiceNo", displayFormat: "InvoiceNo: {0}" },
+                { dataField: "InvoiceNo", caption: "InvoiceNo"},
+                { dataField: "InvoiceDate", caption: "Invoice Date" },
+                //{ dataField: "SalesPerson", caption: "Sales Person" },
+                { dataField: "Customer", caption: "Customer" },
+                {
+                    dataField: "ParentProductType", caption: "ParentProductType", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Parent<br/>Category").css('text-align', 'center').appendTo(header);
+                    }
+                },
+                { dataField: "ProductType", caption: "Product Type" },
+                { dataField: "itemcode", caption: "Item Code" },
+                { dataField: "ItemName", caption: "Product Name" },
+                { dataField: "CustomerState", caption: "State" },
+                { dataField: "UnitOfMeasure", caption: "UOM" },
+                { dataField: "ConsigneeGST", caption: "ConsigneeGST" },
+                { dataField: "Quantity", width: "10%", caption: "Qty" },
+                {
+                    dataField: "BasicRate", caption: "Basic Rate", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Basic<br/>Rate").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "NetRate", caption: "Net Rate", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Net<br/>Rate").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "GrossItemAmount", caption: "GrossItemAmount", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Gross Item<br/>Amount").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "TotalItemDiscount", caption: "TotalItemDiscount", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Discount <br/>Amount").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "TaxableValue", caption: "TaxableValue", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Taxable <br/>Value").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "CGST", caption: "CGST", format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "SGST", caption: "SGST", format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "IGST", caption: "IGST", format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "TotalItemAmount", caption: "TotalItemAmount", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Item <br/>Amount").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+            ],
+            export: {
+                fileName: "Sales Detail Report"
+            },
+            showRowLines: true,
+            showBorders: true,
+            summary: {
+                totalItems: [
+                    { name: "ConsigneeGST", column: "ConsigneeGST", displayFormat: "Grand Total" },
+                    { name: "Quantity", column: "Quantity", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "BasicRate", column: "BasicRate", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "NetRate", column: "NetRate", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "GrossItemAmount", column: "GrossItemAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "TotalItemDiscount", column: "TotalItemDiscount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "TaxableValue", column: "TaxableValue", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "CGST", column: "CGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "SGST", column: "SGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "IGST", column: "IGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "TotalItemAmount", column: "TotalItemAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" }
+
+                ],
+                groupItems: [
+                    { name: "ConsigneeGST", column: "ConsigneeGST", showInGroupFooter: true, displayFormat: "Total" },
+                    { name: "Quantity", column: "Quantity", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "BasicRate", column: "BasicRate", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "NetRate", column: "NetRate", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "GrossItemAmount", column: "GrossItemAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "TotalItemDiscount", column: "TotalItemDiscount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "TaxableValue", column: "TaxableValue", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "CGST", column: "CGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "SGST", column: "SGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "IGST", column: "IGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "TotalItemAmount", column: "TotalItemAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+
+                ]
+            }
+
+        });
+    }
+
+    function BindReportdata3CustomerWise() {
+        //alert("Customerwise 3");
+        $("#tblitem").dxDataGrid({
+            dataSource: SalesReportList,
+            loadPanel: {
+                enabled: true
+            },
+            height: 500,
+            allowSorting: true,
+            columnAutoWidth: true,
+            allowColumnResizing: true,
+            filterRow: { visible: true },
+            headerFilter: {
+                visible: true,
+                allowSearch: true
+            },
+            columnFixing: {
+                enabled: true
+            },
+            paging: {
+                pageSize: 20,
+                enabled: false
+            },
+            groupPanel: {
+                visible: true,
+                allowColumnDragging: true
+            },
+            columns: [
+                {
+                    dataField: "SuperStockist", groupIndex: 0, caption: "SuperStockist", displayFormat: "SuperStockist: {0}",
+                    sortOrder: 'asc' },
+                { dataField: "Customer", groupIndex: 1, caption: "Customer", displayFormat: "Customer" },
+                //{ dataField: "InvoiceNo", groupIndex: 0, caption: "InvoiceNo", displayFormat: "InvoiceNo: {0}" },
+                { dataField: "InvoiceNo", caption: "InvoiceNo" },
+                { dataField: "InvoiceDate", caption: "Invoice Date" },
+                { dataField: "SalesPerson", caption: "Sales Person" },
+                {
+                    dataField: "ParentProductType", caption: "ParentProductType", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Parent<br/>Category").css('text-align', 'center').appendTo(header);
+                    }
+                },
+                { dataField: "ProductType", caption: "Product Type" },
+                { dataField: "itemcode", caption: "Item Code" },
+                { dataField: "ItemName", caption: "Product Name" },
+                { dataField: "CustomerState", caption: "State" },
+                { dataField: "UnitOfMeasure", caption: "UOM" },
+                { dataField: "ConsigneeGST", caption: "ConsigneeGST" },
+                { dataField: "Quantity", width: "10%", caption: "Qty" },
+                {
+                    dataField: "BasicRate", caption: "Basic Rate", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Basic<br/>Rate").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "NetRate", caption: "Net Rate", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Net<br/>Rate").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "GrossItemAmount", caption: "GrossItemAmount", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Gross Item<br/>Amount").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "TotalItemDiscount", caption: "TotalItemDiscount", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Discount <br/>Amount").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "TaxableValue", caption: "TaxableValue", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Taxable <br/>Value").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "CGST", caption: "CGST", format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "SGST", caption: "SGST", format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "IGST", caption: "IGST", format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "TotalItemAmount", caption: "TotalItemAmount", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Item <br/>Amount").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+            ],
+            export: {
+                fileName: "Sales Detail Report"
+            },
+            showRowLines: true,
+            showBorders: true,
+            summary: {
+                totalItems: [
+                    { name: "ConsigneeGST", column: "ConsigneeGST", displayFormat: "Grand Total" },
+                    { name: "Quantity", column: "Quantity", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "BasicRate", column: "BasicRate", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "NetRate", column: "NetRate", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "GrossItemAmount", column: "GrossItemAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "TotalItemDiscount", column: "TotalItemDiscount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "TaxableValue", column: "TaxableValue", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "CGST", column: "CGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "SGST", column: "SGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "IGST", column: "IGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "TotalItemAmount", column: "TotalItemAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" }
+
+                ],
+                groupItems: [
+                    { name: "ConsigneeGST", column: "ConsigneeGST", showInGroupFooter: true, displayFormat: "Total" },
+                    { name: "Quantity", column: "Quantity", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "BasicRate", column: "BasicRate", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "NetRate", column: "NetRate", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "GrossItemAmount", column: "GrossItemAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "TotalItemDiscount", column: "TotalItemDiscount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "TaxableValue", column: "TaxableValue", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "CGST", column: "CGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "SGST", column: "SGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "IGST", column: "IGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "TotalItemAmount", column: "TotalItemAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+
+                ]
+            }
+
+        });
+    }
+
+    function BindReportdata4() {
+        $("#DivRadio").attr("style", "display:none");
+        $("#tblitem").dxDataGrid({
+            dataSource: SalesReportList,
+            loadPanel: {
+                enabled: true
+            },
+            height: 500,
+            allowSorting: true,
+            columnAutoWidth: true,
+            allowColumnResizing: true,
+            filterRow: { visible: true },
+            headerFilter: {
+                visible: true,
+                allowSearch: true
+            },
+            paging: {
+                pageSize: 20,
+                enabled: false
+            },
+            columnFixing: {
+                enabled: true
+            },
+            groupPanel: {
+                visible: true,
+                allowColumnDragging: true
+            },
+            columns: [
+                //{
+                //dataField: "ItemCode", width: '10%', caption: "Item Code", cellTemplate: function (container, options) {
+                //    $('<a style="color:#333; text-decoration: underline;" />').addClass('dx-link')
+                //        .text(options.value)
+                //        .on('dxclick', function (e) {
+                //            PopShowitemDetails(options.data.ItemCode, options.data.ItemName, options.data.OpeningBalanceQty, options.data.ClosingBalanceQty)
+                //            ItemLedgerDetailGetByItemIdFromDateToDate(options.data.ItemId)
+                //        })
+                //        .appendTo(container);
+                //}
+                //},
+                {
+                    dataField: "SuperStockist", groupIndex: 0, caption: "SuperStockist", displayFormat: "SuperStockist: {0}",
+                    sortOrder: 'asc' },
+                { dataField: "ParentProductType", groupIndex: 1, caption: "Parent Category", displayFormat: "{0}" },
+                { dataField: "ProductType", caption: "Category", displayFormat: "{0}" },// , groupIndex: 2, 
+                { dataField: "Customer", caption: "Customer", displayFormat: "{0}" }, //, groupIndex: 3
+                { dataField: "ItemName", caption: "ItemName", },
+                { dataField: "itemcode", caption: "Item Code" },
+                { dataField: "CustomerState", caption: "State" },
+                { dataField: "Quantity", caption: "Quantity", format: { type: "fixedPoint", precision: 2 } },
+                { dataField: "GrossItemAmount", caption: "Amount", format: { type: "fixedPoint", precision: 2 } },
+                { dataField: "TotalItemDiscount", caption: "Disc Amount", format: { type: "fixedPoint", precision: 2 } },
+                {
+                    dataField: "TaxableValue", caption: "Amount after Disc.",
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Amount after<br/>Disc").css('text-align', 'center').appendTo(header);
+                    },
+                    format: { type: "fixedPoint", precision: 2 }
+                },
+                { dataField: "CGST", caption: "CGST", format: { type: "fixedPoint", precision: 2 } },
+                { dataField: "SGST", caption: "SGST/UGST", format: { type: "fixedPoint", precision: 2 } },
+                { dataField: "IGST", caption: "IGST", format: { type: "fixedPoint", precision: 2 } },
+                {
+                    dataField: "TotalItemAmount", caption: "Amount after Tax",
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Amount after<br/>Tax").css('text-align', 'center').appendTo(header);
+                    },
+                    format: { type: "fixedPoint", precision: 2 }
+                },
+            ],
+            export: {
+                fileName: "Productwise Summary Report"
+            },
+            showRowLines: true,
+            showBorders: true,
+            summary: {
+                totalItems: [
+                    { name: "ItemName", column: "ItemName", displayFormat: "Combined Superstockist Total" },
+                    { name: "Quantity", column: "Quantity", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "GrossItemAmount", column: "GrossItemAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "TotalItemDiscount", column: "TotalItemDiscount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "TaxableValue", column: "TaxableValue", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "CGST", column: "CGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "SGST/UGST", column: "SGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "IGST", column: "IGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "TotalItemAmount", column: "TotalItemAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+
+                ],
+                groupItems: [
+                    { name: "ItemName", column: "ItemName", showInColumn: "ItemName", showInGroupFooter: true, displayFormat: "Total" },
+                    { name: "Quantity", column: "Quantity", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "GrossItemAmount", column: "GrossItemAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "TotalItemDiscount", column: "TotalItemDiscount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "TaxableValue", column: "TaxableValue", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "CGST", column: "CGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "SGST/UGST", column: "SGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "IGST", column: "IGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                    { name: "TotalItemAmount", column: "TotalItemAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+
+                ]
+                //calculateCustomSummary: function (options) {
+                //    (
+                //        options.name === "Opening Balance Qty"
+                //        || options.name === "Opening Balance Amt"
+                //        || options.name === "Quantity In"
+                //        || options.name === "Amount In"
+                //        || options.name === "Quantity Out"
+                //        || options.name === "Amount Out"
+                //        || options.name === "Closing Balance Qty"
+                //        || options.name === "Closing Balance Amt"
+
+                //    )
+                //    if (options.summaryProcess === "start") {
+                //        options.totalValue = 0;
+                //    }
+                //    if (options.summaryProcess === "calculate") {
+                //        if (options.value > 0) {
+                //            options.totalValue = options.totalValue + options.value;
+                //        }
+                //    }
+                //}
+            }
+
+        });
+    }
+    function Excel() {
+        $("#tblitem").dxDataGrid("instance").exportToExcel(false);
+    }
+
+    function SetGridData(n) {
+        //alert(varddlReportType);
+        if (n == 0 && document.getElementById("rbtRptGroup1").checked == true && varddlReportType == 2)
+            BindReportdata2CustomerWise();
+
+        if (n == 0 && document.getElementById("rbtRptGroup1").checked == true && varddlReportType == 3)
+            BindReportdata3CustomerWise();
+
+        if (n == 1 && document.getElementById("rbtRptGroup2").checked == true && varddlReportType == 2)
+            BindReportdata2();
+
+        if (n == 1 && document.getElementById("rbtRptGroup2").checked == true && varddlReportType == 3)
+            BindReportdata3();
+    }
+</script>
+

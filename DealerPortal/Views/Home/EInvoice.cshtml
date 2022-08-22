@@ -1,0 +1,859 @@
+﻿﻿
+@{
+    ViewBag.Title = "EInvoice";
+}
+<div class="box box-warning">
+    <div class="box-header with-border">
+        <div class="box-header-left">
+            <div class="row">
+                <div class="col-md-3">
+                    <h3 class="box-title">EInvoice</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box-body">
+        <form class="form-horizontal">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label col-sm-4" for="">Document Date</label>
+                        <div class="col-sm-8 MY8">
+                            <div id="txtFromDate"></div>
+                        </div>
+                    </div>
+                </div>
+                @*<div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="">To Date</label>
+                            <div class="col-sm-8 MY8">
+                                <div id="txtToDate"></div>
+                            </div>
+                        </div>
+                    </div>*@
+                <div class="col-md-4">
+                    <a href="#" class="btn btn-danger btn-flat" style="background: #e32228;" onclick="EInvoiceGetData()">Get Data</a>
+                    @*<a href="#" class="btn btn-danger btn-flat" style="background: #e70c0e; border-color:#e70c0e; float: right; margin-left: 5px; padding: 0px 5px 0px 5px;" data-toggle="tooltip" title="Export to PDF"><i class="flaticon-pdf-file" style="font-size: 18px;"></i></a>*@
+                    <a href="#" class="btn btn-danger btn-flat" style="background: #257142; border-color:#257142; float: right; padding: 0px 5px 0px 5px;" onclick="ExportToExcel();"><i class="flaticon-excel-file" style="font-size: 18px;" data-toggle="tooltip" title="Export to Excel"></i></a>
+                </div>
+            </div>
+        </form>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <div id="tblEInvoiceHeader"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="Details" tabindex="-1" role="dialog" aria-labelledby="logoutLabel" aria-hidden="true" style="align:center">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Order No : <span id="SpanorderNo"></span>&nbsp;&nbsp;&nbsp;&nbsp; Date : <span id="SpanorderDate"></span> </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <div id="tblEInvoiceDetail"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="dvTable" style="display: none;"></div>
+
+<input type="hidden" id="hdnSuperStockistId" value='@Session["PartyId"]' />
+<input type="hidden" id="hdnUserId" value='@Session["UserId"]' />
+<script>
+    var EInvoiceHeader = [];
+    //var EInvoiceDetail = [];
+    var EInvoiceList = [];
+    var EInvoiceAPIAuthDetails = {};
+
+    //var FDate =  (@Html.Raw(Json.Encode(@ViewBag.ZZFromDate))).split("/");
+    var Now = (@Html.Raw(Json.Encode(@ViewBag.ZZNowDate))).split("/");
+
+    //var FFDate = new Date(FDate[2],(FDate[1]-1),FDate[0]);
+    var NNow = new Date(Now[2],(Now[1]-1),Now[0]);
+
+
+    $(document).ready(function () {
+        BindEInvoiceHeaderList();
+        $("#txtFromDate").dxDateBox({
+            applyValueMode: "useButtons",
+            height: 30,
+            type: "date",
+            value: NNow,
+            //max: [2025, 01, 01],
+            //min: NNow,
+            displayFormat: "dd/MM/yyyy"
+
+        });
+
+        BindEInvoiceAPIAuth();
+        //$("#txtToDate").dxDateBox({
+        //    applyValueMode: "useButtons",
+        //    height: 30,
+        //    type: "date",
+        //    value: NNow,
+        //    max: [2025, 01, 01],
+        //    min: FFDate,
+        //    displayFormat: "dd/MM/yyyy"
+        //});
+    });
+
+    function BindEInvoiceHeaderList() {
+        $("#tblEInvoiceHeader").dxDataGrid({
+            dataSource: EInvoiceHeader,
+            height: 420,
+            paging: { enabled: true },
+            allowColumnResizing: true,
+            columnResizingMode: "widget",
+            columnAutoWidth: true,
+            wordWrapEnabled: false,
+            columns: [
+                //{
+                //    dataField: "DocType", width: '5%', caption: "Doc. Type",
+                //    headerCellTemplate: function (header, info) {
+                //        $('<div>').html("Doc<br>Type").appendTo(header);
+                //    }
+                //},
+                {
+                    dataField: "", width: '5%', alignment: "center", caption: "Gen IRN",  headerCellTemplate: function (header, info) {
+                        $('<div>').html("Gen<br>IRN").appendTo(header);},cellTemplate: function (container, options) {
+                            $("<div id='GenIRN'>").dxButton({
+                                class: "button-has-icon",
+                                icon: "fa fa-pencil",
+                                onClick: function () {
+                                    if (options.data.IRNNo != "") {
+                                        document.getElementById("GenIRN").attributes("disabled", "true");
+                                        $("#GenIRN").attr("style", "background-color:grey;");
+                                        alert("IRN No already Generated.")
+                                        return false;
+                                    }
+                                    else {
+                                        GenIRN(options.data.DcoumentID)
+                                    }
+                                }
+                            }).append(options.value).appendTo(container);
+
+                    }
+                    //, onCellPrepared: function (cellInfo) {
+                    //    if (cellInfo.rowType == "data" && cellInfo.column.dataField === 'IRNNo') {
+                    //        alert("hello");
+                    //        if (cellInfo.data.IRNNo != "") { cellInfo.cellElement.visible('false'); }
+                    //        //if (cellInfo.data.sex === 'Female') { cellInfo.cellElement.addClass('Pink'); }
+                    //    }
+                    //}
+                    //    ,
+                    //onEditorPreparing(e:any) {
+                    //    if (e.parentType == "dataRow" && e.dataField == "IRNNo" && options.data.IRNNo != "")
+                    //        e.editorOptions.disabled = this.newCard;
+                    //}
+                },
+                        {
+                            dataField: "", width: '5%', alignment: "center", caption: "Cancel",  headerCellTemplate: function (header, info) {
+                                $('<div>').html("Can<br>IRN").appendTo(header);}, cellTemplate: function (container, options) {
+                                    $("<div id='IRNCancel'>").dxButton({
+                                        class: "btn btn-danger",
+                                        icon: "fa fa-trash-o",
+                                        onClick: function () {
+                                            if (options.data.IRNNo == "" && options.data.EWayBillNo == "") {
+                                                alert("IRN No not Generated.")
+                                                return false;
+                                            }
+                                            else {
+                                                CancelIRN(options.data.IRNNo, options.data.DcoumentID)
+                                            }
+                                        }
+                                    }).append(options.value).appendTo(container);
+
+                                }
+                        },
+                        {
+                            dataField: "", width: '5%', alignment: "center", caption: "Gen EWB",  headerCellTemplate: function (header, info) {
+                                $('<div>').html("Gen<br>EWB").appendTo(header);
+                            }, cellTemplate: function (container, options) {
+                                if (options.data.isEwayBillApplicable == true) {
+                                    $("<div id='GenEWB'>").dxButton({
+                                        class: "button-has-icon",
+                                        icon: "fa fa-pencil",
+                                        //onCellPrepared: function (e) {
+                                        //    alert(e.data.isEwayBillApplicable);
+                                        //    if (e.data.isEwayBillApplicable == true) {
+                                        //        document.getElementById("GenEWB").setAttribute("style", "display:none");
+                                        //    }
+                                        //},
+                                        onClick: function () {
+                                            //alert(options.data.isEwayBillApplicable);
+
+                                            if (options.data.EWayBillNo != "") {
+                                                document.getElementById("GenEWB").setAttribute("disabled", "true");
+                                                $("#GenEWB").attr("style", "background-color:grey;");
+                                                alert("EWB No already Generated.")
+                                                return false;
+                                            }
+                                            else {
+                                                GenEWB(options.data.DcoumentID, options.data.IRNNo)
+                                            }
+                                        }
+                                    }).append(options.value).appendTo(container);
+                                }
+                            }
+                        },
+                        {
+                            dataField: "", width: '5%', alignment: "center", caption: "Can EWB",  headerCellTemplate: function (header, info) {
+                                $('<div>').html("Can<br>EWB").appendTo(header);
+                            }, cellTemplate: function (container, options) {
+                                if (options.data.isEwayBillApplicable == true && options.data.EWayBillNo != "") {
+
+                                    if (options.data.IRNNo != "" && options.data.EWayBillNo == "") {
+                                        $("<div id='EWBCancel'>").dxButton({
+                                            class: "btn btn-danger",
+                                            icon: "fa fa-trash-o",
+                                            onClick: function () {
+                                                if (options.data.IRNNo != "" && options.data.EWayBillNo == "") {
+                                                    alert("EWay Bill not Generated.")
+                                                    return false;
+                                                }
+                                                else {
+                                                    CancelEWB(options.data.EWayBillNo,options.data.DcoumentID)
+                                                }
+                                            }
+                                        }).append(options.value).appendTo(container);
+
+                                    }
+                                }
+                            }
+                        },
+                {
+                    dataField: "DocNo", width: '11%',
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Doc No.").appendTo(header);
+                    }
+                },
+                { dataField: "DocDate", width: '10%', caption: "Date" },
+                { dataField: "Client", width: '30%', caption: "Client" },
+                { dataField: "ShippingCity", width: '9%', headerCellTemplate: function (header, info) {
+                    $('<div>').html("Shipping<br>City").appendTo(header);} },
+                { dataField: "Distance", width: '8%', caption: "Distance" },
+                //alignment: "right", valueFormat: "##,###.##", format: { type: "fixedPoint", precision: "2" }
+                { dataField: "IRNNo", width: '8%', caption: "IRNNo" },
+                { dataField: "AckNo", width: '8%', caption: "Ack No" },
+                //{ dataField: "EWayBillNo", width: '8%', caption: "EWay Bill No", headerCellTemplate: function (header, info) {
+                //    $('<div>').html("EWay Bill<br>No").appendTo(header);} },
+                //{ dataField: "EWayBillDate", width: '8%', caption: "EWay Bill Date", headerCellTemplate: function (header, info) {
+                //    $('<div>').html("EWay Bill<br>Date").appendTo(header);
+                //}
+                //},
+                {
+                    dataField: "", width: '5%', alignment: "center", caption: "Update", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Update").appendTo(header);
+                    }, cellTemplate: function (container, options) {
+                        $("<div id='UpIRN'>").dxButton({
+                            class: "button-has-icon",
+                            icon: "fa fa-pencil",
+                            onClick: function () {
+                                if (options.data.IRNNo == "") {
+                                    document.getElementById("UpIRN").attributes("disabled", "true");
+                                    $("#UpIRN").attr("style", "background-color:grey;");
+                                    alert("IRN No not Generated.")
+                                    return false;
+                                }
+                                else {
+                                    GetEInvDetails(options.data.DcoumentID, options.data.IRNNo)
+                                }
+                            }
+                        }).append(options.value).appendTo(container);
+
+                    }
+                },
+
+                //{
+                //    dataField: "", width: '5%', alignment: "center", caption: "", cellTemplate: function (container, options) {
+                //            $("<div id='Edit'>").dxButton({
+                //                class: "button-has-icon",
+                //                icon: "fa fa-print",
+                //                onClick: function () {
+                //                    PartyEdit(options.data.PartyID)
+                //                }
+                //            }).append(options.value).appendTo(container);
+
+                //        }
+                //},
+            ],
+            filterRow: { visible: false },
+            showRowLines: true,
+            showBorders: true,
+            //summary: {
+            //    totalItems: [
+            //        { name: "Values", column: "TotalValue", summaryType: "sum", displayFormat: "Total: {0}", valueFormat: "#,###.##", valueFormat: { type: "fixedPoint", precision: 2 } }
+            //    ]
+            //    //calculateCustomSummary: function (options) {
+            //    //    if (options.name === "Values")
+            //    //        if (options.summaryProcess === "start") {
+            //    //            options.totalValue = 0;
+            //    //        }
+            //    //    if (options.summaryProcess === "calculate") {
+            //    //        if (options.value > 0) {
+            //    //            options.totalValue = options.totalValue + options.value;
+            //    //        }
+            //    //    }
+            //    //}
+            //}
+        });
+    }
+
+    //function BindEInvoiceDetailList() {
+    //    $("#tblEInvoiceDetail").dxDataGrid({
+    //        dataSource: EInvoiceDetail,
+    //        height: 420,
+    //        paging: { enabled: true },
+    //        allowColumnResizing: true,
+    //        columnResizingMode: "widget",
+    //        columnAutoWidth: true,
+    //        wordWrapEnabled: false,
+    //        loadPanel: {
+    //            enabled: true
+    //        },
+    //        scrolling: {
+    //            mode: "virtual"
+    //        },
+    //        onContentReady: function (e) {
+    //            e.component.option("loadPanel.enabled", false);
+    //        },
+    //        columns: [
+    //            {
+    //                dataField: "ItemCode", width: '7%', caption: "Code"
+    //            },
+    //            {
+    //                dataField: "ItemName", width: '25%',
+    //                headerCellTemplate: function (header, info) {
+    //                    $('<div>').html("Product <br/> Name").appendTo(header);
+    //                }
+    //            },
+    //            {
+    //                dataField: "PackSize", width: '6%',
+    //                headerCellTemplate: function (header, info) {
+    //                    $('<div>').html("Pack <br/> Size").appendTo(header);
+    //                }
+    //            },
+    //            {
+    //                dataField: "OrderCarton", width: '6%',
+    //                headerCellTemplate: function (header, info) {
+    //                    $('<div>').html("Order <br/> Carton").appendTo(header);
+    //                }
+    //            },
+    //            {
+    //                dataField: "OrderUnits", width: '6%',
+    //                headerCellTemplate: function (header, info) {
+    //                    $('<div>').html("Order <br/> Units").appendTo(header);
+    //                }
+    //            },
+    //            { dataField: "MRP", width: '7%', caption: "MRP" },
+    //            { dataField: "DealerPrice", width: '7%', caption: "DP" },
+    //             {
+    //                dataField: "DiscountPercentage2", width: '8%',
+    //                headerCellTemplate: function (header, info) {
+    //                    $('<div>').html("Trade <br/> Disc").appendTo(header);
+    //                }
+    //            },
+    //            {
+    //                dataField: "DiscountPercentage1", width: '8%',
+    //                headerCellTemplate: function (header, info) {
+    //                    $('<div>').html("Scheme <br/> Disc").appendTo(header);
+    //                }
+    //            },
+
+    //            {
+    //                dataField: "DiscountPercentage3", width: '8%',
+    //                headerCellTemplate: function (header, info) {
+    //                    $('<div>').html("special<br/> Disc").appendTo(header);
+    //                }
+    //            },
+    //            { dataField: "GSTRate", width: '7%', caption: "GST%" },
+    //            { dataField: "Tax", width: '13%', caption: "Tax", format: { type: "fixedPoint", precision: "2" } },
+    //            { dataField: "TotalAmount", width: '15%', caption: "Value", format: { type: "fixedPoint", precision: "2" } },
+    //        ],
+    //        filterRow: { visible: false },
+    //        showRowLines: true,
+    //        showBorders: true,
+    //        summary: {
+    //            totalItems: [
+    //                { name: "Tax", column: "Tax", summaryType: "sum", displayFormat: "Total: {0}", valueFormat: "#,###.##", valueFormat: { type: "fixedPoint", precision: 2 } },
+    //                { name: "Total", column: "TotalAmount", summaryType: "sum", displayFormat: "Total: {0}", valueFormat: "#,###.##", valueFormat: { type: "fixedPoint", precision: 2 } }
+    //            ]
+    //            //calculateCustomSummary: function (options) {
+    //            //    if (options.name === "Tax" || options.name === "Total")
+    //            //        if (options.summaryProcess === "start") {
+    //            //            options.totalValue = 0;
+    //            //        }
+    //            //    if (options.summaryProcess === "calculate") {
+    //            //        if (options.value > 0) {
+    //            //            options.totalValue = options.totalValue + options.value;
+    //            //        }
+    //            //    }
+    //            //}
+    //        }
+    //    });
+    //}
+
+    function SetDate(dateStr) {
+        var strDate
+        var now = new Date(dateStr);
+        var Day = now.getDate()
+        var Month = (now.getMonth() + 1)
+        var Year = now.getFullYear()
+        if (Day < 10) {
+            Day = "0" + Day;
+        }
+        if (Month < 10) {
+            Month = "0" + Month;
+        }
+        strDate = Day + "/" + Month + "/" + Year
+        return strDate;
+    }
+
+    function EInvoiceGetData() {
+        try {
+            if (txtFromDate == null || txtFromDate == "" || txtFromDate == undefined ) {
+                return true
+            }
+            loadPanel.show();
+            var FromDate = SetDate($('#txtFromDate').dxDateBox('instance').option('value'));
+            //var ToDate = SetDate($('#txtToDate').dxDateBox('instance').option('value'));
+
+            var data = { 'SuperStockistID': $("#hdnSuperStockistId").val(), 'DocDate': FromDate };
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Home/GetDocumentListForEnvoice",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: dataWithAntiforgeryToken,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        EInvoiceHeader = Response.Result;
+                        //$.each(EInvoiceHeader, function (index, object) {
+                        //    var html = "";
+                        //    html += "<a href='#' style='color:#02167A !important; text-decoration: underline;' data-toggle='modal' data-target='#Details' onclick='OrderDetailGetByOrderId(" + object.RowNumber + ",\"" + object.OrderNo + "\",\"" + object.OrderDate + "\")'>" + object.OrderNo + "</a>";
+                        //    EInvoiceHeader[index].OrderNo = html
+                        //});
+                        $("#tblEInvoiceHeader").dxDataGrid('instance').option("dataSource", EInvoiceHeader);
+                        loadPanel.hide();
+
+                    }
+                    else {
+                        loadPanel.hide();
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+
+    function BindEInvoiceAPIAuth() {
+        debugger
+        try {
+            loadPanel.show();
+            $.ajax({
+                url: "../Home/GetAPIAuthDetailsForEInv",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        EInvoiceAPIAuthDetails = Response.Result;
+
+                        //alert(EInvoiceAPIAuthDetails[0].EInvoiceTokenExp);
+                        if (EInvoiceAPIAuthDetails[0].EWBAuthTokenValidityDateTime != '' && EInvoiceAPIAuthDetails[0].EWBAuthTokenValidityDateTime != null) {
+                            //Yesterdays Date
+                            let today = new Date();
+                            let yesterday = new Date();
+                            yesterday.setDate(today.getDate() - 2)
+
+                            //Invoice Date
+                            var dateString = EInvoiceAPIAuthDetails[0].EWBAuthTokenValidityDateTime.substr(6);
+                            //var date = new Date(parseInt(jsonDate.substr(6)));//SetDate(parseInt(dateString));
+                            var date = new Date(parseInt(EInvoiceAPIAuthDetails[0].EWBAuthTokenValidityDateTime.substr(6)));
+                            //var d = new Date(1245398693390);
+                            //var formattedDate = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
+                            //var hours = (d.getHours() < 10) ? "0" + d.getHours() : d.getHours();
+                            //var minutes = (d.getMinutes() < 10) ? "0" + d.getMinutes() : d.getMinutes();
+                            //var formattedTime = hours + ":" + minutes;
+
+                            //formattedDate = formattedDate + " " + formattedTime;
+                            //alert(date);
+                            var g1 = new Date(date);
+                            var g2 = new Date(today);
+
+                            //alert(g1.setHours(0, 0, 0, 0));
+                            //alert(g2.setHours(0, 0, 0, 0));
+                            if (g1.getTime() < g2.getTime()) {
+                                GetAuthToken();
+                            }
+                        }
+                        else {
+                            alert("in else");
+                        }
+                        loadPanel.hide();
+                        //BindEInvoiceDetailList();
+                    }
+                    else {
+                        loadPanel.hide();
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+    function GetAuthToken() {
+        debugger
+        //alert("in");
+        try {
+            loadPanel.show();
+            $.ajax({
+                url: "../Home/GetAuthToken",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        EInvoiceAPIAuthDetails = Response.Result;
+                        loadPanel.hide();
+                        //alert(EInvoiceAPIAuthDetails.ASPPassword);
+                        //if (EInvoiceAPIAuthDetails.EInvoiceTokenExp != '' && EInvoiceAPIAuthDetails.EInvoiceTokenExp != null) {
+                        //    if (Number($("#hdnCurrentUserTypeId").val()) != 22) {
+                        //        //Yesterdays Date
+                        //        let today = new Date();
+                        //        let yesterday = new Date();
+                        //        yesterday.setDate(today.getDate() - 2)
+
+                        //        //Invoice Date
+                        //        var dateString = EInvoiceAPIAuthDetails.EInvoiceTokenExp.substr(6);
+                        //        var date = SetDate(parseInt(dateString));
+
+                        //        var g1 = new Date(date);
+                        //        var g2 = new Date(today);
+
+                        //        //alert(g1.setHours(0, 0, 0, 0));
+                        //        //alert(g2.setHours(0, 0, 0, 0));
+                        //        if (g1.setHours(0, 0, 0, 0) >= g2.setHours(0, 0, 0, 0)) {
+                        //            GetAuthToken();
+                        //        }
+                        //    }
+                        //}
+                        //BindEInvoiceDetailList();
+                    }
+                    else {
+                        loadPanel.hide();
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+
+    function GenIRN(idVal) {
+        debugger
+        try {
+            loadPanel.show();
+            BindEInvoiceAPIAuth();
+            var data = { 'SuperStockistID': $("#hdnSuperStockistId").val(), 'DSCId': idVal };
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Home/GetIRNForEnvoice",
+                type: 'POST',
+                dataType: 'json',
+                data: dataWithAntiforgeryToken,
+                async: true,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        EInvoiceAPIAuthDetails = Response.Result;
+                        alert(Response.Status);
+                        loadPanel.hide();
+                        EInvoiceGetData();
+                    }
+                    else {
+                        loadPanel.hide();
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+
+    function CancelIRN(irnno,idVal) {
+        debugger
+        try {
+            loadPanel.show();
+            BindEInvoiceAPIAuth();
+            var data = { 'SuperStockistID': $("#hdnSuperStockistId").val(), 'DSCId': idVal, 'IRNNo': irnno, 'UserId': $("#hdnUserId").val() };
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Home/CancelIRN",
+                type: 'POST',
+                dataType: 'json',
+                data: dataWithAntiforgeryToken,
+                async: true,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        alert(Response.Status);
+                        loadPanel.hide();
+                        EInvoiceGetData();
+                    }
+                    else {
+                        loadPanel.hide();
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+    function GenEWB(idVal, irnno) {
+        debugger
+        try {
+            loadPanel.show();
+            BindEInvoiceAPIAuth();
+            var data = { 'SuperStockistID': $("#hdnSuperStockistId").val(), 'DSCId': idVal, 'IRNNo': irnno };
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Home/GetEWBForEnvoice",
+                type: 'POST',
+                dataType: 'json',
+                data: dataWithAntiforgeryToken,
+                async: true,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        EInvoiceAPIAuthDetails = Response.Result;
+                        alert(Response.Status);
+                        loadPanel.hide();
+                        EInvoiceGetData();
+                    }
+                    else {
+                        loadPanel.hide();
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+
+    function CancelEWB(ewbno, idVal) {
+        debugger
+        try {
+            loadPanel.show();
+            BindEInvoiceAPIAuth();
+            var data = { 'SuperStockistID': $("#hdnSuperStockistId").val(), 'DSCId': idVal, 'EWBNo': ewbno, 'UserId': $("#hdnUserId").val() };
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Home/CancelEWB",
+                type: 'POST',
+                dataType: 'json',
+                data: dataWithAntiforgeryToken,
+                async: true,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        alert(Response.Status);
+                        loadPanel.hide();
+                        EInvoiceGetData();
+                    }
+                    else {
+                        loadPanel.hide();
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+
+    function GetEInvDetails(idVal,irnno) {
+        debugger
+        try {
+            loadPanel.show();
+            BindEInvoiceAPIAuth();
+            var data = { 'SuperStockistID': $("#hdnSuperStockistId").val(), 'DSCId': idVal, 'IRNNo': irnno };
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Home/UpdateIRNForEnvoice",
+                type: 'POST',
+                dataType: 'json',
+                data: dataWithAntiforgeryToken,
+                async: true,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        EInvoiceAPIAuthDetails = Response.Result;
+                        alert(Response.Status);
+                        loadPanel.hide();
+                        EInvoiceGetData();
+                    }
+                    else {
+                        loadPanel.hide();
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+    //function OrderDetailGetByOrderId(OrderId, OrderNo, OrderDate) {
+    //    try {
+    //        var data = { 'OrderId': OrderId };
+    //        var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+    //        loadPanel.show();
+    //        $.ajax({
+    //            url: "../Home/OrderDetailGetByOrderId",
+    //            type: 'POST',
+    //            dataType: 'json',
+    //            async: true,
+    //            data: dataWithAntiforgeryToken,
+    //            success: function (Response) {
+    //                if (Response.StatusId != "99") {
+    //                    EInvoiceDetail = Response.Result;
+    //                    $("#SpanorderNo").html(OrderNo);
+    //                    $("#SpanorderDate").html(OrderDate);
+    //                    loadPanel.hide();
+    //                    BindEInvoiceDetailList();
+    //                }
+    //                else {
+    //                    loadPanel.hide();
+    //                    alert(Response.Status);
+    //                }
+    //            },
+    //            error: function (xhr) {
+    //                loadPanel.hide();
+    //                alert("Data size is too large!");
+    //            }
+    //        });
+    //    }
+    //    catch (e) {
+    //        loadPanel.hide();
+    //        alert("Data size is too large!");
+    //    }
+    //}
+
+    function ExportToExcel() {
+        try {
+            loadPanel.show();
+            var col = [];
+            for (var i = 0; i < EInvoiceHeader.length; i++) {
+                for (var key in EInvoiceHeader[i]) {
+                    if (col.indexOf(key) === -1) {
+                        if (key == 'RowNumber' || key == 'UserId') {
+                        } else {
+                            col.push(key);
+                        }
+                    }
+                }
+            }
+
+            var table = document.createElement("table");
+            var tr = table.insertRow(-1);
+            for (var i = 0; i < col.length; i++) {
+                var th = document.createElement("th");
+                th.innerHTML = col[i];
+                tr.appendChild(th);
+            }
+            for (var i = 0; i < EInvoiceHeader.length; i++) {
+                tr = table.insertRow(-1);
+                for (var j = 0; j < col.length; j++) {
+                    var tabCell = tr.insertCell(-1);
+                    tabCell.innerHTML = EInvoiceHeader[i][col[j]];
+                }
+            }
+            var dvTable = document.getElementById("dvTable");
+            dvTable.innerHTML = "";
+            dvTable.appendChild(table);
+            $("#dvTable").table2excel({
+                filename: "EInvoice.xls"
+            });
+            loadPanel.hide();
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert(e.message);
+        }
+    }
+
+    function AlterGovtMessage(Val) {
+        alert(Val);
+        return false;
+    }
+</script>

@@ -1,0 +1,498 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 26.5, 21.125" name="DealerPortal">
+  <DataContextMoniker Name="/DealerPortalDataContext" />
+  <nestedChildShapes>
+    <classShape Id="2614320c-55f5-4d46-8b6e-2e8c80327bf7" isExpanded="false" absoluteBounds="0.75, 0.75, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlUserMaster" />
+      <nestedChildShapes>
+        <elementListCompartment Id="61f8af4a-0944-4e35-9d15-f1f256a6ecfe" absoluteBounds="0.76500000000000057, 1.21, 1.9700000000000002, 2.941609700520833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="2d2e53ed-e11c-4cac-bb51-05b52898449d" isExpanded="false" absoluteBounds="0.75, 2.75, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlStatus" />
+      <nestedChildShapes>
+        <elementListCompartment Id="d9fde18d-dac8-4449-9542-c6c65f292a77" absoluteBounds="0.76500000000000012, 3.21, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="7634e29f-6504-4658-b47b-13cebcc48f34" isExpanded="false" absoluteBounds="3.75, 0.75, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlRetailCategoryMaster" />
+      <nestedChildShapes>
+        <elementListCompartment Id="d2475237-bc63-41e4-824b-3ad539e526c2" absoluteBounds="3.765, 1.21, 1.9700000000000002, 1.9801025390625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="d18f95d9-bf8d-4476-8bfd-1c4aa3562996" isExpanded="false" absoluteBounds="3.75, 2.75, 2, 0.45000000000000018">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlMRPCategoryMaster" />
+      <nestedChildShapes>
+        <elementListCompartment Id="e669f641-1994-4997-a917-4860400cef20" absoluteBounds="3.7649999999999997, 3.21, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="9d49fe76-3af4-4086-b5ed-401bd65cd67c" isExpanded="false" absoluteBounds="0.75, 4.75, 2, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlCart" />
+      <nestedChildShapes>
+        <elementListCompartment Id="f48f63e0-56dd-48b2-9e5b-ac02a8bfe8a3" absoluteBounds="0.76500000000000012, 5.21, 1.9700000000000002, 3.1339111328125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="f72e8f20-7bef-490e-908d-b85b7d5d74bd" isExpanded="false" absoluteBounds="3.75, 4.75, 2, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlCommon" />
+      <nestedChildShapes>
+        <elementListCompartment Id="cb38cc5f-84bd-4244-9418-14ebb2b7e181" absoluteBounds="3.7650000000000006, 5.21, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="e237e0f8-df28-494e-ba16-a50b405f7eae" isExpanded="false" absoluteBounds="6.75, 0.75, 2, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempCartView" />
+      <nestedChildShapes>
+        <elementListCompartment Id="33928889-c082-477c-8682-9c2796bd9775" absoluteBounds="6.7650000000000006, 1.21, 2.5949999999999998, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="763bf02b-9332-4321-a900-19b693d1165a" isExpanded="false" absoluteBounds="0.75, 6.75, 2, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempCartMaster" />
+      <nestedChildShapes>
+        <elementListCompartment Id="bd5a83c4-5096-4199-89aa-a0b438a9a334" absoluteBounds="0.76499999999999968, 7.21, 1.9700000000000002, 3.7108154296875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="1e865412-124a-48dc-bf5a-beca537d469d" isExpanded="false" absoluteBounds="6.75, 2.75, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempItemMaster" />
+      <nestedChildShapes>
+        <elementListCompartment Id="438cd7dd-6b98-4d2b-a336-27f2236ea857" absoluteBounds="6.7650000000000006, 3.21, 1.9700000000000002, 3.9031168619791665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="ea971b11-fd48-4ddc-94ba-84d8ff17ffb1" isExpanded="false" absoluteBounds="3.75, 6.75, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempOrderHistory" />
+      <nestedChildShapes>
+        <elementListCompartment Id="a5135129-1174-46c7-8d68-21b9212711c6" absoluteBounds="3.7649999999999997, 7.21, 1.9700000000000002, 1.9801025390625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="b9ce0c56-f4db-459a-a955-6276e794cef2" isExpanded="false" absoluteBounds="6.75, 4.75, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempOrderDetail" />
+      <nestedChildShapes>
+        <elementListCompartment Id="c1e9b16f-4f68-42d8-ad4e-29d3ea74e010" absoluteBounds="6.7650000000000006, 5.21, 1.9700000000000002, 3.1339111328125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="86f0f254-c53e-45aa-bb14-1afa96c39965" isExpanded="false" absoluteBounds="6.75, 6.75, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempLoginMaster" />
+      <nestedChildShapes>
+        <elementListCompartment Id="7ea38808-6f20-4df2-aee1-ec5a2b62964b" absoluteBounds="6.7650000000000006, 7.21, 1.9700000000000002, 3.3262125651041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="70b3b30c-e664-4df8-96cf-afd1d7b52804" isExpanded="false" absoluteBounds="0.75, 8.75, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlUserMasterView" />
+      <nestedChildShapes>
+        <elementListCompartment Id="e304f22c-3d74-4c41-989e-baf547d07f75" absoluteBounds="0.765, 9.21, 1.9700000000000002, 3.7108154296875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="b7f6e867-1371-410f-9300-32d0671aea4c" isExpanded="false" absoluteBounds="3.75, 8.75, 2, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlParameter" />
+      <nestedChildShapes>
+        <elementListCompartment Id="1ab65221-5fb5-4254-85b4-1726b368389d" absoluteBounds="3.7649999999999997, 9.21, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="ae6b1f86-0d29-4cb1-81aa-5397a2dc6c5f" isExpanded="false" absoluteBounds="6.75, 8.75, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlItemMasterView" />
+      <nestedChildShapes>
+        <elementListCompartment Id="478ed84f-3095-411f-ac6e-73b9f0b69692" absoluteBounds="6.765, 9.21, 1.9700000000000002, 6.5953369140625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="06a23e95-fdf8-4668-a5af-ba79b66ea38a" isExpanded="false" absoluteBounds="9.75, 0.75, 2, 0.45000000000000018">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempPartyMasterIdentity" />
+      <nestedChildShapes>
+        <elementListCompartment Id="5a875703-02c3-47fd-b91c-c2bdaeee0eb2" absoluteBounds="9.765, 1.21, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="aa118fa6-f659-4d49-ba89-bbdd85e68651" isExpanded="false" absoluteBounds="9.75, 2.75, 2, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempSalesOrder11" />
+      <nestedChildShapes>
+        <elementListCompartment Id="9ecd9980-e5b1-4942-bc4c-19001ffdfdff" absoluteBounds="9.765, 3.21, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="745e6551-cda0-4807-a6c0-13a62baafe92" isExpanded="false" absoluteBounds="9.75, 4.75, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempOrderHeaderId" />
+      <nestedChildShapes>
+        <elementListCompartment Id="9a313382-78b8-417e-b473-9586909efded" absoluteBounds="9.765, 5.21, 1.9700000000000002, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="ccff3b30-bc02-46fb-81cc-c10ec5ad633b" isExpanded="false" absoluteBounds="9.75, 6.75, 2.125, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempOrderHeaderDetailId" />
+      <nestedChildShapes>
+        <elementListCompartment Id="6c5e8f0a-90a6-4965-96c7-223927baf484" absoluteBounds="9.765, 7.2100000000000009, 2.3449999999999998, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="0f1fa348-0f1f-48de-a812-4c74e267f843" isExpanded="false" absoluteBounds="9.75, 8.75, 2, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempSalesOrderItem" />
+      <nestedChildShapes>
+        <elementListCompartment Id="e95bde40-dfa3-490f-b367-fa3581f5f05e" absoluteBounds="9.765, 9.21, 1.9700000000000002, 2.364705403645833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="73aeea8f-5762-42ee-b53c-933665a49a2c" isExpanded="false" absoluteBounds="0.75, 10.75, 2, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlMasterUpdate" />
+      <nestedChildShapes>
+        <elementListCompartment Id="aa282c96-1d1f-49fe-b351-4fea7f9585bc" absoluteBounds="0.76500000000000057, 11.21, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="dd8afe5f-1b7f-4d53-bdfb-e2c937a4a2f1" isExpanded="false" absoluteBounds="3.75, 10.75, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlSalesChallan" />
+      <nestedChildShapes>
+        <elementListCompartment Id="06461a74-e1a2-48e1-9180-4513c845332b" absoluteBounds="3.765, 11.21, 1.9700000000000002, 7.9414469401041661" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="e992a8f7-3e34-4df4-8a04-3f7c082f2446" isExpanded="false" absoluteBounds="6.75, 10.75, 2, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlSalesChallanDetail" />
+      <nestedChildShapes>
+        <elementListCompartment Id="5e825a67-88c3-4a05-be7a-75624717ce8d" absoluteBounds="6.7650000000000006, 11.21, 1.9700000000000002, 4.672322591145833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="4309b05d-9163-41cc-882f-13aa746d24a8" isExpanded="false" absoluteBounds="9.75, 10.75, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempPartyMaster" />
+      <nestedChildShapes>
+        <elementListCompartment Id="6b139cc0-8717-4926-927f-984cc17b320e" absoluteBounds="9.765, 11.21, 1.9700000000000002, 5.0569254557291661" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="d2251b16-ac69-4089-a148-592d3bb188ac" isExpanded="false" absoluteBounds="12.75, 0.75, 2, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempItemInsertUpdate" />
+      <nestedChildShapes>
+        <elementListCompartment Id="3c68bd8d-0ef4-4a3e-b337-6dcaa8166427" absoluteBounds="12.765, 1.2100000000000009, 1.9700000000000002, 5.4415283203125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="89c12f06-a26d-46b3-8e8b-73863e30828f" isExpanded="false" absoluteBounds="0.75, 12.75, 2, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempCityMaster" />
+      <nestedChildShapes>
+        <elementListCompartment Id="24646dc6-00e9-4fb9-ba58-70c838f8a4f6" absoluteBounds="0.76500000000000057, 13.21, 1.9700000000000002, 1.9801025390625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="a715a9a0-aec8-4b1c-8951-4a6f1e4d874e" isExpanded="false" absoluteBounds="12.75, 2.75, 2, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempCountryMaster" />
+      <nestedChildShapes>
+        <elementListCompartment Id="89c945d0-46cd-4686-9e45-58d3c61ec601" absoluteBounds="12.765, 3.2100000000000009, 1.9700000000000002, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="e79c033e-741c-4995-bdd9-7057a3398caf" isExpanded="false" absoluteBounds="3.75, 12.75, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempStateMaster" />
+      <nestedChildShapes>
+        <elementListCompartment Id="68ee9440-18ba-4c0b-a8e9-7b7326d7475c" absoluteBounds="3.7650000000000006, 13.21, 1.9700000000000002, 2.5570068359375" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="d173e72d-6cb7-40af-826d-d4b3da25cb29" isExpanded="false" absoluteBounds="12.75, 4.75, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlUserMasterUpdateReq" />
+      <nestedChildShapes>
+        <elementListCompartment Id="0573c33d-0b37-46b6-8fda-964d3d080f88" absoluteBounds="12.765, 5.21, 1.9700000000000002, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="2713efd4-e349-4131-b4d2-069315846543" isExpanded="false" absoluteBounds="12.75, 6.75, 2, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempSalesChallan" />
+      <nestedChildShapes>
+        <elementListCompartment Id="48b7aecd-f4d5-4435-b6ae-5539676318ff" absoluteBounds="12.765, 7.2100000000000009, 1.9700000000000002, 1.9801025390625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="e2e66a7f-a262-4feb-9f7c-e2228b0dbcf7" isExpanded="false" absoluteBounds="12.75, 8.75, 2, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlSalesChallanUpdtReq" />
+      <nestedChildShapes>
+        <elementListCompartment Id="860c2c3c-8985-4d63-8e3b-a9e623f56ceb" absoluteBounds="12.765, 9.21, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="308e3416-55bc-4138-94f8-cd52464f7d48" isExpanded="false" absoluteBounds="12.75, 10.75, 2, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempIPL" />
+      <nestedChildShapes>
+        <elementListCompartment Id="f872af4c-e262-492f-9a88-60e5c339e3fe" absoluteBounds="12.765, 11.21, 1.9700000000000002, 1.5954996744791665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="8023568d-594f-4078-bde5-7f47e9982280" isExpanded="false" absoluteBounds="6.75, 12.875, 2, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlItemPartyLinkReq" />
+      <nestedChildShapes>
+        <elementListCompartment Id="34afb11f-640f-46b2-9c00-b3983087d16e" absoluteBounds="6.7650000000000006, 13.335, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="ce6e8155-b385-400f-bcae-94afd23bd288" isExpanded="false" absoluteBounds="0.75, 14.75, 2, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempOrderNotInserted" />
+      <nestedChildShapes>
+        <elementListCompartment Id="a9c5f196-7202-40f1-90f0-2b45ca18007f" absoluteBounds="0.76500000000000057, 15.21, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="7ef38cd3-2769-4404-9d8a-6d7c34761ad0" isExpanded="false" absoluteBounds="3.75, 14.75, 2, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlItemLedgerOld" />
+      <nestedChildShapes>
+        <elementListCompartment Id="fe4a8072-6af3-4fd9-9226-9d2310cf8ad9" absoluteBounds="3.7650000000000006, 15.21, 1.9700000000000002, 2.941609700520833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="2fab085a-c76b-49d9-bd64-19474899eea5" isExpanded="false" absoluteBounds="12.75, 12.75, 2, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempSalesOrder" />
+      <nestedChildShapes>
+        <elementListCompartment Id="1cd2010d-1cee-41a7-bffe-a0157bb8ad56" absoluteBounds="12.765, 13.21, 1.9700000000000002, 3.3262125651041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="4c724e65-f4bc-4604-92fa-e503512f9d46" isExpanded="false" absoluteBounds="15.75, 0.75, 2, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempYearMaster" />
+      <nestedChildShapes>
+        <elementListCompartment Id="85754585-60a4-4e64-baf3-0e5573707a83" absoluteBounds="15.765, 1.2100000000000009, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="e7586a42-d1f4-4a50-a314-80ceb5abf8c0" isExpanded="false" absoluteBounds="15.75, 2.75, 2, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempCurrencyMaster" />
+      <nestedChildShapes>
+        <elementListCompartment Id="2ca0b4fa-3ac9-4e87-ba0b-bb4938a7a3fa" absoluteBounds="15.765, 3.2100000000000009, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="08e716ba-5a22-4811-8ede-c2bc247a7f28" isExpanded="false" absoluteBounds="15.75, 4.75, 2, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlOptionList" />
+      <nestedChildShapes>
+        <elementListCompartment Id="f31d6a8f-7322-4a32-a1ad-8cccbda4f757" absoluteBounds="15.765, 5.2100000000000009, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="eee76ac9-38d9-4abc-980f-d23ff2212f40" isExpanded="false" absoluteBounds="15.75, 6.75, 2, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempItemTypeMaster" />
+      <nestedChildShapes>
+        <elementListCompartment Id="e422536e-c0ca-44fa-9f5d-7f655bfedf6b" absoluteBounds="15.765, 7.2100000000000009, 1.9700000000000002, 1.9801025390625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="11b921fb-1108-40e9-8c14-62b23b54e355" isExpanded="false" absoluteBounds="15.75, 8.75, 2, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempDiscountMaster" />
+      <nestedChildShapes>
+        <elementListCompartment Id="249b2bbb-631c-4b68-a9f7-4206dcebb156" absoluteBounds="15.765, 9.21, 1.9700000000000002, 3.518513997395833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="9eaaf996-7eeb-4362-b119-5ae19dd9c6cc" isExpanded="false" absoluteBounds="15.75, 10.75, 2, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempHSNCodeMaster" />
+      <nestedChildShapes>
+        <elementListCompartment Id="6be58736-2d37-4d10-a256-133fdb5c560e" absoluteBounds="15.765, 11.21, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="447d8cde-d650-4706-a867-270b1a450258" isExpanded="false" absoluteBounds="9.75, 12.875, 2, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempPriceListMaster" />
+      <nestedChildShapes>
+        <elementListCompartment Id="3b195e98-6dd8-43af-9772-46645aacbaba" absoluteBounds="9.765, 13.335, 1.9700000000000002, 2.941609700520833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="ea7ca1c5-f534-4040-a608-4a5231c854ee" isExpanded="false" absoluteBounds="15.75, 12.875, 2, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlSalesChallanDetailView" />
+      <nestedChildShapes>
+        <elementListCompartment Id="48379b03-9576-4e4b-8d7e-4878b1c15a07" absoluteBounds="15.765, 13.335, 1.9700000000000002, 5.6338297526041661" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="ac28d836-8ef5-4cd8-b983-ead5239f9345" isExpanded="false" absoluteBounds="0.75, 16.75, 2, 0.45000000000000284">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlItemAdjustment" />
+      <nestedChildShapes>
+        <elementListCompartment Id="c162b9da-2f6b-40c1-a707-b6a41818cae1" absoluteBounds="0.76500000000000057, 17.21, 1.9700000000000002, 2.5570068359375" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="0e968e76-0b4b-45f8-b04a-82d513f1b6db" isExpanded="false" absoluteBounds="3.75, 16.75, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlItemAdjustmentDetail" />
+      <nestedChildShapes>
+        <elementListCompartment Id="ac911da3-37f0-42dc-85f9-fa84b4c6a68c" absoluteBounds="3.7650000000000006, 17.21, 1.9700000000000002, 2.5570068359375" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="84565a3b-4694-44ee-9c2f-fe915a89a115" isExpanded="false" absoluteBounds="9.75, 14.75, 2, 0.45000000000000284">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlItemAdjustmentDateWIse" />
+      <nestedChildShapes>
+        <elementListCompartment Id="4d60fc78-6c91-4a6c-8c57-fdf416039731" absoluteBounds="9.765, 15.21, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="5ab826d4-3ae3-410c-b028-1912b9d3f02f" isExpanded="false" absoluteBounds="15.75, 14.625, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlCustomerMaster" />
+      <nestedChildShapes>
+        <elementListCompartment Id="01dae55c-f96e-425a-8faf-ca1a5aa49b70" absoluteBounds="15.765, 15.085, 1.9700000000000002, 5.826131184895833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="d3dbe9fd-3886-426a-aa6f-7022946176b5" isExpanded="false" absoluteBounds="6.75, 16.75, 2, 0.45000000000000284">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlFreightTypeMaster" />
+      <nestedChildShapes>
+        <elementListCompartment Id="672233fe-523e-41a1-910c-29b7f476e3b9" absoluteBounds="6.7650000000000006, 17.21, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="148ea0b2-b0ed-4e1d-91ee-1b4d431c2613" isExpanded="false" absoluteBounds="18.75, 0.75, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlCustomerAddressMaster" />
+      <nestedChildShapes>
+        <elementListCompartment Id="e67121c4-985a-4604-b1cb-9efc1bfbfef0" absoluteBounds="18.765, 1.2100000000000009, 1.9700000000000002, 5.4415283203125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="5da700a6-818a-4233-a72a-ea8eb913bdb7" isExpanded="false" absoluteBounds="0.75, 18.75, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlDealerSalesChallan" />
+      <nestedChildShapes>
+        <elementListCompartment Id="24b109e6-7a8b-49bb-ba63-b202a81e71c4" absoluteBounds="0.76500000000000057, 19.21, 1.9700000000000002, 14.6719970703125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="0ecb0058-0b62-45ae-b287-0dd43fb08baf" isExpanded="false" absoluteBounds="18.75, 2.75, 2, 0.45000000000000284">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlDealerSalesChallanDetail" />
+      <nestedChildShapes>
+        <elementListCompartment Id="530560ed-2a7f-4ca8-b977-c4116e025868" absoluteBounds="18.765, 3.2100000000000009, 1.9700000000000002, 5.826131184895833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="dedff599-7396-4b74-917a-3da88a80d560" isExpanded="false" absoluteBounds="18.75, 4.75, 2, 0.45000000000000284">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlItemLedger" />
+      <nestedChildShapes>
+        <elementListCompartment Id="a588d063-4cc8-4aa3-8e2f-f184729a4ee9" absoluteBounds="18.765, 5.2100000000000009, 1.9700000000000002, 3.9031168619791665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="7492af49-e86e-453d-9975-e1c2849467b8" isExpanded="false" absoluteBounds="18.75, 6.75, 2, 0.45000000000000284">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlPartyType" />
+      <nestedChildShapes>
+        <elementListCompartment Id="b6dc2aa0-5191-4b8d-af7e-db87a42ddea2" absoluteBounds="18.765, 7.2100000000000009, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="1ff04be0-0e71-41ef-bc0f-3906ac8bbfad" isExpanded="false" absoluteBounds="18.75, 8.75, 2, 0.45000000000000284">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlAddressTypeMaster" />
+      <nestedChildShapes>
+        <elementListCompartment Id="5dead60a-c4f8-45b9-8f1a-50e1c4e9e5ef" absoluteBounds="18.765, 9.21, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="19cf104e-4bd1-409a-b912-6f90da69bbda" isExpanded="false" absoluteBounds="9.75, 16.625, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/TempCustomerMaster" />
+      <nestedChildShapes>
+        <elementListCompartment Id="61137132-50e4-492e-9c1b-0984fed12873" absoluteBounds="9.765, 17.085, 1.9700000000000002, 7.1722412109375" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="95e1b7e1-80c4-404a-9381-3eb086d63b0b" isExpanded="false" absoluteBounds="18.75, 10.75, 2, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/TempCustomerAddressMaster" />
+      <nestedChildShapes>
+        <elementListCompartment Id="3384c161-7eb6-49bf-9958-d55339b0dca1" absoluteBounds="18.765, 11.21, 1.9700000000000002, 4.095418294270833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="7478d1ec-d652-44ba-b07d-cf54a5f5862e" isExpanded="false" absoluteBounds="18.75, 12.75, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlCustomerUpdateReq" />
+      <nestedChildShapes>
+        <elementListCompartment Id="2ecea685-f869-45cb-a7b3-28f63b230f4e" absoluteBounds="18.765, 13.21, 1.9700000000000002, 7.1722412109375" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="e3bc4f14-ad2f-4317-8efb-d4599a824cd8" isExpanded="false" absoluteBounds="12.75, 14.625, 2, 0.45000000000000284">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlCustomerAddressUpdateReq" />
+      <nestedChildShapes>
+        <elementListCompartment Id="fb46898c-a04b-4140-9144-4ab9117af5be" absoluteBounds="12.765, 15.085, 1.9700000000000002, 4.095418294270833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="d9211802-de21-4667-b97c-0de0edada8aa" isExpanded="false" absoluteBounds="6.625, 14.75, 2, 0.45000000000000284">
+      <DataClassMoniker Name="/DealerPortalDataContext/TempCustomerDiscountItemView" />
+      <nestedChildShapes>
+        <elementListCompartment Id="d2f3d27c-43a4-4397-ba27-6035ab0b3671" absoluteBounds="6.6400000000000006, 15.21, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="233fdffc-0f67-4d50-81f3-4486df91455e" isExpanded="false" absoluteBounds="15.75, 16.5, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/TempDealerSalesDiscountMaster" />
+      <nestedChildShapes>
+        <elementListCompartment Id="58b1a1eb-e529-47c8-8bbb-b172fc93c5cf" absoluteBounds="15.765, 16.96, 1.9700000000000002, 3.7108154296875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="95b756a3-41da-4146-a385-9bcbb3184a3c" isExpanded="false" absoluteBounds="18.625, 14.625, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlItemLedgerReport" />
+      <nestedChildShapes>
+        <elementListCompartment Id="4e63e93d-6696-48ec-922d-da3c7db3c1a7" absoluteBounds="18.64, 15.085, 1.9700000000000002, 2.5570068359375" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="76751636-4bec-41a2-8868-9823c214d101" isExpanded="false" absoluteBounds="18.75, 16.5, 2, 0.45000000000000284">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlitemLedgerDetails" />
+      <nestedChildShapes>
+        <elementListCompartment Id="f3880b93-3ca6-4390-9c55-2fb2867538f0" absoluteBounds="18.765, 16.96, 1.9700000000000002, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="8329c6ef-1c20-4563-943a-f5c43a984427" isExpanded="false" absoluteBounds="3.75, 18.75, 2, 0.45000000000000284">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlNewsMaster" />
+      <nestedChildShapes>
+        <elementListCompartment Id="6af1090d-0cce-413c-aef4-28b5683ecb1c" absoluteBounds="3.7650000000000006, 19.21, 1.9700000000000002, 3.3262125651041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="a20757a1-98ab-4e86-866b-59e86797ca64" isExpanded="false" absoluteBounds="6.75, 18.75, 2, 0.45000000000000284">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlNewsMasterUpdateReq" />
+      <nestedChildShapes>
+        <elementListCompartment Id="7ed43745-c423-41e8-bc94-98c3a61bad27" absoluteBounds="6.7650000000000006, 19.21, 1.9700000000000002, 3.3262125651041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="fff875b3-a109-488e-8447-a1c31826b3dd" isExpanded="false" absoluteBounds="9.75, 18.625, 2, 0.45000000000000284">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlNewsMasterView" />
+      <nestedChildShapes>
+        <elementListCompartment Id="50f5fe8f-5fdc-43b9-9311-a146f04dd709" absoluteBounds="9.765, 19.085, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="f632fed0-cf3d-44d5-87e6-343c45760baf" isExpanded="false" absoluteBounds="12.75, 16.625, 2, 0.45000000000000284">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlChargeMaster" />
+      <nestedChildShapes>
+        <elementListCompartment Id="d9971f13-fbbd-4f33-88c0-167a1cfb5bc9" absoluteBounds="12.765, 17.085, 1.9700000000000002, 1.5954996744791665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="43a60956-f82f-4d4d-aaad-1649c2eb2580" isExpanded="false" absoluteBounds="15.75, 18.5, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlSalesReport" />
+      <nestedChildShapes>
+        <elementListCompartment Id="11155f6b-f1c9-4a22-b83e-7e7239748260" absoluteBounds="15.765, 18.96, 1.9700000000000002, 10.0567626953125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="4fd3ad5f-72ca-4643-ac25-d01614502f7a" isExpanded="false" absoluteBounds="18.75, 18.5, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlDownloadInvoiceReport" />
+      <nestedChildShapes>
+        <elementListCompartment Id="4d237617-3271-49b0-acf2-e1dc549bcdcd" absoluteBounds="18.765, 18.96, 1.9700000000000002, 9.0952555338541661" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="c4493cff-645a-451b-87bc-0ed6011a2f0a" isExpanded="false" absoluteBounds="21.75, 0.75, 2, 0.45000000000000284">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempRegionMaster" />
+      <nestedChildShapes>
+        <elementListCompartment Id="e0df9c42-8131-45a6-8938-30ed04f2aeca" absoluteBounds="21.765, 1.2100000000000009, 1.9700000000000002, 1.9801025390625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="db9e8762-9518-4dcd-93e8-db28574fbe0c" isExpanded="false" absoluteBounds="0.75, 20.375, 2, 0.45000000000000284">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempSalesZoneMaster" />
+      <nestedChildShapes>
+        <elementListCompartment Id="c3c9940e-b5df-4a0a-9a00-64a414d6ab89" absoluteBounds="0.76499999999999968, 20.835, 1.9700000000000002, 3.1339111328125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="b26f12b5-4298-4f27-95ec-3aff82044408" isExpanded="false" absoluteBounds="21.75, 2.75, 2, 0.45000000000000284">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlUOMMaster" />
+      <nestedChildShapes>
+        <elementListCompartment Id="81b771bf-bbcf-45b8-a1b2-4124c5c29fd1" absoluteBounds="21.765, 3.2100000000000009, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="ca5b6b0e-4343-4702-82bb-d9b2c1e8e4b9" isExpanded="false" absoluteBounds="21.75, 4.75, 2, 0.44999999999999929">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempItemInsertUpdateNew" />
+      <nestedChildShapes>
+        <elementListCompartment Id="fbf891d3-c21b-46f3-9968-dbf9f061f72f" absoluteBounds="21.765, 5.21, 1.9700000000000002, 5.6338297526041661" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="a7e59d98-cc7d-4ddc-ad78-56afce8315e9" isExpanded="false" absoluteBounds="21.75, 6.75, 2, 0.45000000000000284">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlMailServerDetails" />
+      <nestedChildShapes>
+        <elementListCompartment Id="93724082-d63e-4078-9d49-4a5ba51447d4" absoluteBounds="21.765, 7.2100000000000009, 1.9700000000000002, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="32f9c362-a094-48cf-8ce3-7a68e32ec42e" isExpanded="false" absoluteBounds="21.75, 8.75, 2, 0.45000000000000284">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlPendingWebOrderStatusReport" />
+      <nestedChildShapes>
+        <elementListCompartment Id="2cb9b844-b7f0-46b3-b24c-b66a6831b5b1" absoluteBounds="21.765, 9.21, 1.9700000000000002, 7.1722412109375" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="760639f9-cab0-4ae0-a53f-6b9995c718b3" isExpanded="false" absoluteBounds="21.75, 10.75, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempItemMasterDPRate" />
+      <nestedChildShapes>
+        <elementListCompartment Id="4304d844-e82e-4dd0-b55c-2323494c5623" absoluteBounds="21.765, 11.21, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="3a0a0f0e-bfc0-400a-bc4d-c5c46ac1c2ab" isExpanded="false" absoluteBounds="21.625, 12.75, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlItemLedgerValuationReport" />
+      <nestedChildShapes>
+        <elementListCompartment Id="fb1b567f-4e11-469c-855a-67e793d2e697" absoluteBounds="21.64, 13.21, 1.9700000000000002, 2.7493082682291665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="f0f55ab7-31c5-45ea-8097-46d8e7542cbe" isExpanded="false" absoluteBounds="6.75, 20.375, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempEInvoice" />
+      <nestedChildShapes>
+        <elementListCompartment Id="6887eed4-3bfb-48ef-8bbc-d6626c64d096" absoluteBounds="6.765, 20.835, 1.9700000000000002, 2.941609700520833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="064fcd27-0ecd-4494-8f23-36be4ae67fb7" isExpanded="false" absoluteBounds="3.75, 20.25, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlTempAPIAuthDetails" />
+      <nestedChildShapes>
+        <elementListCompartment Id="c9045b61-42ff-4ec7-8a7c-6fc78a2d52e9" absoluteBounds="3.765, 20.71, 1.9700000000000002, 4.8646240234375" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="3fb2df81-be34-4a57-bfae-6674ef678a38" isExpanded="false" absoluteBounds="12.875, 18.5, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlAPIAuthResponse" />
+      <nestedChildShapes>
+        <elementListCompartment Id="90412b17-f1ca-4e00-9cbb-a1ae55c163af" absoluteBounds="12.89, 18.96, 1.9700000000000002, 1.7878011067708333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="48ec47e5-cb4d-4ed4-9770-8c83407c0bb0" isExpanded="false" absoluteBounds="21.375, 18.5, 2.125, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlStatisticsReport" />
+      <nestedChildShapes>
+        <elementListCompartment Id="3dd0cdda-b3d9-4e2f-9c3f-43ecbea71964" absoluteBounds="21.39, 18.96, 2.0949999999999998, 1.7878011067708333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="76c37838-faf9-43d7-b8a7-c070112e3f61" isExpanded="false" absoluteBounds="24.25, 18.625, 2, 0.45">
+      <DataClassMoniker Name="/DealerPortalDataContext/dbmlReprimarySaleReport" />
+      <nestedChildShapes>
+        <elementListCompartment Id="79535b58-0c84-426e-9280-242a14891c86" absoluteBounds="24.265, 19.085, 1.9700000000000002, 3.518513997395833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>

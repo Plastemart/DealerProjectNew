@@ -1,0 +1,461 @@
+﻿
+@{
+    ViewBag.Title = "NewsMaster";
+}
+
+@Html.AntiForgeryToken()
+<div class="box box-warning">
+    <div class="box-header with-border">
+        <div class="box-header-left" style="width: 100%;">
+            <h3 class="box-title">News Master</h3>
+            <button class="button btn-small pull-right" onclick="ClearControls();"><i class="fa fa-plus-circle"></i></button>
+        </div>
+    </div>
+    <div class="box-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <div id="tblNewsMaster"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*<div id="PopUpNews"></div>*@
+
+<div class="modal fade" id="PopUpAdd" tabindex="-1" role="dialog" aria-labelledby="logoutLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false" style="padding-left: 230px !important; z-index: 1050 !important;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Add News</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="row">
+                        @*<div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3" for="">Title<span style="color:red">*</span></label>
+                                    <div class="col-sm-9 MY8">
+                                        <div id="ddlTitle"></div>
+                                    </div>
+                                </div>
+                            </div>*@
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="">Title<span style="color:red">*</span></label>
+                                <div class="col-sm-9 MY8">
+                                    <div id="txtNewsTitle"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="">News Date<span style="color:red">*</span></label>
+                                <div class="col-sm-9 MY8">
+                                    <div id="txtNewsDate"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="">Active<span style="color:red">*</span></label>
+                                <div class="col-sm-9 MY8">
+                                    <div id="chkActive"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12" style="margin-top: 10px;">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="">&nbsp;</label>
+                                <div class="col-sm-9">
+                                    <button type="button" class="button btn-sm pull-right" data-dismiss="modal" style="margin-left: 5px;">Cancel</button>
+                                    <button type="button" class="button btn-sm pull-right" onclick="NewsMasterInsert();">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<input type="hidden" id="HiddenNewsId" />
+
+<script>
+    var now = new Date();
+    $("#txtNewsTitle").dxTextBox({
+        height: 30
+    });
+    $("#txtNewsDate").dxDateBox({
+        height: 30,
+        type: "date",
+        value: now,
+        min: new Date(),
+        displayFormat: "shortdate",
+    });
+    $("#chkActive").dxCheckBox({
+        height: 30
+    });
+
+    var ListNews = [];
+    var now = new Date();
+
+
+    $(document).ready(function () {
+        NewsMasterGetAll();
+    });
+
+    function BindNewsMaster() {
+        $("#tblNewsMaster").dxDataGrid({
+            dataSource: ListNews,
+            height: 555,
+            paging: { enabled: true },
+            paging: {
+                pageSize: 10
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [5, 10, 15],
+                showInfo: true
+            },
+            allowColumnResizing: true,
+            columnResizingMode: "widget",
+            columnAutoWidth: true,
+            wordWrapEnabled: false,
+            columns: [
+                { dataField: "NewsTitle", width: '60%', caption: "Title" },
+
+                {
+                    dataField: "ZZNewsDate", width: '10%',
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("News Date").appendTo(header);
+                    }
+                },
+                { dataField: "Active", width: '7%', caption: "Active" },
+                {
+                    dataField: "", width: '18%', alignment: "center", caption: "Action", cellTemplate: function (container, options) {
+                        $("<div id='Edit' data-toggle='modal' data-target='#PopUpAdd'>").dxButton({
+                            class: "btn btn-danger",
+                            icon: "fa fa-pencil",
+                            hint: "Edit News",
+                            onClick: function () {
+                                EditNews(options.data.NewsId)
+                            }
+                        }).append(options.value).appendTo(container);
+                        $("<div id='Active' data-toggle='modal' data-target='#PopUpActive'>").dxButton({
+                            class: "btn btn-danger",
+                            hint: "Change News Status",
+                            icon: "fa fa-exchange",
+                            onClick: function () {
+                                EditStatus(options.data.NewsId)
+                            }
+                        }).append(options.value).appendTo(container);
+                        $("<div id='Delete'>").dxButton({
+                            class: "btn btn-danger",
+                            hint: "Delete News",
+                            icon: "fa fa-trash-o",
+                            onClick: function () {
+                                DeleteNews(options.data.NewsId)
+                            }
+                        }).append(options.value).appendTo(container);
+                        // $("<div id='Active' data-toggle='modal'>").dxButton({
+                        //    class: "btn btn-danger",
+                        //    hint: "Change News Status",
+                        //    icon: "fa fa-key",
+                        //    onClick: function () {
+                        //        OpenPopupChangePwd(options.data.EmailID,options.data.NewsId)
+                        //    }
+                        //}).append(options.value).appendTo(container);
+                    }
+                },
+            ],
+            filterRow: { visible: true },
+            showRowLines: true,
+            showBorders: true,
+        });
+
+    }
+
+    function EditStatus(NewsMasterId) {
+        debugger
+        var obj = $.grep(ListNews, function (obj) {
+            return obj.NewsId == NewsMasterId;
+            return obj.NewsTitle == NewsTitle;
+        });
+        $("#HiddenNewsId").val(NewsMasterId);
+
+        $("#txtNewsTitleStatus").dxTextBox('instance').option('value', obj[0].FirstName + " " + obj[0].LastName);
+        $("#chkActiveStatus").dxCheckBox('instance').option('value', obj[0].Active);
+
+    }
+
+    function EditNews(NewsMasterId) {
+        $("#myModalLabel").text("Edit News");
+        $("#PopUpAdd").modal("show");
+        var obj = $.grep(ListNews, function (obj) {
+            return obj.NewsId == NewsMasterId;
+        });
+        $("#HiddenNewsId").val(NewsMasterId);
+        $("#txtNewsTitle").dxTextBox('instance').option('value', obj[0].NewsTitle);
+        $('#txtNewsDate').dxDateBox('instance').option('value', obj[0].ZZNewsDate);
+        $("#chkActive").dxCheckBox('instance').option('value', obj[0].Active);
+
+    }
+
+    //function IdentityGetByNewsType() {
+    //    try {
+    //        var dataWithAntiforgeryToken = ({ '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+    //        $.ajax({
+    //            url: "../Home/PartyMasterGetForIdentity",
+    //            type: 'POST',
+    //            dataType: 'json',
+    //            async: true,
+    //            data: dataWithAntiforgeryToken,
+    //            success: function (Response) {
+    //                if (Response.StatusId != "99") {
+    //                    ListIdentityType = Response.Result;
+    //                  $("#ddlIdentityType").dxSelectBox({
+    //                      height: 30,
+    //                      dataSource: new DevExpress.data.ArrayStore({
+    //                           data: ListIdentityType,
+    //                           key: "PartyID"
+    //                       }),
+    //                       displayExpr: "Party",
+    //                       valueExpr: "PartyID",
+    //                       placeholder: "Select Company",
+    //                       onValueChanged: function (data) {
+    //                           varIdentityType = data.value;
+    //                       }
+    //                  });
+    //                }
+    //                else {
+    //                    alert(Response.Status);
+    //                }
+    //            },
+    //            error: function (xhr) {
+    //                alert("Data size is too large!");
+    //            }
+    //        });
+    //    }
+    //    catch (e) {
+    //        alert("Data size is too large!");
+    //    }
+    //}
+
+    function NewsMasterGetAll() {
+        try {
+            var dataWithAntiforgeryToken = ({ '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            loadPanel.show();
+            $.ajax({
+                url: "../Home/NewsMasterGetAll",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: dataWithAntiforgeryToken,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        ListNews = Response.Result;
+                        loadPanel.hide();
+                        BindNewsMaster();
+                    }
+                    else {
+                        loadPanel.hide();
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+    function NewsMasterInsert() {
+        try {
+            if (ValidateModal()) {
+                loadPanel.show();
+                var modal = {};
+                var ObjNewsList = [];
+                if ($("#HiddenNewsId").val() == undefined || $("#HiddenNewsId").val() == "") {
+                    modal.NewsId = 0;
+                }
+                else {
+                    modal.NewsId = $("#HiddenNewsId").val();
+                }
+
+                modal.NewsTitle = $("#txtNewsTitle").dxTextBox('instance').option('value');
+                modal.NewsDate = $('#txtNewsDate').dxDateBox('instance').option('value');
+                modal.Active = $("#chkActive").dxCheckBox('instance').option('value');
+
+                ObjNewsList.push(modal);
+                var data = JSON.stringify({ objdbmlNews: ObjNewsList });
+                $.ajax({
+                    url: "../Home/NewsMasterInsertUpdate",
+                    type: 'POST',
+                    dataType: 'json',
+                    async: true,
+                    data: data,
+                    contentType: "application/json; charset=utf-8",
+                    success: function (Response) {
+                        debugger
+                        loadPanel.hide();
+                        $("#PopUpAdd").modal("hide");
+                        NewsMasterGetAll();
+                    },
+                    error: function (xhr) {
+                        loadPanel.hide();
+                        alert("Data size is too large!");
+                    }
+                });
+            }
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+    function NewsMasterStatusUpdate() {
+        try {
+            debugger
+            loadPanel.show();
+            var modal = {};
+            var ObjNewsList = [];
+            if ($("#HiddenNewsId").val() == undefined || $("#HiddenNewsId").val() == "")
+                modal.NewsId = 0;
+            else
+                modal.NewsId = $("#HiddenNewsId").val();
+
+            modal.Active = $("#chkActiveStatus").dxCheckBox('instance').option('value');
+            ObjNewsList.push(modal);
+            var data = JSON.stringify({ objdbmlNews: ObjNewsList });
+            $.ajax({
+                url: "../Home/NewsMasterStatusUpdate",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: data,
+                contentType: "application/json; charset=utf-8",
+                success: function (Response) {
+                    loadPanel.hide();
+                    NewsMasterGetAll();
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+    function DeleteNews(intNewsId) {
+        try {
+            loadPanel.show();
+            var result = DevExpress.ui.dialog.confirm("Do you want to delete ...?", "Confirm changes");
+            result.done(function (dialogResult) {
+                if (dialogResult) {
+                    var data = { 'intNewsId': intNewsId };
+                    var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+                    $.ajax({
+                        url: "../Home/NewsMasterDelete",
+                        type: 'POST',
+                        dataType: 'json',
+                        async: true,
+                        data: dataWithAntiforgeryToken,
+                        success: function (Response) {
+                            if (Response.StatusId != "99") {
+                                ListNews = Response.Result;
+                                $("#tblNewsMaster").dxDataGrid('instance').option("dataSource", ListNews);
+                                loadPanel.hide();
+                            }
+                            else {
+                                loadPanel.hide();
+                                alert(Response.Status);
+                            }
+                        },
+                        error: function (xhr) {
+                            loadPanel.hide();
+                            alert("Data size is too large!");
+                        }
+                    });
+
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+    function ClearControls() {
+        $("#HiddenNewsId").val(0);
+        $("#myModalLabel").text("Add News");
+        $("#PopUpAdd").modal("show");
+        $("#txtNewsTitle").dxTextBox('instance').option('value', '');
+        $('#txtNewsDate').dxDateBox('instance').option('value', '');
+    }
+
+    function ValidateModal() {
+        try {
+            var msg = "";
+            if ($("#txtNewsTitle").dxTextBox('instance').option('value') == '' || $("#txtNewsTitle").dxTextBox('instance').option('value') == undefined || $("#txtNewsTitle").dxTextBox('instance').option('value') == null) {
+                msg += "<br /> \n First Name \n";
+            }
+            if ($("#HiddenNewsId").val() == undefined || $("#HiddenNewsId").val() == "") {
+                if ($("#txtEmail").dxTextBox('instance').option('value') == '' || $("#txtEmail").dxTextBox('instance').option('value') == undefined || $("#txtEmail").dxTextBox('instance').option('value') == null) {
+                    msg += "<br /> \n Email \n";
+                }
+            }
+            if ($("#txtNewsDate").dxDateBox('instance').option('value') == '' || $("#txtNewsDate").dxDateBox('instance').option('value') == undefined || $("#txtNewsDate").dxDateBox('instance').option('value') == null) {
+                msg += "<br /> \n Password Exp. Date \n";
+            }
+            if ($("#HiddenNewsId").val() == undefined || $("#HiddenNewsId").val() == "") {
+                if ($("#chkActive").dxCheckBox('instance').option('value') == '' || $("#chkActive").dxCheckBox('instance').option('value') == undefined || $("#chkActive").dxCheckBox('instance').option('value') == null) {
+                    msg += "<br /> \n Active \n";
+                }
+            }
+            if (msg != "") {
+                alert("Please fill valid details in the fields below: \n" + msg);
+                return false;
+            }
+            return true;
+        } catch (e) {
+            alert(e.message);
+        }
+    }
+
+</script>
+
+<script type="text/javascript">
+    function SaveNewsData() {
+        //alert("in1")
+        $http({
+            url: "/Home/SaveNewsData",
+            method: "POST",
+            data: { "txtNewsTitle": $('#txtNewsTitle').val(), "txtNewsDate": $('#txtNewsDate').val(), "chkActive": $('#chkActive').checked },
+            headers: { 'Content-Type': 'application/json' }
+        }).then(function (resp) {
+            //console.log(resp);
+            if (resp.data == "") {
+                alert("Data Saved.")
+            }
+            else { alert(resp.data); }
+
+        }, function () {
+            //alert('error')
+        });
+    }
+</script>

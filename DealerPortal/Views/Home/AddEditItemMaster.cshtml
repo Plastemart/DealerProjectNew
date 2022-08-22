@@ -1,0 +1,747 @@
+﻿
+@{
+    ViewBag.Title = "AddEditItemMaster";
+}
+@Html.AntiForgeryToken()
+<div class="box box-warning">
+    <div class="box-header with-border">
+        <div class="box-header-left">
+            <h3 class="box-title">Item Master</h3>
+            <!-- <p><strong>Date :</strong> 14-09-2019 </p> -->
+        </div>
+        <div class="box-header-right">
+            <a href=""></a>
+        </div>
+
+    </div>
+
+    <div class="box-body">
+
+        <div class="row">
+            <div class="col-md-12 heads-button">
+                <br>
+                <input type="hidden" id="HiddenItemId" value="" />
+                <input type="hidden" id="HiddenUOMId" value="" />
+                <input type="hidden" id="HiddenHSNCode" value="" />
+                <button class="btn btn-sm btn-primary" id="btnAdd" title="Add" onclick="Add()"> Add </button>
+                <button class="btn btn-sm btn-success" id="btnEdit" title="Edit" onclick="Edit()"> Edit </button>
+                @*<button class="btn btn-sm btn-danger" id="btnDelete" title="Delete"> Delete </button>
+        <button class="btn btn-sm btn-primary" id="btnSubmit" title="Save" onclick="Save()"> Save </button>*@
+                <button class="btn btn-sm btn-danger" id="btnCancel" title="Cancel" onclick="Cancel()"> Cancel </button>
+                @*<button class="btn btn-sm btn-success" id="btnSearch" title="Search" onclick="Search()"> Search </button>*@
+
+                <input type="hidden" id="hdnSuperStockistId" value='@Session["PartyId"]' />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 table-responsive ">
+                <table class="tablesoter tablesorter tablesorter-blue hasFilters hasStickyHeaders">
+
+                    <thead>
+                        <tr>
+                            <th style="width:20px;">#</th>
+                            <th style="width:570px;">Item</th>
+                            <th style="width:150px;">Code</th>
+                            <th style="width:100px;">UOM</th>
+                            @*<th>SubCategory</th>*@
+                            <th style="width:180px;">HSN Code</th>
+                            <th style="width:100px;">Pack Size</th>
+                            <th style="width:100px;">Action</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>#</td>
+                            <td>
+                                <input type="text" id="txtItemName" class="form-control" />
+                            </td>
+                            <td><input type="text" id="txtItemCode" class="form-control" /></td>
+                            <td style="text-align:center;"><div id="ddlUOM"> </div></td>
+                            <td style="text-align:center;"><div id="ddlHSNCode"> </div></td>
+                            <td style="text-align:center;"><input type="text" id="txtPackSize" class="form-control" /></td>
+                            <td class="text-center">
+                                @*<i class="fa fa-save"></i>*@
+                                <i class="fa fa-save" data-toggle="tooltip" data-placement="top" title="Save" id="btnAddNewRow" onclick="AddNewRow();"></i>
+                                @*<button type="button" class="fa fa-save" data-target="#UserModal" data-toggle="modal" id="btnAddNewRow" onclick="AddNewRow();"><i class="fa fa-save" data-toggle="tooltip" data-placement="top" title="Save"></i></button>*@
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+                    <tbody id="tbody"></tbody>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+    <br />
+    <div class="box-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <div id="tblItemMaster"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var UOMList = [];
+    var HSNCodeList = [];
+    var varUOM = "";
+    var varHSNCode = "";
+    var HeaderList = [];
+    var DetailList = [];
+    var DataList = [];
+    var PkHid = 0;
+    var PkDid = 0;
+    var TotalQty = 0.00;
+    var ItemArray = new Array();
+    //var varBDetailId = 0;
+    //var blnEdit = false;
+    var blnEditValue = false;
+    var hiddenTempRow = 0;
+    var hiddeenDetailId = 0;
+    var blnAddRow = false;
+    var HoldIAIdId = "";
+    var FDate = new Date()
+
+    $(document).ready(function () {
+        $("body").addClass("sidebar-collapse");
+        GetUOMMaster();
+        GetHSNCodeMaster();
+        Clear();
+        EnDisable(true);
+        $("#btnEdit").prop('disabled', true);
+        $("#btnAddNewRow").prop('disabled', true);
+    });
+
+    function GetUOMMaster() {
+        var arrayUOMList = @Html.Raw(Json.Encode(@ViewData["UOMList"]));
+        try {
+            if (arrayUOMList.Data.StatusId != "99") {
+                if (arrayUOMList.Data.Result.length > 0) {
+                    for (var i = 0; i < arrayUOMList.Data.Result.length; i++) {
+                        UOMList[i] = arrayUOMList.Data.Result[i];
+                    }
+
+                    $("#ddlUOM").dxSelectBox({
+                        dataSource: new DevExpress.data.ArrayStore({
+                            data: UOMList,
+                            key: "UOMId"
+                        }),
+                        displayExpr: "UnitOfMeasure",
+                        valueExpr: "UOMId",
+                        placeholder: "UOM",
+                        searchEnabled: true,
+                        onValueChanged: function (data) {
+                            varUOM = data.value
+                        }
+                    });
+                }
+            }
+            else {
+                alert(arrayUOMList.Data.Status);
+            }
+        }
+        catch (e){
+            alert("Data size is too large!");
+        }
+    }
+
+    function GetHSNCodeMaster() {
+        var arrayHSNCode = @Html.Raw(Json.Encode(@ViewData["HSNCodeList"]));
+        try {
+            if (arrayHSNCode.Data.StatusId != "99") {
+                if (arrayHSNCode.Data.Result.length > 0) {
+                    for (var i = 0; i < arrayHSNCode.Data.Result.length; i++) {
+                        HSNCodeList[i] = arrayHSNCode.Data.Result[i];
+                    }
+
+                    $("#ddlHSNCode").dxSelectBox({
+                        dataSource: new DevExpress.data.ArrayStore({
+                            data: HSNCodeList,
+                            key: "HSNCodeId"
+                        }),
+                        displayExpr: "HSNCode",
+                        valueExpr: "HSNCodeId",
+                        placeholder: "HSN Code",
+                        searchEnabled: true,
+                        onValueChanged: function (data) {
+                            varHSNCode = data.value
+                        }
+                    });
+                }
+            }
+            else {
+                alert(arrayHSNCode.Data.Status);
+            }
+        }
+        catch (e){
+            alert("Data size is too large!");
+        }
+    }
+
+    function SetDdlValue() {
+        $("#ddlUOM").dxSelectBox({
+            height: 30,
+            dataSource: new DevExpress.data.ArrayStore({
+                data: UOMList,
+                key: "UOMId"
+            }),
+            displayExpr: "UnitOfMeasure",
+            valueExpr: "UOMId",
+            placeholder: "Select UOM",
+            searchEnabled: true,
+            onValueChanged: function (data) {
+                varUOM = data.value
+            }
+
+        });
+
+
+        $("#ddlHSNCode").dxSelectBox({
+            height: 30,
+            dataSource: new DevExpress.data.ArrayStore({
+                data: HSNCodeList,
+                key: "HSNCodeId"
+            }),
+            displayExpr: "HSNCode",
+            valueExpr: "HSNCodeId",
+            placeholder: "Select HSNCode",
+            searchEnabled: true,
+            onValueChanged: function (data) {
+                varHSNCode = data.value
+            }
+
+        });
+    }
+
+    function EnDisable(Status) {
+        debugger
+        $("#txtItemName").prop('disabled', Status);
+        $("#txtItemCode").prop('disabled', Status);
+        $("#ddlUOM").prop('disabled', Status);
+        $("#ddlHSNCode").prop('disabled', Status);
+        $("#txtPackSize").prop('disabled', Status);
+    }
+
+    function Clear() {
+        PkHid = 0;
+        PkDid = 0;
+        HoldIAIdId = 0;
+        $("#txtItemName").val('');
+        $("#txtItemCode").val('');
+        $("#txtPackSize").val('');
+        var varUOM = "";
+        var varHSNCode = "";
+        $("#ddlUOM").dxSelectBox('instance').option('value', varUOM);
+        $("#ddlHSNCode").dxSelectBox('instance').option('value', varHSNCode);
+        $("#txtItemName").focus();
+    }
+
+    function ClearDetail() {
+        $("#txtItemName").html('');
+        $("#txtItemCode").html('');
+        $("#txtPackSize").html('');
+        //$("#ddlAdjustmentType").dxSelectBox('instance').option('value', varddlAdjustType);
+    }
+
+    function Add() {
+        $("#HiddenItemId").val(0);
+        EnDisable(false);
+        Clear();
+        ClearDetail();
+        debugger
+        SetDdlValue();
+        $("#btnAddNewRow").prop('disabled', false);
+    }
+
+    function Cancel() {
+        Clear();
+        ClearDetail();
+        EnDisable(true);
+        ItemArray = [];
+        $('#tbody').html('');
+        var varUOM = "";
+        var varHSNCode = "";
+        $("#ddlUOM").dxSelectBox('instance').option('value', varUOM);
+        $("#ddlHSNCode").dxSelectBox('instance').option('value', varHSNCode);
+        $("#btnEdit").prop('disabled', true);
+        $("#btnAddNewRow").prop('disabled', true);
+    }
+
+    function Edit() {
+        debugger
+        EnDisable(false);
+        $("#btnEdit").prop('disabled', true);
+        $("#btnAddNewRow").prop('disabled', false);
+        SetDdlValue();
+    }
+
+    function ValidateAddNewRow() {
+        if ($('#txtItemName').val() == "") {
+            alert("Item Name Required ");
+            return false;
+        }
+
+        if ($('#txtItemCode').val() == "") {
+            alert("Item Code Required ");
+            return false;
+        }
+        //alert(varUOM);
+        //alert(document.getElementById("ddlUOM").value);
+        //alert($("#ddlUOM option:selected").val());
+        if (varUOM == "" || varUOM == "0") {
+            alert("UOM Required ");
+            return false;
+        }
+        //alert("1");
+        if (varHSNCode == "" || varHSNCode == "0") {
+            alert("HSN Code Required ");
+            return false;
+        }
+
+        //alert("2");
+        if ($('#txtPackSize').val() == "0" || $('#txtPackSize').val() == "0.00" || $('#txtPackSize').val() == "") {
+            alert("Packing Size Required ");
+            return false;
+        }
+        //alert("3");
+        return true;
+    }
+
+    function AddNewRow() {
+        try {
+            debugger
+            //alert(ValidateAddNewRow());
+            if (ValidateAddNewRow()) {
+                blncheck = false;
+                PkHid = 0;
+                //alert("1");
+                //debugger
+                //// var ddlItem = $('#ddlItem :selected').text();
+                varUOM = $("#ddlUOM").dxSelectBox('instance').option('value');
+                varHSNCode = $("#ddlHSNCode").dxSelectBox('instance').option('value');
+                var varItemName = $('#txtItemName').val();
+                var varItemCode = $('#txtItemCode').val();
+                var varPackSize = $('#txtPackSize').val();
+                if ($("#HiddenItemId").val() == "")
+                    intItemId = "0";
+                else
+                    intItemId = $("#HiddenItemId").val();
+
+                //var data = JSON.stringify({
+                //    intItemId: intItemId,
+                //    ItemName: varItemName,
+                //    ItemCode: varItemCode,
+                //    UOM: varUOM,
+                //    HSNCode: varHSNCode,
+                //    PackSize: varPackSize,
+                //});
+                var data = { 'intItemId': intItemId, 'ItemName': varItemName, 'ItemCode': varItemCode, 'UOM': varUOM, 'HSNCode': varHSNCode, 'PackSize': varPackSize };
+                //alert("2");
+                //alert(intItemId + ' , ' + varItemName + ' , ' + varItemCode + ' , ' + varUOM + ' , ' + varHSNCode + ' , ' + varPackSize);
+                var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+                $.ajax({
+                    url: "../Home/AddEditItemMasterForm",
+                    type: 'POST',
+                    dataType: 'json',
+                    async: true,
+                    data: dataWithAntiforgeryToken,
+                    success: function (Response) {
+                        //loadPanel.hide();
+                        debugger
+                        if (Response.StatusId != "99") {
+                            alert(Response.Status);
+                            Clear();
+                            ClearDetail();
+                            ItemMasterList = [];
+                            ItemMasterGetData();
+                            hiddenTempRow = 0;
+                            $("#HiddenItemId").val(0);
+                            // ClearForm();
+                            TempRow = 0;
+                        }
+                        else {
+                            //  loadPanel.hide();
+                            alert(Response.Status);
+                        }
+                    },
+                    error: function (xhr) {
+                        //loadPanel.hide();
+                        alert("Data size is too large!");
+                    }
+                });
+            }
+        }
+        catch (e) {
+            alert(e.message);
+        }
+    }
+
+    //function BindStock() {
+    //    try {
+    //        debugger
+    //        var html = '';
+    //        $('#tbody').html('');
+    //        // TotalQty = 0.00;
+    //        $.each(ItemArray, function (Index, Object) {
+
+    //            // TotalQty += parseFloat(Object.Qty);
+    //            ItemArray[Index].TempRow = Index + 1;
+    //            var varIndex = 0;
+    //            varIndex = Index + 1;
+    //            html += "<tr id='trItemId_'" + Object.ItemId + "')'>";
+    //            html += '<td> # </td>';
+    //            html += '<td>' + Nullhandler(Object.ItemName) + ' </td>';
+    //            html += '<td>' + Nullhandler(Object.ItemCode) + ' </td>';
+    //            html += '<td>' + Nullhandler(Object.UnitOfMeasure) + ' </td>';
+    //            //html += '<td>' + Nullhandler(Object.ItemSubCategory) + ' </td>';
+    //            html += '<td>' + Nullhandler(Object.HSNCode) + '</td>';
+    //            html += '<td>' + Nullhandler(Object.PackingSize) + ' </td>';
+    //            //html += '<td> </td>';
+    //            if (Object.ItemId == 0) {
+    //                html += "<td style='text-align: center;width:30px;'><button class='label label-info smallBtn' id='btnEdit1' placeholder='Edit' onclick='EditStockDetail(" + Object.ItemId + "," + Index + "," + 1 + ");' style='padding:0 3px;'><i class='fa fa-edit'></i></button></td>"
+    //                //<button class='label label-danger smallBtn' id='btndelete1' placeholder='Delete'  onclick='DeleteStockDetails(" + Index + ");' style='padding:0 3px;'><i class='fa fa-trash'></i></button>
+    //            }
+    //            else if (Object.ItemId > 0) {
+    //                html += "<td style='text-align: center;width:30px;'><button class='label label-info smallBtn' id='btnEdit1' placeholder='Edit' style='padding:0 3px;'><i class='fa fa-edit'></i></button></td>"
+    //                //<button class='label label-danger smallBtn' id='btndelete1' placeholder='Delete' style='padding:0 3px;'><i class='fa fa-trash'></i></button>
+    //            }
+    //            else { html += '<td>  </td>'; }
+    //            html += '</tr>';
+    //        });
+
+    //        $("#tbody").html(html);
+
+
+    //    }
+    //    catch (e) {
+    //        alert(e.message);
+    //    }
+    //}
+
+    //function EditStockDetail(IADetailId, RowNo, ChkIsEdit) {
+    //    debugger
+    //    varRowNo = RowNo;
+    //    try {
+    //        debugger
+    //        IsEdit = ChkIsEdit;
+    //        if (blnAddRow) {
+    //            var ModelTemp = $.grep(ItemArray, function (obj) {
+    //                return obj.TempRow == RowNo + 1;
+    //            });
+    //            SetValue(ModelTemp[0]);
+    //            $("#HiddenItemId").val(BDetailId);
+    //        }
+
+    //        else {
+    //            if (IADetailId != 0) {
+    //                var ModelTemp = $.grep(ItemArray, function (obj) {
+    //                    return obj.ItemId == IADetailId;
+    //                });
+    //                SetValue(ModelTemp[0]);
+    //                $("#HiddenItemId").val(IADetailId);
+    //            }
+    //            else {
+    //                var ModelTemp = $.grep(ItemArray, function (obj) {
+    //                    return obj.TempRow == RowNo + 1;
+    //                });
+    //                SetValue(ModelTemp[0]);
+    //                $("#HiddenItemId").val(IADetailId);
+    //            }
+    //        }
+    //    } catch (e) {
+    //        alert(e.message);
+
+
+    //    }
+    //}
+
+    //function SetValue(data) {
+    //    debugger;
+    //    try {
+
+    //        ClearDetail();
+    //        var objUom = $.grep(UOMList, function (object) {
+    //            return object.UOMId == data.UOMId;
+    //        })
+    //        var objHSNCode = $.grep(HSNCodeList, function (object) {
+    //            return object.HSNCodeId == data.HSNCodeId;
+    //        })
+    //        $("#ddlUOM").dxSelectBox('instance').option('value', objUom[0].UOMId);
+    //        $("#ddlHSNCode").dxSelectBox('instance').option('value', objHSNCode[0].OptionListId);
+    //        hiddeenDetailId = data.ItemId;
+    //        $("#txtItemCode").html(data.ItemCode);
+    //        $("#txtItemName").html(data.ItemName);
+    //        $('#txtPackSize').val(data.PackingSize);
+    //        hiddenTempRow = data.TempRow;
+    //        blnEditValue = true;
+    //    } catch (e) {
+    //        alert(e.message);
+    //    }
+
+    //}
+
+    //function HeaderModel() {
+    //    debugger
+    //    var List = [];
+    //    var model = {};
+    //    //alert(HoldIAIdId);
+    //    model.ItemAdjustmentId = HoldIAIdId;//PkHid;
+    //    model.PartyId = document.getElementById("hdnSuperStockistId").value; //$("#hdnSuperStockistId").val();//0;
+    //    model.VoucherNo = $("#txtVoucherNo").val();
+    //    model.VoucherDate = $("#dtVoucher").dxDateBox('instance').option('value');
+    //    model.StatusPropId = 0;
+    //    model.Remark = $("#txtRemark").val();
+    //    List.push(model);
+    //    return List;
+    //}
+
+
+    //function DetailModel() {
+    //    var DList = [];
+    //    $.each(ItemArray, function (Index, Object) {
+    //        var model = {};
+    //        debugger
+    //        model.ItemId = HoldIAIdId;
+    //        model.ItemCode = Object.ItemCode;
+    //        model.UOMId = Object.UOMId;
+    //        model.HSNCodeId = Object.HSNCodeId;
+    //        model.PackingSize = Object.PackingSize;
+    //        DList.push(model);
+    //        //}
+    //    });
+
+    //    return DList;
+    //}
+
+    function ItemMasterGetById(IAId) {
+        try {
+
+            debugger
+
+            var obj = $.grep(ItemMasterList, function (obj) {
+                return obj.ItemId == IAId;
+            });
+            var data = { 'ItemId': IAId };
+
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Home/ItemMasterGetById",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: dataWithAntiforgeryToken,
+                success: function (Response) {
+                    debugger
+
+                    if (Response.StatusId != "99") {
+                        //HeaderList = Response.ResultHeader;
+                        DetailList = Response.ResultDetail;
+                        //BindStockHeader(HeaderList);
+                        BindStockDetail(DetailList);
+                    }
+                    else {
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            alert("Data size is too large!");
+        }
+    }
+
+
+    function BindStockDetail(data) {
+        //ItemMasterList = [];
+
+        $.each(data, function (Index, Object) {
+            debugger
+            //varddlItem = "";
+            varddlItem = Object.ItemId;
+            PkHid = Object.ItemId;
+            $("#HiddenItemId").val(PkHid);
+            SetItemDetail(varddlItem);
+            //var model = {};
+            //model.ItemId = varddlItem;
+            //model.ItemCode = Object.ItemCode;
+            //model.UOMId = Object.UOMId;
+            //model.HSNCodeId = Object.HSNCodeId;
+            //model.PackingSize = Object.PackingSize;
+            //model.ItemName = varItem;
+
+            //if (Object.QuantityIn != null) {
+            //    model.Quantity = Object.QuantityIn;
+            //}
+            //else {
+            //    model.Quantity = Object.QuantityOut;
+            //}
+            //var varADType = $.grep(OpList, function (obj) {
+            //    return obj.OptionListId == Object.AdjustmentTypeId;
+            //});
+            //model.AdjustmentType = varADType[0].OptionListDesc;
+            //model.Rate = Object.Rate;
+
+            //ItemMasterList.push(model);
+            // ClearDetail();
+        });
+        //BindItemMasterList();
+
+        //EnDisable(true);
+        //$("#ItemCode").html('');
+        //$("#ItemCategory").html('');
+    }
+
+    function SetItemDetail(data) {
+        //alert(data)
+        debugger;
+
+        $("#btnEdit").prop('disabled', false);
+        if (data != '') {
+            var obj = $.grep(ItemMasterList, function (object) {
+                return object.ItemId == data;
+            });
+            if (obj != null) {
+                ClearDetail();
+                var objUom = $.grep(UOMList, function (object) {
+                    return object.UOMId == obj[0].UOMId;
+                })
+                var objHSNCode = $.grep(HSNCodeList, function (object) {
+                    return object.HSNCodeId == obj[0].HSNCodeId;
+                })
+                $("#ddlUOM").dxSelectBox('instance').option('value', objUom[0].UOMId);
+                $("#ddlHSNCode").dxSelectBox('instance').option('value', objHSNCode[0].HSNCodeId);
+                hiddeenDetailId = obj[0].ItemId;
+                $("#HiddenItemId").val(obj[0].ItemId);
+                $("#txtItemCode").val(obj[0].ItemCode);
+                $("#txtItemName").val(obj[0].ItemName);
+                $('#txtPackSize').val(obj[0].PackingSize);
+                hiddenTempRow = data.TempRow;
+                blnEditValue = true;
+
+            }
+        }
+    }
+
+
+    var ItemMasterList = [];
+
+    $(document).ready(function () {
+        ItemMasterGetData();
+    });
+
+    function BindItemMasterList() {
+        debugger
+        var html = "";
+        $("#tblItemMaster").dxDataGrid({
+            dataSource: ItemMasterList,
+            allowColumnResizing: true,
+            columnResizingMode: "widget",
+            columnAutoWidth: true,
+            wordWrapEnabled: false,
+            height: 485,
+            paging: { enabled: true },
+            export: {
+                enabled: false,
+                allowExportSelectedData: true,
+                fileName: "ItemMaster"
+            },
+            paging: {
+                pageSize: 10
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [5, 10, 15],
+                showInfo: true
+            },
+            columns: [
+                {
+                    dataField: "ItemName", width: '66%',
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Item Name").appendTo(header);
+                    }
+                },
+                //{ dataField: "OurName", width: '20%', caption: "Our Name" },
+                { dataField: "ItemCode", width: '10%', caption: "Item Code" },
+                //{ dataField: "OurCode", width: '9%', caption: "Our Code" },
+                { dataField: "ZZUnitOfMeasure", width: '10%', caption: "UOM" },
+                //{ dataField: "ZZHSNDescription", width: '10%', caption: "HSN Code" },
+                //{ dataField: "ItemWeight", width: '10%', caption: "Item Weight" },
+                //{ dataField: "PackingSize", width: '8%', caption: "Packing Size" },
+                {
+                    dataField: "PackingSize", width: '10%',
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Packing Size").appendTo(header);
+                    }
+                },
+                {
+                    dataField: "", width: '4%', alignment: "center", caption: "Action", cellTemplate: function (container, options) {
+                        $("<div id='Edit'>").dxButton({
+                            class: "button-has-icon",
+                            icon: "fa fa-pencil",
+                            onClick: function () {
+                                SetItemDetail(options.data.ItemId)
+                            }
+                        }).append(options.value).appendTo(container);
+
+                    }
+                },
+                //{ dataField: "ZZMRPCategory", width: '7%', caption: "MRP Category" },
+            ],
+            filterRow: { visible: true },
+            showRowLines: true,
+            showBorders: true
+        });
+    }
+
+    function ItemMasterGetData() {
+        debugger
+        try {
+            var data = {
+                'SuperStockistID': document.getElementById("hdnSuperStockistId").value };
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            // var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            loadPanel.show();
+            $.ajax({
+                url: "../Home/ItemMasterGetAllBySuperStockist",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: dataWithAntiforgeryToken,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        ItemMasterList = Response.Result;
+                        loadPanel.hide();
+                        BindItemMasterList();
+                    }
+                    else {
+                        loadPanel.hide();
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+</script>
+
+
+

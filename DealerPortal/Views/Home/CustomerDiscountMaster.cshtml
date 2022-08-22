@@ -1,0 +1,1103 @@
+﻿
+@{
+    ViewBag.Title = "Customer Discount Master";
+}
+
+<div class="box box-warning">
+    <div class="box-header with-border">
+        <div class="box-header-left">
+            <h3 class="box-title">Customer Discount Master</h3>
+            <!-- <p><strong>Date :</strong> 14-09-2019 </p> -->
+        </div>
+        <div class="box-header-right">
+            <a href=""></a>
+        </div>
+
+    </div>
+
+    <div class="box-body">
+
+        <div class="row">
+            <div class="col-md-12 heads-button">
+                <br>
+                <input type="hidden" id="HiddenDiscountDetailId" value="" />
+                <button class="btn btn-sm btn-primary" id="btnAdd" title="Add" onclick="Add()"> Add </button>
+                @*<button class="btn btn-sm btn-success" id="btnEdit" title="Edit" onclick="Edit()"> Edit </button>
+                    <button class="btn btn-sm btn-danger" id="btnDelete" title="Delete" onclick="Delete()"> Delete </button>*@
+                <button class="btn btn-sm btn-primary" id="btnSubmit" title="Submit" onclick="Save()"> Save </button>
+                <button class="btn btn-sm btn-danger" id="btnCancel" title="Cancel" onclick="Cancel()"> Cancel </button>
+                @*<button class="btn btn-sm btn-success" id="btnSearch" title="Search" onclick="Search()"> Search </button>*@
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-3">
+                    <div class="floating-label">
+                        <select class="form-control" id="ddlSuperStockist" value="" disabled="disabled">
+                        </select>
+                        <span class="highlight"></span>
+                        <label></label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="floating-label">
+                        @*<div id="ddlSearchCustomer"> </div>*@
+                        <input type="text" id="ddlSearchCustomer" class="form-control" placeholder="Search Customer" />
+                        <input id="hddSearchCustomerId" value="0" type="hidden" />
+                        <span class="highlight"></span>
+                        <label></label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="floating-label">
+                        @*<div id="ddlSearchItem"> </div>*@
+                        <input type="text" id="ddlSearchItem" class="form-control" placeholder="Search Item" />
+                        <input id="hddSearchItemId" value="0" type="hidden" />
+                        <span class="highlight"></span>
+                        <label></label>
+                    </div>
+
+                </div>
+                <div class="col-md-2">
+                    <div class="floating-label">
+                        <div class="floating-label">
+                            @*<div id="ddlSearchItem"> </div>*@
+                            <select id="ddlSearchPartyType" class="form-control"></select>
+                            <span class="highlight"></span>
+                            <label></label>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12" style="text-align:center;">
+                <br />
+                <button class="btn btn-sm btn-primary" id="btnSearch" title="Search" onclick="SearchRecord()"> Search </button>
+            </div>
+        </div>
+        <br />
+        <br />
+        <div class="row">
+            <div class="col-md-12 table-responsive ">
+                <table class="tablesoter tablesorter tablesorter-blue hasFilters hasStickyHeaders">
+
+                    <thead>
+                        <tr>
+
+                            <th style="width:10%;">Party Type</th>
+                            <th style="width:15%;">Customer</th>
+                            <th style="width:20%;">Item</th>
+                            <th style="width:6%;">Item Code</th>
+                            <th style="width:10%;">Effective Date</th>
+                            <th style="width:10%;">Valid Till Date</th>
+                            <th style="width:7%;">Trade_DI%</th>
+                            <th style="width:7%;">SCH_DI%</th>
+                            <th style="width:7%;">SP_DI</th>
+                            <th style="width:8%;">Action</th>
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+                                <select id="ddlPartyType" class="form-control"></select>
+                            </td>
+                            <td>
+                                <input type="text" id="ddlCustomer" class="form-control" placeholder="Search Customer" />
+                                <input id="hddCustomerId" value="0" type="hidden" />
+                            </td>
+                            <td>
+                                <input type="text" id="ddlItem" class="form-control" placeholder="Search Item" />
+                                <input id="hddItemId" value="0" type="hidden" />
+                            </td>
+                            <td>
+                                <input class="form-control" id="txtItemCode" type="text" disabled="disabled">
+                            </td>
+
+                            <td>
+                                <input class="form-control txtDate" id="txtEffectiveDate" type="text" placeholder="">
+                            </td>
+                            <td>
+                                <input class="form-control txtDate" id="txtValidTillDate" type="text" placeholder="">
+                            </td>
+                            <td style="text-align:center;"><input type="text" id="txtTradeDisc" class="form-control" style="text-align:right;" onkeypress="return isNumberKey(event)" /></td>
+                            <td style="text-align:center;"><input type="text" id="txtScheDisc" class="form-control" style="text-align:right;" onkeypress="return isNumberKey(event)" /></td>
+                            <td style="text-align:center;"><input type="text" id="txtSPDisc" class="form-control" style="text-align:right;" onkeypress="return isNumberKey(event)" /></td>
+                            <td class="text-center">
+                                <i class="fa fa-save" data-toggle="tooltip" data-placement="top" title="Save" id="btnAddNewRow" onclick="AddNewRow();"></i>
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+                    <tbody id="tbody"></tbody>
+                </table>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+<script src="~/Scripts/zebra_datepicker.js"></script>
+<link href="~/Scripts/zebra_datepicker.css" rel="stylesheet" />
+<link href="~/Scripts/calenderstyle.css" rel="stylesheet" />
+<script src="~/Scripts/NewJS/assets/js/jquery-ui-1.8.24.custom.min.js"></script>
+<script src="~/Scripts/NewJS/assets/js/jquery.ui.core.js"></script>
+<script src="~/Scripts/NewJS/assets/js/jquery-ui.min.js"></script>
+<script src="~/Scripts/NewJS/assets/js/jquery.ui.autocomplete.js"></script>
+<link href="~/Scripts/NewJS/assets/css/jquery-ui.css" rel="stylesheet" />
+<script>
+    var DItemList = [];
+    var DCustomerList = [];
+    var PartyType = [];
+    var SearchDataList = [];
+    //var varddlItem = "";
+    //var varddlCustomer = "";
+    //var varddlSearchItem = "";
+    //var varddlSearchCustomer = "";
+    //var varddlPartyType = "";
+    //var varCustomer = "";
+    //var varPartyType = "";
+    //var varItemCode = "";
+    //var varItem = "";
+    var blnEditValue = false;
+    var hiddenTempRow = 0;
+    var hiddeenDetailId = 0;
+    var blnAddRow = false;
+    var HoldIAIdId = "";
+    var StockArray = new Array();
+
+    @*arrayItem = @Html.Raw(Json.Encode(@ViewBag.ItemListDM));
+    if (arrayItem != null) {
+        for (var i = 0; i < arrayItem.length; i++) {
+            DItemList[i] = arrayItem[i];
+        }
+    }
+    arrayCL = @Html.Raw(Json.Encode(@ViewBag.CustomerListDM));
+        if (arrayCL != null) {
+            for (var i = 0; i < arrayCL.length; i++) {
+                DCustomerList[i] = arrayCL[i];
+            }
+    }
+    arrayPT = @Html.Raw(Json.Encode(@ViewBag.PartyTypeDM));
+    if (arrayPT != null) {
+        for (var i = 0; i < arrayPT.length; i++) {
+            PartyType[i] = arrayPT[i];
+        }
+    }*@
+
+    $(document).ready(function () {
+        SetAutoComplete();
+        FillPartyType();
+        //SetDdlValue();
+        FillSuperStockist();
+
+        Clear();
+        ClearDetail();
+        EnDisable(true);
+        $('#btnAdd').prop('disabled', false);
+        $('#btnCancel').prop('disabled', true);
+        $('#btnSubmit').prop('disabled', true);
+        $('.txtDate').Zebra_DatePicker({
+            format: 'd/M/Y'
+        });
+    });
+    function FillPartyType() {
+
+        $.ajax({
+            type: "GET",
+            url: "/Home/getPartyType",
+            data: "{}",
+            success: function (data) {
+                $("#ddlPartyType").html('');
+                $("#ddlSearchPartyType").html('');
+                //var s = '<option value="-1">Please Select a Party Type</option>';
+                var s = '<option value="0"> Select  Party Type</option>';
+                for (var i = 0; i < data.length; i++) {
+                    s += '<option value="' + data[i].PartyTypeID + '">' + data[i].PartyTypeName + '</option>';
+                }
+                $("#ddlPartyType").html(s);
+                $("#ddlPartyType").val(0);
+                $("#ddlSearchPartyType").html(s);
+                $("#ddlSearchPartyType").val(0);
+            }
+        });
+    }
+    //function SetDdlValue() {
+    //    $("#ddlSearchCustomer").dxSelectBox({
+    //        height: 30,
+    //        dataSource: new DevExpress.data.ArrayStore({
+    //            data: DCustomerList,
+    //            key: "PartyID"
+    //        }),
+    //        displayExpr: "Party",
+    //        valueExpr: "PartyID",
+    //        placeholder: "Select Customer",
+    //        AllowSearch: "true",
+    //        searchEnabled: true,
+    //        onValueChanged: function (data) {
+    //            varddlSearchCustomer = data.value
+
+    //            //SetItemDetail(varddlItem);
+    //        }
+
+    //    });
+    //    $("#ddlCustomer").dxSelectBox({
+    //        height: 30,
+    //        dataSource: new DevExpress.data.ArrayStore({
+    //            data: DCustomerList,
+    //            key: "PartyID"
+    //        }),
+    //        displayExpr: "Party",
+    //        valueExpr: "PartyID",
+    //        placeholder: "Select Customer",
+    //        AllowSearch: "true",
+    //        //searchEnabled: true,
+    //        onValueChanged: function (data) {
+    //            varddlCustomer = data.value
+
+    //            SetCustomerDetail(varddlCustomer);
+    //        }
+
+    //    });
+
+    //    $("#ddlSearchItem").dxSelectBox({
+    //        height: 30,
+    //        dataSource: new DevExpress.data.ArrayStore({
+    //            data: DItemList,
+    //            key: "ItemID"
+    //        }),
+    //        displayExpr: "ZZProduct",
+    //        valueExpr: "ItemID",
+    //        placeholder: "Select Item",
+    //        searchEnabled: true,
+    //        onValueChanged: function (data) {
+    //            varddlSearchItem = data.value
+    //            //debugger;
+    //            // SetItemDetail();
+    //        }
+
+
+    //    });
+    //    $("#ddlItem").dxSelectBox({
+    //        height: 30,
+    //        dataSource: new DevExpress.data.ArrayStore({
+    //            data: DItemList,
+    //            key: "ItemID"
+    //        }),
+    //        displayExpr: "ZZProduct",
+    //        valueExpr: "ItemID",
+    //        placeholder: "Select Item",
+    //        //searchEnabled: true,
+    //        onValueChanged: function (data) {
+    //            varddlItem = data.value
+    //            //alert(data.text);
+    //            debugger;
+    //             SetItemDetail(varddlItem);
+    //        }
+
+
+    //    })
+    //    $("#ddlPartyType").dxSelectBox({
+    //        height: 30,
+    //        dataSource: new DevExpress.data.ArrayStore({
+    //            data: PartyType,
+    //            key: "PartyTypeID"
+    //        }),
+    //        displayExpr: "PartyType1",
+    //        valueExpr: "PartyTypeID",
+    //        placeholder: "Select Item",
+    //        //searchEnabled: true,
+    //        onValueChanged: function (data) {
+    //            varddlPartyType = data.value
+    //            //debugger;
+    //            SetPartyTypeDetail(varddlPartyType);
+    //        }
+
+
+    //    });
+    //}
+    //function SetItemDetail(data) {
+    //    debugger;
+    //    if (varddlItem != '') {
+    //        var obj = $.grep(DItemList, function (object) {
+    //            return object.ItemID == data;
+    //        });
+    //        if (obj != null) {
+    //            varItemCode = obj[0].ZZItemCode;
+    //            $("#txtItemCode").val(varItemCode);
+    //            varItem = obj[0].ZZProduct;
+
+    //        }
+    //    }
+    //}
+    //function SetCustomerDetail(data) {
+    //    debugger;
+    //    if (varddlCustomer != '') {
+    //        var obj = $.grep(DCustomerList, function (object) {
+    //            return object.PartyID == data;
+    //        });
+    //        if (obj != null) {
+
+    //            varCustomer = obj[0].Party;
+
+    //        }
+    //    }
+    //}
+    //function SetPartyTypeDetail(data) {
+    //    debugger;
+    //    if (varddlPartyType != '') {
+    //        var obj = $.grep(PartyType, function (object) {
+    //            return object.PartyTypeID == data;
+    //        });
+    //        if (obj != null) {
+
+    //            varPartyType = obj[0].PartyType1;
+
+    //        }
+    //    }
+    //}
+    function FillSuperStockist() {
+        $.ajax({
+            type: "GET",
+            url: "/Home/FillSuperStockist",
+            data: "{}",
+            success: function (data) {
+                $("#ddlSuperStockist").html('');
+                //var s = '<option value="-1">Please Select a Party Type</option>';
+                var s = '';
+                for (var i = 0; i < data.length; i++) {
+                    s += '<option value="' + data[i].PartyID + '">' + data[i].Party + '</option>';
+                }
+                $("#ddlSuperStockist").html(s);
+
+            }
+        });
+    }
+    function isNumberKey(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+
+        if (charCode != 45 && charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        if (charCode == 46 && evt.currentTarget.value.indexOf('.') > -1) {
+            return false;
+        }
+
+        return true;
+    }
+    function EnDisable(Status) {
+        debugger
+        $("#ddlSearchItem").prop('disabled', Status);
+        $("#ddlSearchCustomer").prop('disabled', Status);
+
+        $("#ddlItem").prop('disabled', Status);
+        $("#ddlPartyType").prop('disabled', Status);
+        $("#ddlCustomer").prop('disabled', Status);
+        $("#btnSearch").prop('disabled', Status);
+        //$("#txtEffectiveDate").prop('disabled', Status);
+        //$("#txtValidTillDate").prop('disabled', Status);
+        $("#txtTradeDisc").prop('disabled', Status);
+        $("#txtScheDisc").prop('disabled', Status);
+        $("#txtSPDisc").prop('disabled', Status);
+    }
+    function Clear() {
+        $("#ddlSearchCustomer").val('');
+        $("#ddlSearchItem").val('');
+        $("#hddSearchCustomerId").val('0');
+        $("#hddSearchItemId").val('0');
+        $("#ddlSearchPartyType").val('0');
+
+    }
+
+    function ClearDetail() {
+        //varCustomer = "";
+        //varPartyType = "";
+        //varddlItem = "";
+        //varddlCustomer = "";
+        //varddlPartyType = "";
+
+        ////varCustomer = "";
+        ////varPartyType = "";
+        //varItem = "";
+        //// var varddlAdjustType = "";
+
+
+        $("#ddlPartyType").val(0);
+        $("#ddlItem").val('');
+        $("#ddlCustomer").val('');
+        $("#hddCustomerId").val(0);
+        $("#hddItemId").val(0);
+
+        $("#txtItemCode").val('');
+        $("#txtEffectiveDate").val('');
+        $("#txtValidTillDate").val('');
+        $("#txtTradeDisc").val('');
+        $("#txtScheDisc").val('');
+        $("#txtSPDisc").val('');
+
+    }
+    function Add() {
+
+        EnDisable(false);
+        Clear();
+        ClearDetail();
+        $('#btnAdd').prop('disabled', true);
+        $('#btnCancel').prop('disabled', false);
+        $('#btnSubmit').prop('disabled', false);
+        $('#tbody').html('');
+    }
+    function Cancel() {
+        Clear();
+        ClearDetail();
+        EnDisable(true);
+        $('#btnAdd').prop('disabled', false);
+        $('#btnCancel').prop('disabled', true);
+        $('#btnSubmit').prop('disabled', true);
+        //var StockArray = new Array();
+        $('#tbody').html('');
+    }
+    
+    function ValidateAddNewRow() {
+        if (($('#ddlPartyType').val() == undefined || $('#ddlPartyType').val() == null || $('#ddlPartyType').val() == 0)
+            && ($('#hddCustomerId').val() == undefined || $('#hddCustomerId').val() == null || $('#hddCustomerId').val() == 0)
+            && ($('#hddItemId').val() == undefined || $('#hddItemId').val() == null || $('#hddItemId').val() == 0)) {
+            alert("select Party Type / Customer /Item ");
+            return false;
+        }
+        if ($('#txtEffectiveDate').val() == "" || $('#txtEffectiveDate').val() == null) {
+            alert("Select Effective Date ");
+            return false;
+        }
+
+
+        if (($('#txtTradeDisc').val() == "0" || $('#txtTradeDisc').val() == "0.00" || $('#txtTradeDisc').val() == "")
+            && ($('#txtScheDisc').val() == "0" || $('#txtScheDisc').val() == "0.00" || $('#txtScheDisc').val() == "")
+            && ($('#txtSPDisc').val() == "0" || $('#txtSPDisc').val() == "0.00" || $('#txtSPDisc').val() == "")) {
+            alert("Please Enter Atleast One Discount");
+            return false;
+        }
+        return true;
+    }
+    function AddNewRow() {
+        try {
+            debugger
+            if (ValidateAddNewRow()) {
+                blncheck = false;
+                //PkHid = 0;
+                debugger
+                //$("#ddlPartyType").dxSelectBox('instance').option('value', 2);
+                // var ddlItem = $('#ddlItem :selected').text();
+                var varPartyType = $('#ddlPartyType').val() == 0 ? '' : $("#ddlPartyType option:selected").text();
+                var varCustomer = $("#ddlCustomer").val();
+                var varItem = $("#ddlItem").val();
+                var ItemCode = $("#txtItemCode").val();
+                //var varADType = $("#ddlAdjustmentType").dxSelectBox('instance').option('text')
+                var Effectivedate = $("#txtEffectiveDate").val();
+                var ValidDate = $("#txtValidTillDate").val();
+                var tradeDisc = $("#txtTradeDisc").val();
+                var ScheDisc = $("#txtScheDisc").val();
+                var SpDisc = $("#txtSPDisc").val();
+                //var varQty = $('#txtQty').val();
+                if (blnEditValue == true) {
+                    StockArray = $.grep(StockArray, function (obj) {
+                        return obj.TempRow != hiddenTempRow;
+
+                    })
+
+                }
+                else {
+                    hiddeenDetailId = 0;
+                }
+                var TempDetailId = hiddeenDetailId;
+                hiddenTempRow = 0;
+                var model = {};
+                model.SuperStockistId = $("#ddlSuperStockist").val();
+                model.DiscountDetailId = hiddeenDetailId;
+                //model.ItemAdjustmentId = HoldIAIdId;
+                model.PartyTypeId = ( $('#ddlPartyType').val() == undefined || $('#ddlPartyType').val() == null || $('#ddlPartyType').val() == "") ? 0 : $('#ddlPartyType').val();
+                model.CustomerId = ($('#ddlCustomer').val() == "" || $('#hddCustomerId').val() == undefined || $('#hddCustomerId').val() == null || $('#hddCustomerId').val() == "") ? 0 : $('#hddCustomerId').val();
+                model.ItemId = ($('#ddlItem').val() == undefined || $('#hddItemId').val() == undefined || $('#hddItemId').val() == null || $('#hddItemId').val() == "") ? 0 : $('#hddItemId').val();
+                model.Effectivedate = (Effectivedate == undefined || Effectivedate == null || Effectivedate == "") ? '' : Effectivedate;
+                model.ValidTillDate = (ValidDate == undefined || ValidDate == null || ValidDate == "") ? '' : ValidDate;
+
+                model.ItemCode = ItemCode;
+                model.PartyType = varPartyType
+                model.CustomerName = (varCustomer == undefined || varCustomer == null || varCustomer == "") ? '' : varCustomer;;
+                model.ItemName = (varItem == undefined || varItem == null || varItem == "") ? '' : varItem;;
+                model.TradeDisc = (tradeDisc == undefined || tradeDisc == null || tradeDisc == "") ? 0 : tradeDisc;
+                model.SCHEDisc = (ScheDisc == undefined || ScheDisc == null || ScheDisc == "") ? 0 : ScheDisc;
+                model.SPDisc = (SpDisc == undefined || SpDisc == null || SpDisc == "") ? 0 : SpDisc;
+                model.Status = 2;
+                StockArray.push(model);
+
+                BindStock();
+                ClearDetail();
+
+
+                // varddlItem = '';
+                //$("#ddlItem").dxSelectBox('instance').option('value', varddlItem);
+                //        varddlAdjustType = '';
+                //$("#ddlAdjustmentType").dxSelectBox('instance').option('value', varddlAdjustType);
+            }
+        }
+        catch (e) {
+            alert(e.message);
+        }
+    }
+    function BindStock() {
+        try {
+            debugger
+            var html = '';
+            $('#tbody').html('');
+            // TotalQty = 0.00;
+            $.each(StockArray, function (Index, Object) {
+
+                // TotalQty += parseFloat(Object.Qty);
+                if (Number(Object.Status) != 3) {
+                    StockArray[Index].TempRow = Index + 1;
+                    var varIndex = 0;
+                    varIndex = Index + 1;
+                    html += "<tr id='trSDetail_'" + Object.DiscountDetailId + "')'>";
+                    html += '<td>' + (Object.PartyType) + ' </td>';
+                    html += '<td>' + (Object.CustomerName) + ' </td>';
+                    html += '<td>' + (Object.ItemName) + ' </td>';
+                    html += '<td>' + (Object.ItemCode) + ' </td>';
+                    html += '<td align="center">' + Nullhandler(Object.Effectivedate) + ' </td>';
+                    html += '<td align="center">' + Nullhandler(Object.ValidTillDate) + ' </td>';
+                    //html += '<td>' + Nullhandler(Object.ItemSubCategory) + ' </td>';
+                    html += '<td align="right">' + (Object.TradeDisc) + '</td>';
+                    html += '<td align="right">' + (Object.SCHEDisc) + ' </td>';
+                    html += '<td align="right">' + (Object.SPDisc) + ' </td>';
+                    //html += '<td> </td>';
+                    html += "<td style='text-align: center;width:30px;'><button class='label label-info smallBtn' id='btnEdit1' placeholder='Edit' onclick='EditDiscountDetail(" + Object.DiscountDetailId + "," + Index + "," + 1 + ");' style='padding:0 3px;'><i class='fa fa-edit'></i></button><button class='label label-danger smallBtn' id='btndelete1' placeholder='Delete'  onclick='DeleteDiscountDetails(" + Object.DiscountDetailId + "," + Index + "," + 1 + ");' style='padding:0 3px;'><i class='fa fa-trash'></i></button></td>"
+
+                    html += '</tr>';
+
+                    //</button><button class='label label-danger smallBtn' id='btndelete1' placeholder='Delete'  onclick='DeleteDiscountDetails(" + Index + ");' style='padding:0 3px;'><i class='fa fa-trash'></i ></button >
+                }
+            });
+        
+
+            $("#tbody").html(html);
+
+
+        }
+        catch (e) {
+            alert(e.message);
+        }
+    }
+    //function DeleteDiscountDetails(RowIndex) {
+    //    debugger
+    //    if (confirm("Are you sure? Do you want to delete this Record")) {
+    //        StockArray.splice(RowIndex, 1);
+    //        BindStock();
+    //    }
+    //}
+    function DeleteDiscountDetails(IADetailId, RowNo, ChkIsEdit) {
+        if (confirm("Are you sure? Do you want to delete this Record")) {
+            $.each(StockArray, function (Index, Object) {
+
+                // TotalQty += parseFloat(Object.Qty);
+                if (Number(Object.DiscountDetailId) == Number(IADetailId)) {
+                   // StockArray[Index].TempRow = Index + 1;
+                    Object.Status = 3;
+                }
+            });
+            BindStock();
+        }
+    }
+    function EditDiscountDetail(IADetailId, RowNo, ChkIsEdit) {
+
+        varRowNo = RowNo;
+        try {
+
+            IsEdit = ChkIsEdit;
+            if (blnAddRow) {
+                //var ModelTemp = $.grep(StockArray, function (obj) {
+                //    return obj.TempRow == RowNo + 1;
+                //});
+                SetValue(RowNo);
+                $("#HiddenDiscountDetailId").val(BDetailId);
+            }
+
+            else {
+                if (IADetailId != 0) {
+                    //var ModelTemp = $.grep(StockArray, function (obj) {
+                    //    return obj.DiscountDetailId == IADetailId;
+                    //});
+                    SetValue(RowNo);
+                    $("#HiddenDiscountDetailId").val(IADetailId);
+                }
+                else {
+                    //var ModelTemp = $.grep(StockArray, function (obj) {
+                    //    return obj.TempRow == RowNo + 1;
+                    //});
+                    SetValue(RowNo);
+                    $("#HiddenDiscountDetailId").val(IADetailId);
+                }
+            }
+        } catch (e) {
+            alert(e.message);
+
+
+        }
+    }
+    function SetValue(RowNo) {
+        //debugger;
+        try {
+
+            ClearDetail();
+            var ModelTemp = $.grep(StockArray, function (obj) {
+                return obj.TempRow == RowNo + 1;
+            });
+
+            $("#ddlItem").val(ModelTemp[0].ItemName);
+            $("#ddlCustomer").val(ModelTemp[0].CustomerName);
+            $("#hddItemId").val(ModelTemp[0].ItemId);
+            $("#hddCustomerId").val(ModelTemp[0].CustomerId);
+            $("#ddlPartyType").val(ModelTemp[0].PartyTypeId);
+            hiddeenDetailId = ModelTemp[0].DiscountDetailId;
+            $("#txtItemCode").val(ModelTemp[0].ItemCode);
+            $("#txtEffectiveDate").val(ModelTemp[0].Effectivedate);
+            $("#txtValidTillDate").val(ModelTemp[0].ValidTillDate);
+            $("#txtTradeDisc").val(ModelTemp[0].TradeDisc);
+            $("#txtScheDisc").val(ModelTemp[0].SCHEDisc);
+            $('#txtSPDisc').val(ModelTemp[0].SPDisc);
+            hiddenTempRow = ModelTemp[0].TempRow;
+            blnEditValue = true;
+        } catch (e) {
+            alert(e.message);
+        }
+
+
+
+    }
+    function SearchRecord() {
+        var SuperStockistId = $("#ddlSuperStockist").val();
+        var CustomerId = ($('#ddlSearchCustomer').val() == "" || $('#hddSearchCustomerId').val() == undefined || $('#hddSearchCustomerId').val() == null || $('#hddSearchCustomerId').val() == "") ? 0 : $('#hddSearchCustomerId').val();
+        var ItemId = ($('#ddlSearchItem').val() == undefined || $('#hddSearchItemId').val() == undefined || $('#hddSearchItemId').val() == null || $('#hddSearchItemId').val() == "") ? 0 : $('#hddSearchItemId').val();
+        var PartyTypeId = ($('#ddlSearchPartyType').val() == undefined || $('#ddlSearchPartyType').val() == null || $('#ddlSearchPartyType').val() == "") ? 0 : $('#ddlSearchPartyType').val();
+
+
+        var data = { 'SuperStockistId': SuperStockistId, 'CustomerId': CustomerId, 'ItemId': ItemId, 'PartyTypeId': PartyTypeId };
+        var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+        $.ajax({
+            url: "/Home/ReadDiscountMaster",
+            type: 'POST',
+            dataType: 'json',
+            async: true,
+            data: dataWithAntiforgeryToken,
+            success: function (Response) {
+                debugger
+                if (Response.StatusId != "99") {
+                    SearchDataList = Response.Result;
+                    BindSearchData();
+
+                }
+                else {
+                    alert(Response.Status);
+                }
+            },
+            error: function (xhr) {
+                alert("Data size is too large!");
+            }
+        });
+    }
+    function BindSearchData() {
+        StockArray = [];
+
+        $.each(SearchDataList, function (Index, Object) {
+
+
+
+            var model = {};
+            model.SuperStockistId = Object.SuperStockistID;
+            model.DiscountDetailId = Object.DealerDSalesiscountMasterID;
+            //model.ItemAdjustmentId = HoldIAIdId;
+            model.PartyTypeId = Object.PartyTypeID;
+            model.CustomerId = Object.PartyID;
+            model.ItemId = Object.ItemID;
+            model.Effectivedate = Object.ZZEffectiveDate;
+            model.ValidTillDate = (Object.ZZValidTillDate == undefined || Object.ZZValidTillDate == null || Object.ZZValidTillDate == "") ? '' : Object.ZZValidTillDate;
+
+            model.ItemCode = Object.ItemCode;
+            model.PartyType = Object.PartyType
+            model.CustomerName = Object.Party;
+            model.ItemName = Object.ItemName;
+            model.TradeDisc = Object.Discount1;
+            model.SCHEDisc = Object.Discount2;
+            model.SPDisc = Object.Discount3;
+            model.Status = Object.Status;
+
+            StockArray.push(model);
+        });
+        BindStock();
+
+    }
+    function DetailModel() {
+        var DList = [];
+        $.each(StockArray, function (Index, Object) {
+            var model = {};
+            model.SuperStockistID = Object.SuperStockistId;
+            model.DealerDSalesiscountMasterID = Object.DiscountDetailId;
+            //model.ItemAdjustmentId = HoldIAIdId;
+            model.PartyTypeID = Object.PartyTypeId;
+            model.PartyID = Object.CustomerId;
+            model.ItemID = Object.ItemId;
+            model.EffectiveDate = Object.Effectivedate;
+            model.ValidTillDate = (Object.ValidTillDate == undefined || Object.ValidTillDate == null || Object.ValidTillDate == "") ? new Date() : Object.ValidTillDate;
+
+            model.ItemCode = Object.ItemCode;
+            model.PartyType = Object.PartyType
+            model.Party = Object.CustomerName;
+            model.ItemName = Object.ItemName;
+            model.Discount1 = Object.TradeDisc;
+            model.Discount2 = Object.SCHEDisc;
+            model.Discount3 = Object.SPDisc;
+
+            model.ZZEffectiveDate = Object.Effectivedate;
+            model.ZZValidTillDate = Object.ValidTillDate;
+            model.CreatedBy = 0;
+            model.Status = Object.Status;
+            DList.push(model);
+            //}
+        });
+
+        return DList;
+    }
+    function validation() {
+
+        if (StockArray.length == 0) {
+            alert("Pleast Fill Discount Details");
+            //$("#txtVoucherNo").focus();
+            return false;
+        }
+        
+
+        return true;
+    }
+    function Save() {
+        try {
+            debugger;
+            if (validation()) {
+                
+                
+                var objDetail = DetailModel();
+
+                if (objDetail.length > 0) {
+                    $.ajax({
+                        url: '/Home/SaveDiscountMaster',
+                        type: 'POST',
+
+                        datatype: 'json',
+                        async: false,
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify({ objdbmlDetail: objDetail }),
+                        success: function (Response) {
+                            if (Response.StatusId === 1) {
+                                // $('#spinner').hide();
+                                //debugger;
+                                alert(Response.Status);
+                                Clear();
+                                ClearDetail();
+                                SearchDataList = [];
+                                DetailList = [];
+                                StockArray = [];
+                                $('#tbody').html('');
+                                hiddenTempRow = 0;
+                                $("#HiddenItemAdjustmentDetailId").val(0);
+                                // ClearForm();
+                                TempRow = 0;
+                                SearchRecord();
+
+                            }
+                            else {
+                                //  $('#spinner').hide();
+                                // $('#tbody').html('');
+                                alert(Response.Status);
+
+                            }
+                        }
+                    });
+                }
+                else {
+                    // $('#spinner').hide();
+                    alert("Item Details are required.");
+                }
+            }
+        } catch (e) {
+            //  $('#spinner').hide();
+            alert(e.message);
+        }
+    }
+    function SetAutoComplete() {
+        try {
+            /*City*/
+            $("#ddlSearchCustomer").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        url: "../Home/GetCustomerForAutoComplete",
+                        dataType: "json",
+                        data: '{strSearch: "' + $("#ddlSearchCustomer").val() + '"}',
+                        success: function (data) {
+                            if (!data.length) {
+                                var result = [
+                                    {
+                                        label: 'No Record found',
+                                        value: "0"
+                                    }
+                                ];
+                                response(result);
+                            }
+                            else
+                                response(data);
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                    event.preventDefault();
+                    if (ui.item.ItemID != "0") {
+                        $("#ddlSearchCustomer").val(ui.item.Party);
+                        $("#hddSearchCustomerId").val(ui.item.PartyID);
+                    }
+                    else {
+                        $("#ddlSearchCustomer").val('');
+                        $("#hddSearchCustomerId").val('');
+                    }
+                },
+                minLength: 3,
+                focus: function (event, ui) {
+                    event.preventDefault();
+                    $("#ddlSearchCustomer").val(ui.item.Party);
+                    $("#hddSearchCustomerId").val(ui.item.PartyID);
+
+                }
+            }).data("autocomplete")._renderItem = function (ul, item) {
+                var Header = "<div class='ui-widget-header' style='width:516px;background: #22a5e3;color: black;'><span style='padding:0 4px;float:left;width:80%;font-size: 12px;'>Party</span>";
+                Header += "<span style='padding:0 4px;float:left;width:20%;'>Party Code</span>";
+
+                Header += "<div style='clear: both;'></div></div>"
+                var displayItemHTML = "<div style='width:510px;background: #229ce317;color: black;'><span style='padding:2px 4px;float:left;width:80%;font-size: 12px;'>" + item.Party + "</span>";
+                displayItemHTML += "<span style='padding:0 4px;float:left;width:20%;'>" + item.PartyCode + "</span>";
+
+                displayItemHTML += "<div style='clear: both;'></div></div>";
+                if ((ul.find('li')).length == 0) {
+                    ul.append($("<a></a>").html(Header));
+                    ul.addClass("HodeOverFlow");
+                }
+                return $("<li style='background: #229ce317;border-bottom: 1px solid black;height: 18px;color: black;'></li>")
+                    .data("item.autocomplete", item)
+                    .append($("<a></a>").html(displayItemHTML))
+                    .appendTo(ul);
+            };
+        }
+        catch (err) { }
+
+        try {
+            $("#ddlCustomer").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        url: "../Home/GetCustomerForAutoComplete",
+                        dataType: "json",
+                        data: '{strSearch: "' + $("#ddlCustomer").val() + '"}',
+                        success: function (data) {
+                            if (!data.length) {
+                                var result = [
+                                    {
+                                        label: 'No Record found',
+                                        value: "0"
+                                    }
+                                ];
+                                response(result);
+                            }
+                            else
+                                response(data);
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                    event.preventDefault();
+                    if (ui.item.ItemID != "0") {
+                        $("#ddlCustomer").val(ui.item.Party);
+                        $("#hddCustomerId").val(ui.item.PartyID);
+                    }
+                    else {
+                        $("#ddlCustomer").val('');
+                        $("#hddCustomerId").val('');
+                    }
+                },
+                minLength: 3,
+                focus: function (event, ui) {
+                    event.preventDefault();
+                    $("#ddlCustomer").val(ui.item.Party);
+                    $("#hddCustomerId").val(ui.item.PartyID);
+
+                }
+            }).data("autocomplete")._renderItem = function (ul, item) {
+                var Header = "<div class='ui-widget-header' style='width:516px;background: #22a5e3;color: black;'><span style='padding:0 4px;float:left;width:80%;font-size: 12px;'>Party</span>";
+                Header += "<span style='padding:0 4px;float:left;width:20%;'>Party Code</span>";
+
+                Header += "<div style='clear: both;'></div></div>"
+                var displayItemHTML = "<div style='width:510px;background: #229ce317;color: black;'><span style='padding:2px 4px;float:left;width:80%;font-size: 12px;'>" + item.Party + "</span>";
+                displayItemHTML += "<span style='padding:0 4px;float:left;width:20%;'>" + item.PartyCode + "</span>";
+
+                displayItemHTML += "<div style='clear: both;'></div></div>";
+                if ((ul.find('li')).length == 0) {
+                    ul.append($("<a></a>").html(Header));
+                    ul.addClass("HodeOverFlow");
+                }
+                return $("<li style='background: #229ce317;border-bottom: 1px solid black;height: 18px;color: black;'></li>")
+                    .data("item.autocomplete", item)
+                    .append($("<a></a>").html(displayItemHTML))
+                    .appendTo(ul);
+            };
+        }
+        catch (err) { }
+        //Item
+        try {
+            $("#ddlSearchItem").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        url: "../Home/GetItemForAutoComplete",
+                        dataType: "json",
+                        data: '{strSearch: "' + $("#ddlSearchItem").val() + '"}',
+                        success: function (data) {
+                            if (!data.length) {
+                                var result = [
+                                    {
+                                        label: 'No Record found',
+                                        value: "0"
+                                    }
+                                ];
+                                response(result);
+                            }
+                            else
+                                response(data);
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                    event.preventDefault();
+                    if (ui.item.ItemID != "0") {
+                        $("#ddlSearchItem").val(ui.item.ZZProduct);
+                        $("#hddSearchItemId").val(ui.item.ItemID);
+                    }
+                    else {
+                        $("#ddlSearchItem").val('');
+                        $("#hddSearchItemId").val('');
+                    }
+                },
+                minLength: 3,
+                focus: function (event, ui) {
+                    event.preventDefault();
+                    $("#ddlSearchItem").val(ui.item.ZZProduct);
+                    $("#hddSearchItemId").val(ui.item.ItemID);
+
+                }
+            }).data("autocomplete")._renderItem = function (ul, item) {
+                var Header = "<div class='ui-widget-header' style='width:516px;background: #22a5e3;color: black;'><span style='padding:0 4px;float:left;width:80%;font-size: 12px;'>Item</span>";
+                Header += "<span style='padding:0 4px;float:left;width:20%;'>Code</span>";
+
+                Header += "<div style='clear: both;'></div></div>"
+                var displayItemHTML = "<div style='width:510px;background: #229ce317;color: black;'><span style='padding:2px 4px;float:left;width:80%;font-size: 12px;'>" + item.ZZProduct + "</span>";
+                displayItemHTML += "<span style='padding:0 4px;float:left;width:20%;'>" + item.ZZItemCode + "</span>";
+
+                displayItemHTML += "<div style='clear: both;'></div></div>";
+                if ((ul.find('li')).length == 0) {
+                    ul.append($("<a></a>").html(Header));
+                    ul.addClass("HodeOverFlow");
+                }
+                return $("<li style='background: #229ce317;border-bottom: 1px solid black;height: 18px;color: black;'></li>")
+                    .data("item.autocomplete", item)
+                    .append($("<a></a>").html(displayItemHTML))
+                    .appendTo(ul);
+            };
+        }
+        catch (err) { }
+
+        try {
+            $("#ddlItem").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        url: "../Home/GetItemForAutoComplete",
+                        dataType: "json",
+                        data: '{strSearch: "' + $("#ddlItem").val() + '"}',
+                        success: function (data) {
+                            if (!data.length) {
+                                var result = [
+                                    {
+                                        label: 'No Record found',
+                                        value: "0"
+                                    }
+                                ];
+                                response(result);
+                            }
+                            else
+                                response(data);
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                    event.preventDefault();
+                    if (ui.item.ItemID != "0") {
+                        $("#ddlItem").val(ui.item.ZZProduct);
+                        $("#txtItemCode").val(ui.item.ZZItemCode);
+                        $("#hddItemId").val(ui.item.ItemID);
+                    }
+                    else {
+                        $("#ddlItem").val('');
+                        $("#txtItemCode").val('');
+                        $("#hddItemId").val('');
+                    }
+                },
+                minLength: 3,
+                focus: function (event, ui) {
+                    event.preventDefault();
+                    $("#ddlItem").val(ui.item.ZZProduct);
+                    $("#txtItemCode").val(ui.item.ZZItemCode);
+                    $("#hddItemId").val(ui.item.ItemID);
+
+                }
+            }).data("autocomplete")._renderItem = function (ul, item) {
+                var Header = "<div class='ui-widget-header' style='width:516px;background: #22a5e3;color: black;'><span style='padding:0 4px;float:left;width:80%;font-size: 12px;'>Item</span>";
+                Header += "<span style='padding:0 4px;float:left;width:20%;'>Code</span>";
+
+                Header += "<div style='clear: both;'></div></div>"
+                var displayItemHTML = "<div style='width:510px;background: #229ce317;color: black;'><span style='padding:2px 4px;float:left;width:80%;font-size: 12px;'>" + item.ZZProduct + "</span>";
+                displayItemHTML += "<span style='padding:0 4px;float:left;width:20%;'>" + item.ZZItemCode + "</span>";
+
+                displayItemHTML += "<div style='clear: both;'></div></div>";
+                if ((ul.find('li')).length == 0) {
+                    ul.append($("<a></a>").html(Header));
+                    ul.addClass("HodeOverFlow");
+                }
+                return $("<li style='background: #229ce317;border-bottom: 1px solid black;height: 18px;color: black;'></li>")
+                    .data("item.autocomplete", item)
+                    .append($("<a></a>").html(displayItemHTML))
+                    .appendTo(ul);
+            };
+        }
+        catch (err) { }
+    }
+</script>
+

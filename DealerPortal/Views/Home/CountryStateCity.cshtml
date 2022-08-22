@@ -1,0 +1,113 @@
+﻿
+@{
+    ViewBag.Title = "Country State City";
+}
+
+@Html.AntiForgeryToken()
+<div class="box box-warning">
+    <div class="box-header with-border">
+        <div class="box-header-left" style="width: 100%;">
+            <h3 class="box-title">Test Page</h3>
+        </div>
+    </div>
+    <div class="box-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <div id="tblItemMaster"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var ItemMasterList = [];
+    $(document).ready(function () {
+        ItemMasterGetData();
+    });
+    function BindItemMasterList() {
+        debugger
+        $("#tblItemMaster").dxDataGrid({
+            dataSource: ItemMasterList,
+            rowTemplate: function (container, item) {
+                var data = item.data,
+                    markup = "<tbody class='employee dx-row " + ((item.rowIndex % 2) ? 'dx-row-alt' : '') + "'>" +
+                        "<tr class='main-row'>" +
+                        "<td>" + data.ItemName + "</td>" +
+                        "<td>" + data.OurName + "</td>" +
+                        "<td>" + data.ItemCode + "</td>" +
+                        "<td>" + data.OurCode + "</td>" +
+                        "<td>" + data.OurCode + "</td>" +
+                        "</tr>" +
+                        "</tbody>";
+                container.append(markup);
+            },
+            columnAutoWidth: true,
+            showBorders: true,
+            columns: [{
+                dataField: "ItemName",
+                caption: "Item Name",
+            }, {
+                dataField: "OurName",
+                caption: "Our Name",
+            },
+            {
+                dataField: "ItemCode",
+                dataType: "Item Code"
+            },
+            {
+                dataField: "OurCode",
+                dataType: "Our Code"
+            },
+            {
+                dataField: "", alignment: "center", caption: "Action", cellTemplate: function (container, options) {
+                    $("<div id='Edit' >").dxButton({
+                        class: "btn btn-danger",
+                        icon: "fa fa-clipboard",
+                        onClick: function () {
+                        }
+                    }).append(options.value).appendTo(container);
+                }
+            },
+            ]
+        });
+    }
+
+    function ItemMasterGetData() {
+        debugger
+        try {
+            var dataWithAntiforgeryToken = ({ '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            loadPanel.show();
+            $.ajax({
+                url: "../Home/ItemMasterGetAll",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: dataWithAntiforgeryToken,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        ItemMasterList = Response.Result;
+                        loadPanel.hide();
+                        BindItemMasterList();
+                    }
+                    else {
+                        loadPanel.hide();
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+</script>
+
+

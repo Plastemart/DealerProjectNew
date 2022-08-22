@@ -1,0 +1,316 @@
+﻿
+@{
+    ViewBag.Title = "Option List";
+}
+
+@Html.AntiForgeryToken()
+
+<div class="box box-warning">
+    <div class="box-header with-border">
+        <div class="box-header-left" style="width: 100%;">
+            <h3 class="box-title">Option List</h3>
+            <button class="button btn-small pull-right" data-toggle='modal' data-target='#Add' onclick="ClearControls();"><i class="fa fa-plus-circle"></i></button>
+        </div>
+    </div>
+    <div class="box-body">
+        <form class="form-horizontal">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label col-sm-4" for="">Option List</label>
+                        <div class="col-sm-8 MY8">
+                            <div id="ddlOptionList"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive ">
+                    <div id="tblOptionList"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="PopUpAdd" tabindex="-1" role="dialog" aria-labelledby="logoutLabel" aria-hidden="true" style="padding-left: 230px !important; z-index: 1050 !important;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Add Option List</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="">Option List Code</label>
+                                <div class="col-sm-9 MY8">
+                                    <div id="txtOLCode"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="">Description</label>
+                                <div class="col-sm-9 MY8">
+                                    <div id="txtOLDesc"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12" style="margin-top: 10px;">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="">&nbsp;</label>
+                                <div class="col-sm-9">
+                                    <button class="button btn-sm pull-right" style="margin-left: 5px;   ">Cancel</button>
+                                    <button class="button btn-sm pull-right" onclick="OptionListUpsert();">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="HiddenOLId" />
+<input type="hidden" id="HiddenParameterId" />
+
+<script>
+
+    var ParameterList = [];
+    var OptionList = [];
+    var ddlOptionList = "";
+
+    $("#txtOLCode").dxTextBox({
+        height: 30
+    });
+    $("#txtOLDesc").dxTextBox({
+        height: 30
+    });
+
+    arrayCr = @Html.Raw(Json.Encode(@ViewBag.ParameterDataList ));
+    if (arrayCr != null) {
+        for (var i = 0; i < arrayCr.length; i++) {
+            ParameterList[i] = arrayCr[i];
+        }
+    }
+
+    $(document).ready(function () {      
+        $("#ddlOptionList").dxSelectBox({
+            dataSource: new DevExpress.data.ArrayStore({
+                data: ParameterList,
+                key: "ParameterKey",
+            }),
+            displayExpr: "Description",
+            valueExpr: "ParameterKey",
+            height: 30,
+            placeholder: " Select Parameter List",
+            onValueChanged: function (data) {
+                varddlOptionList = data.value
+                OptionListGetByParameterId()
+            }
+        });
+    });
+
+    function OptionListGetByParameterId() {
+        try {
+            if (varddlOptionList == "") {
+                return true
+            }
+            loadPanel.show();
+            var data = { 'ParameterId': varddlOptionList };
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Home/OptionListDataGetByParameterId",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: dataWithAntiforgeryToken,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        OptionList = Response.Result;
+                        loadPanel.hide();
+                        BindOptionList()
+                    }
+                    else {
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    alert("Having some Problem in getting Data! " + Response.Status + "\n" + Response.StatusId);
+                }
+            });
+        }
+        catch (e) {
+            alert("Data size is too large!");
+        }
+    }
+
+    function BindOptionList() {
+        var html = "";
+        $("#tblOptionList").dxDataGrid({
+            dataSource: OptionList,
+            allowColumnResizing: true,
+            columnResizingMode: "widget",
+            columnAutoWidth: true,
+            wordWrapEnabled: false,
+            height: 485,
+            paging: { enabled: true },
+            paging: {
+                pageSize: 10
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [5, 10, 15],
+                showInfo: true
+            },
+            columns: [
+                {
+                    dataField: "OptionListCode", width: '40%', caption: "Option List Code"
+                    //headerCellTemplate: function (header, info) {
+                    //    $('<div>').html("Option <br/> Code").appendTo(header);
+                    //}
+                },
+                { dataField: "OptionListDesc", width: '40%', caption: "Description" },
+                //{ dataField: "ParameterId", width: '20%', caption: "Parameter" },
+
+                {
+                    dataField: "", width: '12%', alignment: "center", caption: "Action", cellTemplate: function (container, options) {
+                        $("<div id='Edit' data-toggle='modal' data-target='#PopUpAdd'>").dxButton({
+                            class: "btn btn-danger",
+                            icon: "fa fa-pencil",
+                            hint: "Edit OptionList",
+                            onClick: function () {
+                                EditOptionList(options.data.OptionListId)
+                            }
+                        }).append(options.value).appendTo(container);
+                        $("<div id='Delete'>").dxButton({
+                            class: "btn btn-danger",
+                            hint: "Delete OptionList",
+                            icon: "fa fa-trash-o",
+                            onClick: function () {
+                                DeleteOptionList(options.data.OptionListId)
+                            }
+                        }).append(options.value).appendTo(container);
+                    }
+                },
+            ],
+            filterRow: { visible: true },
+            showRowLines: true,
+            showBorders: true
+        });
+    }
+
+    function EditOptionList(OptionListId) {        
+            debugger
+           // loadPanel.show();
+            var obj = $.grep(OptionList, function (obj) {
+                return obj.OptionListId == OptionListId;
+            });
+            $("#HiddenOLId").val(OptionListId);
+            $("#myModalLabel").text("Edit Option List");
+            $("#PopUpAdd").modal("show");
+
+            $("#txtOLCode").dxTextBox('instance').option('value', obj[0].OptionListCode);
+            $("#txtOLDesc").dxTextBox('instance').option('value', obj[0].OptionListDesc);       
+    }
+
+    function DeleteOptionList(OptionListId) {
+        try {
+            debugger
+            loadPanel.show();
+            var result = DevExpress.ui.dialog.confirm("Do you want to delete ...?", "Confirm changes");
+            result.done(function (dialogResult) {
+                if (dialogResult) {
+                    var data = { 'intOLId': OptionListId };
+                    var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+                    $.ajax({
+                        url: "../Home/OptionListDelete",
+                        type: 'POST',
+                        dataType: 'json',
+                        async: true,
+                        data: dataWithAntiforgeryToken,
+                        success: function (Response) {
+                            if (Response.StatusId != "99") {
+                                OptionList = Response.Result;
+                                BindOptionList();
+                               // $("#tblUserMaster").dxDataGrid('instance').option("dataSource", ListUser);
+                                loadPanel.hide();
+                            }
+                            else {
+                                loadPanel.hide();
+                                alert(Response.Status);
+                            }
+                        },
+                        error: function (xhr) {
+                            loadPanel.hide();
+                            alert("Problem in Delete!");
+                        }
+                    });
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+    function OptionListUpsert() {
+        try {
+            var ObjOLList = [];
+            loadPanel.show();
+            var modal = {};
+
+            if ($("#HiddenOLId").val() == undefined || $("#HiddenOLId").val() == "") {
+                modal.OptionListId = 0;
+            }
+            else {
+                modal.OptionListId = $("#HiddenOLId").val();
+            }
+
+            modal.OptionlistCode = $("#txtOLCode").dxTextBox('instance').option('value');
+            modal.OptionlistDesc = $("#txtOLDesc").dxTextBox('instance').option('value');
+            modal.ParameterId = varddlOptionList;
+
+            ObjOLList.push(modal);
+
+            var data = JSON.stringify({ objdbmlOptionList: ObjOLList });
+            $.ajax({
+                url: "../Home/OptionListUpsert",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: data,
+                contentType: "application/json; charset=utf-8",
+                success: function (Response) {
+                    loadPanel.hide();
+                    $("#PopUpAdd").modal("hide");
+                    OptionListGetByParameterId();
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Insert Have some Problem!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+    function ClearControls() {        
+        $("#myModalLabel").text("Add User");
+        $("#PopUpAdd").modal("show");
+        $("#txtOLDesc").dxTextBox('instance').option('value', '');
+        $("#txtOLCode").dxTextBox('instance').option('value', '');
+    }
+
+</script>

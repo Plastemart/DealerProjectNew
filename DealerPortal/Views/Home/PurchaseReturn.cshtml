@@ -1,0 +1,2749 @@
+﻿@{
+    ViewBag.Title = "Purchase Return";
+}
+
+@Html.AntiForgeryToken()
+<style>
+    .dx-texteditor {
+        border-radius: 0px !important;
+    }
+
+    .dx-state-disabled {
+        border: 1px solid #999 !important;
+        color: #000 !important;
+    }
+
+        .dx-state-disabled .dx-placeholder {
+            color: #000 !important;
+        }
+
+    .Invselect {
+        display: block;
+        width: 100%;
+        height: calc(2.25rem + 2px);
+        padding: 0.1rem 0.1rem;
+        font-size: 0.8rem;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 0.5rem;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    .dx-texteditor-input {
+        padding: 0px 0px 3px 3px !important;
+        font-size: 11px !important;
+    }
+</style>
+<input type="hidden" id="hiddenIsUT" value='@Session["IsUT"]' />
+<input type="hidden" id="hiddenStateID" value='@Session["StateID"]' />
+<input type="hidden" id="hdnDealerSalesChallanId" value='' />
+<input type="hidden" id="hdnCurrentUserTypeId" value='@Session["UserTypeId"]' />
+<input type="hidden" id="hdnSuperStockistId" value='@Session["PartyId"]' />
+<input type="hidden" id="hdnIsInvoiceAuto" value='@Session["IsInvoiceAuto"].ToString()' />
+<div class="box box-warning">
+    <div class="box-header with-border">
+        <div class="box-header-left">
+            <h3 class="box-title">Purchase Return</h3>
+        </div>
+        <div class="box-header-right">
+            <a href=""></a>
+        </div>
+    </div>
+
+    <div class="box-body">
+        <div class="heads-button">
+            <br>
+            <button class="btn btn-sm btn-primary" id="btnAdd" title="Add" onclick="Add()"> Add </button>
+            <button class="btn btn-sm btn-success" id="btnEdit" title="Edit" onclick="Edit()" disabled> Edit </button>
+            <button class="btn btn-sm btn-primary" id="btnSave" title="Save" onclick="Save()" disabled> Save </button>
+            <button class="btn btn-sm btn-danger" id="btnCancel" title="Cancel" onclick="Cancel()"> Cancel </button>
+            @*<button class="btn btn-sm btn-danger" id="btnDelete" title="Delete" onclick="Delete()"> Delete </button>*@
+            <button class="btn btn-sm btn-success" id="btnSearch" title="Search" onclick="Search()"> Search </button>
+            <button class="btn btn-sm btn-success" id="btnPrint" title="Print" onclick="PrintInvoice()"> Print </button>
+        </div><br />
+        <div id="DivddlCustomer" style="display:none" class="floating-label">
+            <div class="col-md-6">
+                <span class="floating-input" id="ddlCustomer">
+                    <span class="highlight"></span>
+                    <label>Super Stockist</label>
+                </span>
+            </div><br /><br />
+        </div>
+        <div class="col-md-2">
+            <div class="floating-label">
+                <input class="floating-input" type="text" placeholder=" " id="txtInvoiceNo" maxlength="15">
+                <span class="highlight"></span>
+                <label>Invoice No</label>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="floating-label">
+                <input class="floating-input" type="text" onclick="(this.type='date')" placeholder=" " id="txtInvoiceDate">
+                <span class="highlight"></span>
+                <label>Invoice Date</label>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="floating-label">
+                <input type="hidden" id="hiddenCustomerGSTNo" value="">
+                <span class="floating-input" id="txtBuyer">
+                    <span class="highlight"></span>
+                    <label>Buyer</label>
+                </span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="floating-label">
+                <input type="hidden" id="hiddenConsigneeGSTNo" value="">
+                <span class="floating-input" id="txtConsignee">
+                    <span class="highlight"></span>
+                    <label>Consignee</label>
+                </span>
+            </div>
+        </div>
+        @*<div class="col-md-4">
+                <div class="floating-label">
+                    <input class="floating-input" type="text" placeholder=" ">
+                    <span class="highlight"></span>
+                    <label>Consignee</label>
+                </div>
+            </div>*@
+        <div class="col-md-4">
+            <div class="floating-label">
+                <span class="floating-input" id="txtBillingAddress">
+                    <span class="highlight"></span>
+                    <label>Billing Address</label>
+                </span>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="floating-label">
+                <input type="hidden" id="hiddenBCountryID" value="0">
+                <input class="floating-input" type="text" placeholder=" " disabled id="txtBCountry">
+                <span class="highlight"></span>
+                <label>Country</label>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="floating-label">
+                <input type="hidden" id="hiddenBStateID" value="0">
+                <input class="floating-input" type="text" placeholder=" " disabled id="txtBState">
+                <span class="highlight"></span>
+                <label>State</label>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="floating-label">
+                <input type="hidden" id="hiddenBCityID" value="0">
+                <input class="floating-input" type="text" placeholder=" " disabled id="txtBCity">
+                <span class="highlight"></span>
+                <label>City</label>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="floating-label">
+                <input class="floating-input" type="text" placeholder=" " disabled id="txtBPin">
+                <span class="highlight"></span>
+                <label>Pin</label>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="floating-label">
+                <span class="floating-input" id="txtShippingAddress">
+                    <span class="highlight"></span>
+                    <label>Shipping Address</label>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="floating-label">
+                <input type="hidden" id="hiddenSCountryID" value="0">
+                <input class="floating-input" type="text" placeholder=" " disabled id="txtSCountry">
+                <span class="highlight"></span>
+                <label>Country</label>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="floating-label">
+                <input type="hidden" id="hiddenSStateID" value="0">
+                <input class="floating-input" type="text" placeholder=" " disabled id="txtSState">
+                <span class="highlight"></span>
+                <label>State</label>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="floating-label">
+                <input type="hidden" id="hiddenSCityID" value="0">
+                <input class="floating-input" type="text" placeholder=" " disabled id="txtSCity">
+                <span class="highlight"></span>
+                <label>City</label>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="floating-label">
+                <input class="floating-input" type="text" placeholder=" " disabled id="txtSPin">
+                <span class="highlight"></span>
+                <label>Pin</label>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="floating-label">
+                <span class="floating-input" id="txtFreight">
+                    <span class="highlight"></span>
+                    <label>Freight</label>
+                </span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="floating-label">
+                <input class="floating-input" type="text" placeholder=" " id="txtEWayBillNo">
+                <span class="highlight"></span>
+                <label>E-WAY Bill No.</label>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="floating-label">
+                <input class="floating-input" type="text" onclick="(this.type='date')" placeholder=" " id="txtEWayBillDate">
+                <span class="highlight"></span>
+                <label>E-WAY Bill Date</label>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="floating-label">
+                <input class="floating-input" type="text" placeholder=" " id="txtTransporter">
+                <span class="highlight"></span>
+                <label>Transporter</label>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="floating-label">
+                <input class="floating-input" type="text" placeholder=" " id="txtVechicleNo">
+                <span class="highlight"></span>
+                <label>Vehicle No</label>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="floating-label">
+                <input class="floating-input" type="text" placeholder=" " id="txtTransporterGST">
+                <span class="highlight"></span>
+                <label>Transporter GST</label>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="floating-label">
+                <input class="floating-input" type="text" placeholder=" " id="txtSealNo">
+                <span class="highlight"></span>
+                <label>Seal No</label>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="floating-label">
+                <input class="floating-input" type="text" placeholder=" " id="txtLRNo">
+                <span class="highlight"></span>
+                <label>LR No</label>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="floating-label">
+                <input class="floating-input" type="text" onclick="(this.type='date')" placeholder=" " id="txtLRDate">
+                <span class="highlight"></span>
+                <label>LR Date</label>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="floating-label">
+                <input class="floating-input" type="number" placeholder=" " id="txtNoOfBoxes" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                <span class="highlight"></span>
+                <label>No Of Boxes</label>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="floating-label">
+                <input class="floating-input" type="number" placeholder=" " id="txtGrossWeight" onkeypress="return CheckIsDecimalFourPlace(event,this)">
+                <span class="highlight"></span>
+                <label>Gross Weight</label>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="floating-label">
+                <input class="floating-input" type="number" placeholder=" " id="txtNetWeight" onkeypress="return CheckIsDecimalFourPlace(event,this)">
+                <span class="highlight"></span>
+                <label>Net Weight</label>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <div class="floating-label">
+                <input class="floating-input" type="number" placeholder=" " id="txtCreditDays" onkeypress="return event.charCode >= 48 && event.charCode <= 57" onchange="CalculateDueDate()">
+                <span class="highlight"></span>
+                <label>Credit Days</label>
+            </div>
+            <div><span id="lblCreditDate"></span></div>
+        </div>
+        <div class="col-md-2">
+            <div class="floating-label">
+                <input class="floating-input" placeholder=" " id="txtSalesPerson" disabled>
+                <span class="highlight"></span>
+                <label>Sales Person</label>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <div class="floating-label">
+                <input type="checkbox" id="chkRoundOff" /> @*onchange="chkChargesChange()"*@
+                <span class="highlight"></span>
+                <label>Round Off</label>
+            </div>
+            <div><span id="lblCreditDate"></span></div>
+        </div>
+        <div class="col-md-12">
+            <div class="floating-label">
+                <textarea class="floating-input floating-textarea" placeholder=" " id="txtRemark"></textarea>
+                <span class="highlight"></span>
+                <label>Remark</label>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="floating-label">
+                <input class="floating-input" type="text" placeholder=" " id="txtPrivateMarks" maxlength="200">
+                <span class="highlight"></span>
+                <label>Private Marks</label>
+            </div>
+        </div>
+        <div class="table-responsive " style="padding-top: 20px !important;">
+            <table class="tablesoter tablesorter tablesorter-blue hasFilters hasStickyHeaders">
+                <thead>
+                    <tr>
+                        <th style="width: 25px;font-size:9px !important">Is<br />Chg.</th>
+                        <th style="width: 320px;font-size:9px !important">Product</th>
+                        <th style="font-size:9px !important">Code</th>
+                        <th style="font-size:9px !important">DPRate</th>
+                        <th style="font-size:9px !important">Qty</th>
+                        <th style="font-size:9px !important">Stock<br />Qty</th>
+                        <th style="font-size:9px !important">DP</th>
+                        <th style="font-size:9px !important">Trade<br />Disc.</th>
+                        <th style="font-size:9px !important">Sche.<br />Disc.</th>
+                        <th style="font-size:9px !important">SPL <br />Disc.</th>
+                        @*Spec.*@
+                        <th style="font-size:9px !important">Net<br />Rate</th>
+                        <th style="font-size:9px !important">Net<br />Amount</th>
+                        <th style="font-size:9px !important">GST%</th>
+                        <th style="font-size:9px !important">CGST</th>
+                        <th style="font-size:9px !important">SGST/<br />UTGST</th>
+                        <th style="font-size:9px !important">IGST</th>
+                        <th style="font-size:9px !important">Value</th>
+                        <th style="font-size:9px !important">#</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <input type="hidden" id="HiddenPk" value="0" />
+                            <input type="checkbox" id="chkCharges" onchange="chkChargesChange()" />
+                        </td>
+                        <td>
+                            <span class="form-control" id="txtItem"></span>
+                        </td>
+                        <td><input type="text" class="form-control Invselect" disabled id="txtCode" /></td>
+                        <td>
+                            <span class="form-control" id="ddlDPRate"></span>@*Added on 23 feb 2022 for multiple DP rate selection*@
+                        </td>
+                        <td>
+                            <input type="hidden" id="hiddenStock" value="0" />
+                            <input type="text" class="form-control Invselect" id="txtQty" value="0" oninput="Calculation()" onkeypress="return CheckIsDecimalFourPlace(event,this)" /><input type="hidden" id="HdnOldQty" value="0" />
+                        </td>
+                        <td><input type="text" class="form-control Invselect" disabled id="txtStockValue" /></td>
+                        <td><input type="text" class="form-control Invselect" id="txtDP" value="0" disabled oninput="Calculation()" /></td>
+                        <td>
+                            <input type="hidden" id="hiddenTradeDisRate" value="0" />
+                            <input type="text" class="form-control Invselect" id="txtTradeDis" value="0" oninput="Calculation()" onkeypress="return CheckIsDecimalFourPlace(event,this)" />
+                        </td>
+                        <td>
+                            <input type="hidden" id="hiddenScheDisRate" value="0" />
+                            <input type="text" class="form-control Invselect" id="txtScheDis" value="0" oninput="Calculation()" onkeypress="return CheckIsDecimalFourPlace(event,this)" />
+                        </td>
+                        <td>
+                            <input type="hidden" id="hiddenSpecialDisRate" value="0" />
+                            <input type="text" class="form-control Invselect" id="txtSpecialDis" value="0" oninput="Calculation()" onkeypress="return CheckIsDecimalFourPlace(event,this)" />
+                        </td>
+                        <td><input type="text" class="form-control Invselect" id="txtNetRate" value="0" disabled /></td>
+                        <td><input type="text" class="form-control Invselect" id="txtNetAmount" value="0" disabled oninput="Calculation()" onkeypress="return CheckIsDecimalFourPlace(event,this)" /></td>
+                        <td><input type="text" class="form-control Invselect" id="txtGST" value="0" disabled /></td>
+                        <td><input type="text" class="form-control Invselect" id="txtCGST" value="0" disabled /></td>
+                        <td><input type="text" class="form-control Invselect" id="txtSGSTUTGST" value="0" disabled /></td>
+                        <td><input type="text" class="form-control Invselect" id="txtIGST" value="0" disabled /></td>
+                        <td><input type="text" class="form-control Invselect" id="txtValue" value="0" disabled /></td>
+                        <td class="text-center" width="60px">
+                            <i class="fa fa-save" data-toggle="tooltip" data-placement="top" title="Save" onclick="AddNewRow();"></i>
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody id="tbody"></tbody>
+                <tfoot>
+                    <tr>
+                        <th style="font-size:9px !important"></th>
+                        <th style="font-size:9px !important">Total</th>
+                        <th style="font-size:9px !important"></th>
+                        <th style="font-size:9px !important;text-align:right" align="right"></th>
+                        <th style="font-size:9px !important;text-align:right" align="right"></th>
+                        <th style="font-size:9px !important;text-align:right" align="right"></th>
+                        <th style="font-size:9px !important;text-align:right" align="right"></th>
+                        <th style="font-size:9px !important;text-align:right" align="right"></th>
+                        <th style="font-size:9px !important;text-align:right" align="right"></th>
+                        <th style="font-size:9px !important;text-align:right" align="right"></th>
+                        <th style="font-size:9px !important;text-align:right" align="right"></th>
+                        <th style="font-size:9px !important;text-align:right" align="right"><label id="lblNetAmount"></label></th>
+                        <th style="font-size:9px !important;text-align:right" align="right"></th>
+                        <th style="font-size:9px !important;text-align:right" align="right"><label id="lblCGST"></label></th>
+                        <th style="font-size:9px !important;text-align:right" align="right"><label id="lblSGSTUTGST"></label></th>
+                        <th style="font-size:9px !important;text-align:right" align="right"><label id="lblIGST"></label></th>
+                        <th align="right" style="font-size:9px !important;text-align:right"><label id="lblValue"></label></th>
+                        <th></th>
+                    </tr>
+
+                    <tr>
+                        <th style="font-size:9px !important">Is TCS<input type="checkbox" id="chkTCS" onchange="chkTCSChange()" /><input type="hidden" id="HdnChkTCSID" /></thstyle="font-size:9px>
+                        <th><label id="lblTCSCharge"></label></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th align="right" style="text-align:right"><label id="lblTCSValue" style="text-align:right"></label></th>
+                        <th></th>
+                    </tr>
+
+                    <tr>
+                        <th></th>
+                        <th style="font-size:9px !important">Grand Total</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th style="text-align:right;font-size:9px !important"><label id="lblGrandValue" style="text-align:right"></label></th>
+                        <th></th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+    </div>
+</div>
+<div id="PopupSearch"></div>
+
+<script>
+    var BuyerList = [];
+    var FreightTypeList = [];
+    var ChargeList = [];
+    var BuyerAddressList = [];
+    var ItemList = [];
+    var IsUT = 0;
+    var StateID = 0;
+    var DetailList = [];
+    var DtNow = new Date();
+    var SearchDataList = [];
+    var HeaderData = {};
+    var DetailData = [];
+    //Code Added For TCS
+    var TCSChargeList = [];
+    //Added by Kamini 29May2021---Customer Dropdown
+    var date = new Date();
+    var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+
+    var month = pad2(firstDay.getMonth() + 1);//months (0-11)
+    var day = pad2(firstDay.getDate());//day (1-31)
+    var year = firstDay.getFullYear();
+    var formattedDate = month + "/" + day + "/" + year;
+    //alert(formattedDate);
+    var PartyList = [];
+    var varddlCustomer = "";
+    var SuperStockistArr = [];
+    var ItemDPRateList = [];
+
+    function pad2(n) {
+        return (n < 10 ? '0' : '') + n;
+    }
+    //Added by Kamini 29May2021---Customer Dropdown
+
+    $(document).ready(function () {
+        $("body").addClass("sidebar-collapse");
+        //Added by Kamini 29May2021---Customer Dropdown
+
+        if(document.getElementById("hdnCurrentUserTypeId").value == "22") {
+            $("#DivddlCustomer").removeAttr("style");
+        }
+        GetAllPartyMaster();
+        //Added by Kamini 29May2021---Customer Dropdown
+        GetBuyersbyPartyID();
+        GetFreightTypeMaster();
+        GetChargeMaster();
+        GetTCSChargeMaster();
+        Clear();
+        EnDisable(true);
+    });
+
+    function EnDisable(Status) {
+        $("input[type=text]").prop('disabled', Status);
+        $("input[type=date]").prop('disabled', Status);
+        $("input[type=checkbox]").prop('disabled', Status);
+        $("select").prop('disabled', Status);
+        $("textarea").prop('disabled', Status);
+        $("#txtBuyer").dxSelectBox('instance').option('disabled', Status);
+        $("#txtConsignee").dxSelectBox('instance').option('disabled', Status);
+        $("#txtFreight").dxSelectBox('instance').option('disabled', Status);
+        $("#txtBCountry").prop('disabled', true);
+        $("#txtBState").prop('disabled', true);
+        $("#txtBCity").prop('disabled', true);
+        $("#txtBPin").prop('disabled', true);
+        $("#txtSCountry").prop('disabled', true);
+        $("#txtSState").prop('disabled', true);
+        $("#txtSCity").prop('disabled', true);
+        $("#txtSPin").prop('disabled', true);
+        $("#txtCode").prop('disabled', true);
+        $("#txtDP").prop('disabled', true);
+        $("#txtNetRate").prop('disabled', true);
+        $("#txtNetAmount").prop('disabled', true);
+        $("#txtGST").prop('disabled', true);
+        $("#txtCGST").prop('disabled', true);
+        $("#txtSGSTUTGST").prop('disabled', true);
+        $("#txtIGST").prop('disabled', true);
+        $("#txtValue").prop('disabled', true);
+        $("#txtStockValue").prop('disabled', true);
+        $("#txtPrivateMarks").prop('disabled', Status);
+        $("#txtCreditDays").prop('disabled', true);
+        $("#txtSalesPerson").prop('disabled', true);
+        //Added on 23 feb 2022 for multiple DP rate selection
+        $("#ddlDPRate").prop('disabled', true);
+
+        //$("#ddlCustomer").dxSelectBox('instance').option('disabled', Status);
+        //$('#chkTCS').prop('disabled', false);
+    }
+
+    function Clear() {
+        //$('#ddlCustomer').dxSelectBox('instance').option('value', '');
+        $('#txtBuyer').dxSelectBox('instance').option('value', '');
+        $('#txtConsignee').dxSelectBox('instance').option('value', '');
+        $('#txtFreight').dxSelectBox('instance').option('value', '');
+        $("#txtInvoiceDate").prop('type', 'text');
+        $("#txtEWayBillDate").prop('type', 'text');
+        $("#txtLRDate").prop('type', 'text');
+        $("#hiddenCustomerGSTNo").val('');
+        $("#hiddenConsigneeGSTNo").val('');
+        $("#hiddenBCountryID").val('0');
+        $("#hiddenBStateID").val('0');
+        $("#hiddenBCityID").val('0');
+        $("#hiddenSCountryID").val('0');
+        $("#hiddenSStateID").val('0');
+        $("#hiddenSCityID").val('0');
+        $("#hiddenTradeDisRate").val('0');
+        $("#hiddenScheDisRate").val('0');
+        $("#hiddenSpecialDisRate").val('0');
+        $("input[type=text]").val('');
+        $("input[type=date]").val('');
+        $("select").val('0');
+        $("textarea").val('');
+        $("#lblNetAmount").html('');
+        $("#lblCGST").html('');
+        $("#lblSGSTUTGST").html('');
+        $("#lblIGST").html('');
+        $("#lblValue").html('');
+        $('#HiddenPk').val('0');
+        $('#chkCharges').prop('checked', false);
+        ClearDetails();
+        $('#tbody').html('');
+        //BuyerAddressList = [];
+        //ItemList = [];
+        //IsUT = 0;
+        //StateID = 0;
+        //DetailList = [];
+        //SearchDataList = [];
+        $("#chkTCS").checked = false;
+        $("#chkTCS").prop('checked', false);
+        $("#lblTCSCharge").html('');
+        $("#lblTCSValue").html('');
+        $("#lblGrandValue").html('');
+        $("#txtInvoiceNo").focus();
+        $('#hdnDealerSalesChallanId').val('');
+    }
+
+    function ClearDetails() {
+        $('#txtCode').val('');
+        $('#txtQty').val('0');
+        $('#txtStockValue').val('0');
+        $("#hiddenStock").val('0');
+        $('#txtDP').val('0');
+        $('#txtTradeDis').val('0');
+        $('#hiddenTradeDisRate').val('0');
+        $('#txtScheDis').val('0');
+        $('#hiddenScheDisRate').val('0');
+        $('#txtSpecialDis').val('0');
+        $('#hiddenSpecialDisRate').val('0');
+        $('#txtNetRate').val('0');
+        $('#txtNetAmount').val('0');
+        $('#txtGST').val('0');
+        $('#txtCGST').val('0');
+        $('#txtSGSTUTGST').val('0');
+        $('#txtIGST').val('0');
+        $('#txtValue').val('0');
+        $('#HdnOldQty').val('0');
+    }
+
+    function AddNewRow() {
+        if (CheckDetailValidation()) {
+            var dtlModal = {};
+            var Pk = -1;
+            if ($('#HiddenPk').val() == "0") {
+                if (DetailList.length > 0) {
+                    //var da = [];
+                    //for (var i = 0; i < DetailList.length; i++) {
+                    //    da[i] = DetailList[i].Pk;
+                    //}
+                    //var maxval = Math.min.apply(Math, da);
+                    var minval = Math.min.apply(Math, DetailList.map(function(o) {
+                        return o.Pk;
+                    }));
+                    Pk = minval - 1;
+                }
+            }
+            else {
+                Pk = parseInt($('#HiddenPk').val());
+                DetailList = $.grep(DetailList, function (object) {
+                    return object.Pk != Pk;
+                });
+            }
+
+            dtlModal.Pk = Pk;
+            dtlModal.IsCharge = (($("#chkCharges").is(':checked')) ? true : false);
+            dtlModal.ItemId = $("#txtItem").dxSelectBox('instance').option('value');
+            dtlModal.ItemName = $("#txtItem").dxSelectBox('instance').option('text');
+            dtlModal.ItemCode = $("#txtCode").val();
+            dtlModal.Qty = $("#txtQty").val();
+            dtlModal.DP = $("#txtDP").val();
+            dtlModal.TradeDis = $("#txtTradeDis").val();
+            dtlModal.TradeDisRate = $("#hiddenTradeDisRate").val();
+            dtlModal.ScheDis = $("#txtScheDis").val();
+            dtlModal.ScheDisRate = $("#hiddenScheDisRate").val();
+            dtlModal.SpecialDis = $("#txtSpecialDis").val();
+            dtlModal.SpecialDisRate = $("#hiddenSpecialDisRate").val();
+            dtlModal.NetRate = $("#txtNetRate").val();
+            dtlModal.NetAmount = $("#txtNetAmount").val();
+            dtlModal.GST = $("#txtGST").val();
+            dtlModal.CGST = $("#txtCGST").val();
+            dtlModal.SGSTUTGST = $("#txtSGSTUTGST").val();
+            dtlModal.IGST = $("#txtIGST").val();
+            dtlModal.Value = parseFloat(Number($("#txtValue").val())).toFixed(2);
+            //Added on 23 feb 2022 for multiple DP rate selection
+            dtlModal.DPRate = $("#ddlDPRate").dxSelectBox('instance').option('value');
+            DetailList.push(dtlModal);
+
+            DetailList.sort(function (a, b) {
+                    var a1 = a.Pk, b1 = b.Pk;
+                    if (a1 == b1) return 0;
+                    return a1 < b1 ? 1 : -1;
+            });
+            Bindtbl();
+
+            $('#HiddenPk').val('0');
+            $('#chkCharges').prop('checked', false);
+            $('#chkCharges').prop('disabled', false);
+            $('#txtItem').dxSelectBox('instance').option('value', '');
+            chkChargesChange();
+            chkTCSChange();
+            ClearDetails();
+        }
+    }
+
+    function Bindtbl() {
+        try {
+            var html = '';
+            $('#tbody').html('');
+            $.each(DetailList, function (Index, Object) {
+                html += "<tr>";
+                html += '<td><input type="checkbox" ' + ((Object.IsCharge) ? 'checked' : '') + '/></td>';
+                html += '<td>' + Nullhandler(Object.ItemName) + ' </td>';
+                html += '<td>' + Nullhandler(Object.ItemCode) + ' </td>';
+                //Added on 23 feb 2022 for multiple DP rate selection
+                html += '<td align="right">' + Nullhandler(Object.DPRate) + '</td>';
+                html += '<td align="right">' + Nullhandler(Object.Qty) + ' </td>';
+                html += '<td align="right">' + Nullhandler(Object.ZZQuantityBalance) + ' </td>';
+                //html += '<td>' + Nullhandler(Object.ZZQuantityBalance) + ' </td>';
+                html += '<td align="right">' + Nullhandler(Object.DP) + '</td>';
+                html += '<td align="right">' + Nullhandler(Object.TradeDis) + ' </td>';
+                html += '<td align="right">' + Nullhandler(Object.ScheDis) + ' </td>';
+                html += '<td align="right">' + Nullhandler(Object.SpecialDis) + ' </td>';
+                html += '<td align="right">' + parseFloat(Nullhandler(Object.NetRate)).toFixed(2) + ' </td>';
+                html += '<td align="right">' + parseFloat(Nullhandler(Object.NetAmount)).toFixed(2) + ' </td>';
+                html += '<td align="right">' + Nullhandler(Object.GST) + ' </td>';
+                html += '<td align="right">' + Nullhandler(Object.CGST) + ' </td>';
+                html += '<td align="right">' + Nullhandler(Object.SGSTUTGST) + ' </td>';
+                html += '<td align="right">' + Nullhandler(Object.IGST) + ' </td>';
+                html += '<td align="right">' + Nullhandler(Object.Value) + ' </td>';
+                html += '<td class="text-center"><i class="fa fa-edit" data-toggle="tooltip" data-placement="top" title="Edit" onclick="EditDetail(' + Object.Pk + ');" ></i>&nbsp;';
+                html += '<i class="fa fa-trash" data-toggle="tooltip" data-placement="top" title="Delete" onclick="DeleteDetail(' + Object.Pk + ');"></i></td >';
+                html += '</tr>';
+            });
+            $("#tbody").html(html);
+
+            var sum = 0;
+            $.each(DetailList, function (ind, vl) {
+                if (vl.NetAmount != "")
+                    sum = sum + parseFloat(vl.NetAmount)
+            });
+            $("#lblNetAmount").html(parseFloat(sum).toFixed(2));
+
+            sum = 0;
+            $.each(DetailList, function (ind, vl) {
+                if (vl.NetAmount != "")
+                    sum = sum + parseFloat(vl.CGST)
+            });
+            $("#lblCGST").html(parseFloat(sum).toFixed(2));
+
+            sum = 0;
+            $.each(DetailList, function (ind, vl) {
+                if (vl.NetAmount != "")
+                    sum = sum + parseFloat(vl.SGSTUTGST)
+            });
+            $("#lblSGSTUTGST").html(parseFloat(sum).toFixed(2));
+
+            sum = 0;
+            $.each(DetailList, function (ind, vl) {
+                if (vl.NetAmount != "")
+                    sum = sum + parseFloat(vl.IGST)
+            });
+            $("#lblIGST").html(parseFloat(sum).toFixed(2));
+
+            sum = 0;
+            $.each(DetailList, function (ind, vl) {
+                if (vl.NetAmount != "")
+                    sum = sum + parseFloat(vl.Value)
+            });
+            $("#lblValue").html(parseFloat(sum).toFixed(2));
+
+            //Code Added For TCS
+            //alert(HeaderData.TCSChargeCodeID);
+            //$('#chkTCS').prop('disabled', false);
+            if (HeaderData.TCSChargeCodeID != null && HeaderData.TCSChargeCodeID != 0) {
+                $('#chkTCS').prop('checked', true);
+                $('#HdnChkTCSID').val(HeaderData.TCSChargeCodeID);
+                $("#lblTCSCharge").html(HeaderData.TCSChargeName);
+                $("#lblTCSValue").html(parseFloat(HeaderData.TCSAmount).toFixed(2));
+            }
+            else {
+
+                $('#HdnChkTCSID').val(0);
+                $('#chkTCS').prop('checked', false);
+                $("#lblTCSCharge").html('');
+                $("#lblTCSValue").html('');
+            }
+
+            $("#lblGrandValue").html(parseFloat(HeaderData.GrandTotal).toFixed(2));
+            chkTCSChange();
+
+        //Code Added For TCS
+        }
+        catch (e) {
+            alert(e.message);
+        }
+    }
+
+    function EditDetail(Pk) {
+        var obj = $.grep(DetailList, function (object) {
+            return object.Pk == Pk;
+        });
+
+        if (obj.length > 0) {
+            $('#HiddenPk').val(obj[0].Pk);
+            $("#chkCharges").prop("checked", obj[0].IsCharge);
+            $("#chkCharges").prop("disabled", true);
+            chkChargesChange();
+            $("#txtItem").dxSelectBox('instance').option('value', obj[0].ItemId);
+            $("#txtCode").val(obj[0].ItemCode);
+            $("#txtQty").val(obj[0].Qty);
+            $("#txtDP").val(obj[0].DP);
+            $("#txtTradeDis").val(obj[0].TradeDis);
+            $("#hiddenTradeDisRate").val(obj[0].TradeDisRate);
+            $("#txtScheDis").val(obj[0].ScheDis);
+            $("#hiddenScheDisRate").val(obj[0].ScheDisRate);
+            $("#txtSpecialDis").val(obj[0].SpecialDis);
+            $("#hiddenSpecialDisRate").val(obj[0].SpecialDisRate);
+            $("#txtNetRate").val(parseFloat(obj[0].NetRate).toFixed(2));
+            $("#txtNetAmount").val(obj[0].NetAmount);
+            $("#txtGST").val(obj[0].GST);
+            $("#txtQty").val(obj[0].Qty);
+            $("#txtCGST").val(obj[0].CGST);
+            $("#txtSGSTUTGST").val(obj[0].SGSTUTGST);
+            $("#txtIGST").val(obj[0].IGST);
+            $("#txtValue").val(obj[0].Value);
+            $("#HdnOldQty").val(obj[0].Qty);
+            //Added on 23 feb 2022 for multiple DP rate selection
+            $("#ddlDPRate").dxSelectBox('instance').option('value', obj[0].DPRate);
+
+            if (obj[0].RoundOff != "")
+                $("#chkRoundOff").prop("checked", true);
+            else
+                $("#chkRoundOff").prop("checked", false);
+
+
+            if (document.getElementById("HiddenPk").value != "") {
+                $("#txtStockValue").val(Number($("#hiddenStock").val()) + Number($("#txtQty").val()));
+            }
+            else
+                $("#txtStockValue").val($("#hiddenStock").val());
+            chkTCSChange();
+
+        }
+    }
+
+    function DeleteDetail(Pk) {
+        if (confirm("Are you sure, you want to delete this record ?")) {
+            DetailList = $.grep(DetailList, function (object) {
+                return object.Pk != Pk;
+            });
+            Bindtbl();
+        }
+    }
+
+    function CheckHeaderValidation() {
+        var Flag = true;
+        //Added by Kamini 29May2021---Customer Dropdown
+
+        if ($("#ddlCustomer").dxSelectBox('instance').option('value') == "" && document.getElementById("hdnCurrentUserTypeId").value == "22") {
+            alert("Stockist is required");
+            $('#ddlCustomer').focus();
+            Flag = false;
+        }
+        else if ($('#txtInvoiceNo').val() == "" && $("#hdnIsInvoiceAuto").val() == "False") {
+            alert("Invoice No. is required");
+            $('#txtInvoiceNo').focus();
+            Flag = false;
+        }
+        //else if ($('#txtInvoiceNo').val().length < 15) {
+        //    alert("Invoice No. length should be 15");
+        //    $('#txtInvoiceNo').focus();
+        //    Flag = false;
+        //}
+        else if ($('#txtInvoiceDate').val() == "") {
+            alert("Invoice Date is required");
+            $('#txtInvoiceDate').focus();
+            Flag = false;
+        }
+        else if ($("#txtBuyer").dxSelectBox('instance').option('value') == "") {
+            alert("Buyer is required");
+            $('#txtBuyer').focus();
+            Flag = false;
+        }
+        else if ($("#txtConsignee").dxSelectBox('instance').option('value') == "") {
+            alert("Consignee is required");
+            $('#txtConsignee').focus();
+            Flag = false;
+        }
+        return Flag
+    }
+
+    function CheckDetailValidation() {
+        debugger;
+        var Flag = CheckHeaderValidation();
+        if (Flag == true) {
+            var objChargeCheck = $.grep(DetailList, function (object) {
+                return object.IsCharge == 1;
+            });
+
+            var objItemCheck = $.grep(DetailList, function (object) {
+                return object.IsCharge == 0;
+            });
+
+            var valStock = 0
+            var objItemExists = [];
+            if ($("#chkCharges").is(':checked')) {
+                objItemExists = $.grep(DetailList, function (object) {
+                    return object.ItemId == $("#txtItem").dxSelectBox('instance').option('value') && object.IsCharge == 1;
+                });
+            }
+            else {
+                objItemExists = $.grep(DetailList, function (object) {
+                    return object.ItemId == $("#txtItem").dxSelectBox('instance').option('value') && object.IsCharge == 0;
+                });
+
+                //commented on 21 April 2022 due to stock shown as per dprate
+                //valStock = $.grep(ItemList, function (object) {
+                //    return object.ItemId == $("#txtItem").dxSelectBox('instance').option('value');
+                //})[0]["ZZQuantityBalance"];
+                valStock = $("#txtStockValue").val();
+            }
+            //alert(valStock);
+            //alert($('#HdnOldQty').val()+ "---");
+            var BalQtyForEdit = parseFloat($('#HdnOldQty').val()) + parseFloat(valStock);
+
+            //alert(valStock);
+            //alert(BalQtyForEdit);
+            if ($("#txtItem").dxSelectBox('instance').option('value') == "") {
+                alert("Item is required");
+                $('#txtItem').focus();
+                Flag = false;
+            }
+            else if ($('#txtQty').val() == "" && !$("#chkCharges").is(':checked')) {
+                alert("Qty is required");
+                $('#txtQty').focus();
+                Flag = false;
+            }
+            //else if (objItemExists.length > 0 && $('#HiddenPk').val() == "0") {
+                //uncommented this block as told by LSS on 23 Feb 2022 for not allowing same item to be added in invoice
+            //    alert("Item already exists in list.\nplease select another item to continue");
+            //    Flag = false;
+            //}
+            else if (parseFloat($('#txtQty').val()) == 0 && !$("#chkCharges").is(':checked')) {
+                alert("Qty is required");
+                $('#txtQty').focus();
+                Flag = false;
+            }
+            else if (parseFloat($('#txtQty').val()) > parseFloat(valStock)  && $('#HiddenPk').val() == "0" && !$("#chkCharges").is(':checked')) {
+                alert("Qty should be less than or equal to Stock Qty1 ("+valStock+").");
+                $('#txtQty').focus();
+                Flag = false;
+            }
+            else if (parseFloat($('#txtQty').val()) > parseFloat(BalQtyForEdit) && $('#HiddenPk').val() != "0" && !$("#chkCharges").is(':checked')) {
+                alert("Qty should be less than or equal to Stock Qty2 ("+BalQtyForEdit+").");
+                $('#txtQty').focus();
+                Flag = false;
+            }
+            else if (!$("#chkCharges").is(':checked') && objChargeCheck.length > 0 && $('#HiddenPk').val() == "0") {
+                alert("You can not add new row of Items after charge add.");
+                Flag = false;
+            }
+            else if ($("#chkCharges").is(':checked') && objItemCheck.length == 0 && $('#HiddenPk').val() == "0") {
+                alert("You can not add new row of Charge without save a row of Item.");
+                Flag = false;
+            }
+        }
+        return Flag;
+    }
+
+    function Add() {
+        if (varddlCustomer == "" && $("#hdnCurrentUserTypeId").val() == "22") {
+            alert("Stockist is required");
+            $('#ddlCustomer').focus();
+            return false;
+        }
+
+
+        $("#btnSave").prop('disabled', false);
+        ClearItemGridData();
+        Clear();
+        EnDisable(false);
+
+        //code added on 21 dec2021 for Invoice No auto generation
+        //alert($("#hdnIsInvoiceAuto").val() == "True");
+        if($("#hdnIsInvoiceAuto").val() == "True")
+        {
+            $('#txtInvoiceNo').val('');
+            $("#txtInvoiceNo").prop('disabled', true);
+        }
+    }
+
+    function Cancel() {
+        $("#btnSave").prop('disabled', true);
+        ClearItemGridData();
+        Clear();
+        EnDisable(true);
+        $("#ddlCustomer").dxSelectBox('instance').option('disabled', true);
+    }
+
+    function Edit() {
+        if($('#hdnDealerSalesChallanId').val() == "")
+        {
+            alert("Pease select invoice to Edit.");
+            return false;
+        }
+        EnDisable(false);
+
+
+        $("#btnSave").prop('disabled',false);
+        $("#txtItem").dxSelectBox('instance').option('disabled', false);
+        $('#txtItem').dxSelectBox('instance').option('value', '');
+        $("#ddlCustomer").dxSelectBox('instance').option('disabled', true);
+
+
+        //code added on 04Aug2021 Invoice No & Date cant be edited --- start
+        $("#txtInvoiceNo").prop('disabled', true);
+        $("#txtInvoiceDate").prop('disabled', true);
+        //$("#txtItem").dxSelectBox('instance').option('disabled', true);
+        $("#chkTCS").prop('disabled', true);
+        //code added on 04Aug2021 Invoice No & Date cant be edited --- end
+    }
+
+    function Delete() {
+    }
+
+    function HeaderModel() {
+
+        //debugger;
+        var model = {};
+        if($('#hdnDealerSalesChallanId').val() == "")
+        {
+            model.DealerSalesChallanID = 0
+        }
+        else{
+            model.DealerSalesChallanID = $('#hdnDealerSalesChallanId').val();
+        }
+        model.InvoiceNo = $('#txtInvoiceNo').val()
+        model.CustomerID = $("#txtBuyer").dxSelectBox('instance').option('value');
+        model.Customer = $("#txtBuyer").dxSelectBox('instance').option('text');
+        model.ConsigneeID = $("#txtConsignee").dxSelectBox('instance').option('value');
+        model.CustomerGST = $("#hiddenCustomerGSTNo").val();
+        model.ConsigneeGST = $("#hiddenConsigneeGSTNo").val();
+        model.FreightId = $("#txtFreight").dxSelectBox('instance').option('value');
+        model.Status = 0;
+        model.SealNo = $("#txtSealNo").val();
+        model.LRNo = $("#txtLRNo").val();
+        model.Transporter = $("#txtTransporter").val();
+        model.TransporterGST = $("#txtTransporterGST").val();
+        model.VehicleNo = $("#txtVechicleNo").val();
+        model.GrossWeight = $("#txtGrossWeight").val();
+        model.NetWeight = $("#txtNetWeight").val();
+        model.IsCancel = 0;
+        model.Approval1 = 0;
+        model.Approval2 = 0;
+        model.EWayBillNo = $("#txtEWayBillNo").val();
+        model.TransporterGstNo = $("#txtTransporterGST").val();
+        model.ConversionRate = 0;
+        model.YearID = 0
+        model.Remark = $("#txtRemark").val();
+        model.BillingPartyAddressID = $("#txtBillingAddress").dxSelectBox('instance').option('value');
+        model.BillingAddress = $("#txtBillingAddress").dxSelectBox('instance').option('text');
+        model.BillingCountryID = $("#hiddenBCountryID").val();
+        model.BillingCountry = $("#txtBCountry").val();
+        model.BillingStateID = $("#hiddenBStateID").val();
+        model.BillingState = $("#txtBState").val();
+        model.BillingCityID = $("#hiddenBCityID").val();
+        model.BillingCity = $("#txtBCity").val();
+        model.BillingPIN = $("#txtBPin").val();
+        model.ShippingPartyAddressID = $("#txtShippingAddress").dxSelectBox('instance').option('value');
+        model.ShippingAddress = $("#txtShippingAddress").dxSelectBox('instance').option('text');
+        model.ShippingCountryID = $("#hiddenSCountryID").val();
+        model.ShippingCountry = $("#txtSCountry").val();
+        model.ShippingStateID = $("#hiddenSStateID").val();
+        model.ShippingState = $("#txtSState").val();
+        model.ShippingCityID = $("#hiddenSCityID").val();
+        model.ShippingCity = $("#txtSCity").val();
+        model.ShippingPIN = $("#txtSPin").val();
+        model.ZZInvoiceDate = (($("#txtInvoiceDate").val() != "")?$("#txtInvoiceDate").val():null);
+        model.ZZLRDate = (($("#txtLRDate").val() != "")?$("#txtLRDate").val():null);
+        model.ZZEWayBillDate = (($("#txtEWayBillDate").val() != "") ? $("#txtEWayBillDate").val() : null);
+
+        model.TCSChargeCodeID = $("#chkTCS").is(':checked') ? $("#HdnChkTCSID").val() : 0;
+        model.TCSChargeName = $("#chkTCS").is(':checked') ? $("#lblTCSCharge").html() : "";
+        model.TCSAmount = $("#chkTCS").is(':checked') ? parseFloat($("#lblTCSValue").html()).toFixed(2) : 0;
+        model.GrandTotal = parseFloat($("#lblGrandValue").html()).toFixed(2)//$("#chkTCS").is(':checked') ? parseFloat($("#lblValue").html()).toFixed(2) + parseFloat($("#lblTCSValue").html()).toFixed(2) : parseFloat($("#lblValue").html()).toFixed(2);
+
+        model.NoOfBoxes = $("#txtNoOfBoxes").val();
+        model.CreditDays = $("#txtCreditDays").val();
+        if (Number($("#hdnCurrentUserTypeId").val()) == 22) {
+            //alert('admin' + varddlCustomer);
+            model.SuperStockistID = varddlCustomer;// $("#ddlCustomer").dxSelectBox('instance').option('value');
+        }
+        else {
+            //alert('user')
+            model.SuperStockistID = $("#hdnSuperStockistId").val();
+        }
+        model.IsRoundOff = ($("#chkRoundOff").is(':checked') ? true : false);
+        model.PrivateMarks = $("#txtPrivateMarks").val();
+        model.IsPurchaseReturn = true;
+        //alert(varddlCustomer);
+        //alert(model.SuperStockistID);
+        //model.SuperStockistID = 556;
+
+        //alert($("#HdnChkTCSID").val());
+        //alert(model.TCSChargeCodeID);
+        //alert(model.TCSChargeName);
+        //alert(model.TCSAmount);
+        //alert(model.GrandTotal);
+        return model;
+    }
+
+    function DetailModel() {
+        var DList = [];
+        $.each(DetailList, function (Index, Object) {
+            var model = {};
+            model.DealerSalesChallanDetailID = 0
+            model.DealerSalesChallanID = 0
+            model.ItemID = Object.ItemId
+            model.IsCharge = Object.IsCharge
+            model.Rate = Object.NetRate
+            model.UOMId = 0
+            model.Quantity = Object.Qty
+            model.BasicRate = Object.DP
+            model.Discount1 = Object.TradeDis
+            model.Discount2 = Object.ScheDis
+            model.Discount3 = Object.SpecialDis
+            model.Dis1Rate = Object.TradeDisRate
+            model.Dis2Rate = Object.ScheDisRate
+            model.Dis3rate = Object.SpecialDisRate
+            model.GrossValue = Object.Value
+            model.NetValue = Object.NetAmount
+            model.GSTRate = Object.GST
+            model.CGST = Object.CGST
+            model.SGSTORUTGST = Object.SGSTUTGST
+            model.IGST = Object.IGST
+            //Added on 23 feb 2022 for multiple DP rate selection
+            model.DPRate = Object.DPRate
+            DList.push(model);
+        });
+        return DList;
+    }
+
+    function Save() {
+        debugger;
+        try {
+            if (CheckHeaderValidation()) {
+                var objHeader = HeaderModel();
+                var objDetail = DetailModel();
+                if (objHeader != null && objDetail.length > 0) {
+                    $.ajax({
+                        url: '../Home/DealerSalesChallanInsert',
+                        type: 'POST',
+                        datatype: 'json',
+                        async: false,
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify({ objdbmlHeader: objHeader, objdbmlDetail: objDetail }),
+                        success: function (Response) {
+                            if (Response.StatusId === 1) {
+                                $("#btnSave").prop('disabled', true);
+                                alertSuccess(Response.Status);
+                                Clear();
+                                EnDisable(true);
+                                $('#ddlCustomer').dxSelectBox('instance').option('value', '');
+                                $("#ddlCustomer").dxSelectBox('instance').option('disabled', false);
+                            }
+                            else {
+                                GetItemsbyPartyID($('#txtBuyer').dxSelectBox('instance').option('value'));
+                                alert(Response.Status);
+                            }
+                        }
+                    });
+                }
+                else {
+                    alert("Item Details are required.");
+                }
+            }
+        } catch (e) {
+            alert(e.message);
+        }
+    }
+
+    function GetBuyersbyPartyID() {
+        try {
+            debugger;
+            var strParty = $("#ddlCustomer").dxSelectBox('instance').option('value');
+            var data = { 'PartyID': strParty  };
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                //url: "../Home/GetBuyersbyPartyID",
+                url: "../Home/GetPurchaseReturnParty",
+                type: 'POST',
+                dataType: 'json',
+                data: dataWithAntiforgeryToken,
+                async: true,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        BuyerList = Response.Result;
+                        $("#txtBuyer").dxSelectBox({
+                            dataSource: new DevExpress.data.ArrayStore({
+                                data: BuyerList,
+                                key: "PartyID"
+                            }),
+                            displayExpr: "Party",
+                            valueExpr: "PartyID",
+                            placeholder: "Buyer",
+                            searchEnabled: true,
+                            onValueChanged: function (data) {
+                                if (data.value != undefined && data.value != "") {
+                                    if ($('#txtInvoiceDate').val() != "") {
+                                        if (GetBuyersAddressbyPartyID(data.value,'B')) {
+                                            var obj = $.grep(BuyerList, function (object) {
+                                                return object.PartyID == data.value;
+                                            });
+                                            //alert("in");
+                                            //$('#txtConsignee').dxSelectBox('instance').option('value', data.value);
+                                            //alert(data.value);
+                                            GetItemsbyPartyID(data.value);
+                                            $("#hiddenCustomerGSTNo").val(obj[0].GSTNo);
+
+                                            //alert("in1");
+                                            //Commented on 11 Aug 2021 as in Editing it was clearing off the items data added after selecting customer.
+                                            //DetailList = [];
+                                            //$('#tbody').html('');
+                                            Bindtbl();
+                                            $('#HiddenPk').val('0');
+                                            $('#chkCharges').prop('checked', false);
+                                            chkChargesChange();
+                                            chkTCSChange();
+                                            $("#txtBillingAddress").dxSelectBox('instance').option('disabled', false);
+                                            //$("#txtShippingAddress").dxSelectBox('instance').option('disabled', false);
+                                            $("#txtItem").dxSelectBox('instance').option('disabled', false);
+                                            $('#txtItem').dxSelectBox('instance').option('value', '');
+                                        }
+                                    }
+                                    else {
+                                        $('#txtBuyer').dxSelectBox('instance').option('value', '');
+                                        alert("Invoice Date is required");
+                                        $('#txtInvoiceDate').focus();
+                                        return;
+                                    }
+                                }
+                            }
+                        });
+                        //------------------------------------------
+                        $("#txtConsignee").dxSelectBox({
+                            dataSource: new DevExpress.data.ArrayStore({
+                                data: BuyerList,
+                                key: "PartyID"
+                            }),
+                            displayExpr: "Party",
+                            valueExpr: "PartyID",
+                            placeholder: "Consignee",
+                            searchEnabled: true,
+                            onValueChanged: function (data) {
+                                if (data.value != undefined && data.value != "") {
+                                    if ($('#txtInvoiceDate').val() != "") {
+                                        if (GetBuyersAddressbyPartyID(data.value,'C')) {
+                                            var obj = $.grep(BuyerList, function (object) {
+                                                return object.PartyID == data.value;
+                                            });
+
+                                            $("#hiddenConsigneeGSTNo").val(obj[0].GSTNo);
+                                            $("#txtShippingAddress").dxSelectBox('instance').option('disabled', false);
+                                        }
+                                    }
+                                    else {
+                                        $('#txtConsignee').dxSelectBox('instance').option('value', '');
+                                        alert("Invoice Date is required");
+                                        $('#txtInvoiceDate').focus();
+                                        return;
+                                    }
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            alert("Data size is too large!");
+        }
+    }
+
+    function GetBuyersAddressbyPartyID(PartyID, tp) {
+        try {
+            var Flag = false;
+            var data = { 'PartyID': PartyID, 'Type': tp };
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Home/GetBuyersAddressbyPartyID",
+                type: 'POST',
+                dataType: 'json',
+                data: dataWithAntiforgeryToken,
+                async: false,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        BuyerAddressList = Response.Result;
+                        FillBuyerAddress(tp);
+                        Flag = true;
+                    }
+                    else {
+                        alert(Response.Status);
+                        if(tp == 'B')
+                            $('#txtBuyer').dxSelectBox('instance').option('value', '');
+                        else if(tp == 'C')
+                            $('#txtConsignee').dxSelectBox('instance').option('value', '');
+                    }
+                },
+                error: function (xhr) {
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            alert("Data size is too large!");
+        }
+        return Flag;
+    }
+
+    function GetItemsbyPartyID(BuyerID) {
+        try {
+            debugger;
+            var strParty = $("#ddlCustomer").dxSelectBox('instance').option('value');
+            var data = { 'BuyerID': BuyerID,'InvoiceDate': $("#txtInvoiceDate").val(), 'SuperStockist':  strParty  };
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                //url: "../Home/GetItemsbyPartyID",
+                url: "../Home/GetItemsbyPartyIDMultipleDPRate",
+                type: 'POST',
+                dataType: 'json',
+                data: dataWithAntiforgeryToken,
+                async: false,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        ItemList = Response.Result;
+                        ItemDPRateList = Response.ResultDP;
+                        FillItemList();
+                    }
+                    else {
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            alert("Data size is too large!");
+        }
+    }
+
+    function FillItemList() {
+        $("#txtItem").dxSelectBox({
+            dataSource: new DevExpress.data.ArrayStore({
+                data: ItemList,
+                key: "ItemId"
+            }),
+            displayExpr: "ZZProduct",
+            //dropDownOptions: {
+            //    minWidth: 500,
+            //    // maxWidth: 5,
+            //    height: 300
+            //    // maxHeight: 900 // specify this to override the fit-content behavior
+            //},
+            valueExpr: "ItemId",
+            searchEnabled: true,
+            onContentReady: function (ev) {
+                setTimeout(function () { ev.component.content().parent().width(500) });
+            },
+            onValueChanged: function (data) {
+                if (data.value != undefined && data.value != "") {
+                    $("#txtDP").val('');
+                    $("#hiddenStock").val('');
+                    $("#txtStockValue").val('');
+                    FillItemDetails(data.value);
+                }
+            }
+        });
+    }
+
+    function FillItemDetails(itemid) {
+        var filterItemlist = $.grep(ItemList, function (object) {
+            return object.ItemId == itemid;
+        });
+//        alert(document.getElementById("HiddenPk").value);
+        if (filterItemlist.length > 0) {
+            $("#txtCode").val(filterItemlist[0].ZZItemCode);
+            //commented on 23 feb 2022 for multiple DP rate selection
+            //$("#txtDP").val(filterItemlist[0].ZZDP);
+            $("#txtTradeDis").val(filterItemlist[0].ZZTradeDiscountPercentage);
+            $("#txtScheDis").val(filterItemlist[0].ZZSchemeDiscountPercentage);
+            $("#txtSpecialDis").val(filterItemlist[0].ZZAddlDiscountPercentage);
+            $("#txtGST").val(filterItemlist[0].ZZGSTPercent);
+            //commented on 23 feb 2022 for multiple DP rate selection
+            //$("#hiddenStock").val(filterItemlist[0].ZZQuantityBalance);
+            //$("#txtStockValue").val(filterItemlist[0].ZZQuantityBalance);
+
+            debugger;
+            //Added on 23 feb 2022 for multiple DP rate selection
+            var filterItemDPRatelist = $.grep(ItemDPRateList, function (object) {
+                return object.ItemId == itemid;
+            });
+
+
+            //Added on 23 feb 2022 for multiple DP rate selection   ---- start
+            $("#ddlDPRate").dxSelectBox({
+                dataSource: new DevExpress.data.ArrayStore({
+                    data: filterItemDPRatelist,
+                    key: "ItemId"
+                }),
+                displayExpr: "DPRate",
+                valueExpr: "DPRate",
+                searchEnabled: true,
+                onValueChanged: function (data) {
+                    if (data.value != undefined && data.value != "") {
+                        $("#txtDP").val(data.value);
+                        //alert(data.selectedIndex);
+                        //var selectBoxVal = $("#ddlDPRate").dxSelectBox("instance").option("displayValue");
+                        //var indexInDataSource = e.component.getDataSource().items().indexOf(selectBoxVal);
+                        var selectedItem = $("#ddlDPRate").dxSelectBox('instance').option('selectedItem');
+                        const myJSON = JSON.stringify(selectedItem);
+                        localStorage.setItem("testJSON", myJSON);
+
+                        // Retrieving data:
+                        let text = localStorage.getItem("testJSON");
+                        let obj = JSON.parse(text);
+
+                        $("#hiddenStock").val(obj.QtyBal);
+                        $("#txtStockValue").val(obj.QtyBal);
+                    }
+                }
+            });
+
+            if (filterItemDPRatelist.length >= 1) {
+                $("#txtDP").val(filterItemDPRatelist[0].DPRate);
+                $("#hiddenStock").val(filterItemDPRatelist[0].QtyBal);
+                $("#txtStockValue").val(filterItemDPRatelist[0].QtyBal);
+                $('#ddlDPRate').dxSelectBox('instance').option('value', filterItemDPRatelist[0].DPRate);
+            }
+            //Added on 23 feb 2022 for multiple DP rate selection   ---- end
+
+
+            if (filterItemlist[0].RetailCategoryId == 1446)
+                $("#txtDP").prop('disabled', false);
+            else
+                $("#txtDP").prop('disabled', true);
+
+            Calculation();
+
+        }
+    }
+
+    function chkChargesChange() {
+        ClearTCSDetails();
+        $('#txtItem').dxSelectBox('instance').option('value', '');
+        if ($("#chkCharges").is(':checked')) {
+            ClearDetails();
+            $("#txtQty").prop('disabled', true);
+            $("#txtTradeDis").prop('disabled', true);
+            $("#txtScheDis").prop('disabled', true);
+            $("#txtSpecialDis").prop('disabled', true);
+            $("#txtNetAmount").prop('disabled', false);
+
+            $("#txtItem").dxSelectBox({
+                dataSource: new DevExpress.data.ArrayStore({
+                    data: ChargeList,
+                    key: "ChargeId"
+                }),
+                displayExpr: "Charge",
+                valueExpr: "ChargeId",
+                searchEnabled: true,
+                onValueChanged: function (data) {
+                    if (data.value != undefined && data.value != "") {
+                        FillChargeDetails(data.value);
+                    }
+                }
+            });
+        }
+        else {
+            $("#txtQty").prop('disabled', false);
+            $("#txtTradeDis").prop('disabled', false);
+            $("#txtScheDis").prop('disabled', false);
+            $("#txtSpecialDis").prop('disabled', false);
+            $("#txtNetAmount").prop('disabled', true);
+            FillItemList();
+        }
+    }
+
+    function FillChargeDetails(ChargeId) {
+        var filterChargeList = $.grep(ChargeList, function (object) {
+            return object.ChargeId == ChargeId;
+        });
+
+        if (filterChargeList.length > 0) {
+            var maxval = Math.max.apply(Math, DetailList.map(function(o) {
+                return o.GST;
+            }));
+            if (maxval != '-Infinity')
+                $("#txtGST").val(maxval);
+            Calculation();
+        }
+    }
+
+    function Calculation() {
+        //if ($("#txtQty").val() == "") $("#txtQty").val("0");
+        //if ($("#txtTradeDis").val() == "") $("#txtTradeDis").val("0");
+        //if ($("#txtScheDis").val() == "") $("#txtScheDis").val("0");
+        //if ($("#txtSpecialDis").val() == "") $("#txtSpecialDis").val("0");
+
+        var Qty = ($("#txtQty").val() == "") ? 0 : parseFloat($("#txtQty").val()).toFixed(4);
+        var ZZDP = ($("#txtDP").val() == "") ? 0 :parseFloat($("#txtDP").val()).toFixed(4);
+        var dis1Per = ($("#txtTradeDis").val() == "") ? 0 :parseFloat($("#txtTradeDis").val()).toFixed(4);
+        var dis2Per = ($("#txtScheDis").val() == "") ? 0 :parseFloat($("#txtScheDis").val()).toFixed(4);
+        var dis3Per = ($("#txtSpecialDis").val() == "") ? 0 :parseFloat($("#txtSpecialDis").val()).toFixed(4);
+
+        var dis1 = parseFloat(((ZZDP / 100) * dis1Per)).toFixed(5);
+        var dis2 = parseFloat((((ZZDP - dis1) / 100) * dis2Per)).toFixed(5);
+        var dis3 = parseFloat((((ZZDP - dis1 - dis2) / 100) * dis3Per)).toFixed(5);
+
+        $("#hiddenTradeDisRate").val(dis1);
+        $("#hiddenScheDisRate").val(dis2);
+        $("#hiddenSpecialDisRate").val(dis3);
+
+        var netrate = ZZDP - dis1 - dis2 - dis3;
+        $("#txtNetRate").val(parseFloat(netrate).toFixed(5));
+        if (!$("#chkCharges").is(':checked')) {
+            $("#txtNetAmount").val(parseFloat(parseFloat(netrate).toFixed(5) * Qty).toFixed(2));
+        }
+        //alert($("#txtNetAmount").val() + "-- net amt");
+        var GST = $("#txtGST").val();
+        var CGST = 0, CGSTAmt = 0
+        var SUGST = 0, SUGSTAmt = 0
+        var IGST = 0, IGSTAmt = 0
+        //alert(StateID + " ---- StateID");
+        //alert(IsUT + " ---- IsUT");
+        //alert($("#hiddenStateID").val() + " ---- hiddenStateID");
+        //alert($("#hiddenIsUT").val() + " ---- hiddenIsUT");
+        if (($("#hiddenStateID").val() == StateID && $("#hiddenIsUT").val() == IsUT && $("#hiddenIsUT").val() == 1) || ($("#hiddenStateID").val() == StateID)) {
+            //alert("1");
+            CGST = GST / 2;
+            CGSTAmt = (parseFloat($("#txtNetAmount").val()) * CGST) / 100;
+            $("#txtCGST").val(parseFloat(CGSTAmt).toFixed(2));
+
+            SUGST = GST / 2;
+            SUGSTAmt = (parseFloat($("#txtNetAmount").val()) * SUGST) / 100;
+            $("#txtSGSTUTGST").val(parseFloat(SUGSTAmt).toFixed(2));
+            $("#txtIGST").val(0);
+        }
+        else {
+            //alert("2");
+            IGST = GST;
+            IGSTAmt = (parseFloat($("#txtNetAmount").val()) * IGST) / 100;
+            $("#txtIGST").val(parseFloat(IGSTAmt).toFixed(2));
+            $("#txtCGST").val(0);
+            $("#txtSGSTUTGST").val(0);
+        }
+        //alert(CGSTAmt + " - CGST");
+        //alert(SUGSTAmt + " - SUGSTAmt");
+        //alert(IGSTAmt + " - IGSTAmt");
+        //$("#txtValue").val((parseFloat($("#txtNetAmount").val()) + CGSTAmt + SUGSTAmt + IGSTAmt).toFixed(2));//.toFixed(2)
+        $("#txtValue").val(parseFloat((parseFloat($("#txtNetAmount").val()) + parseFloat($("#txtCGST").val()) + parseFloat($("#txtSGSTUTGST").val()) + parseFloat($("#txtIGST").val()))).toFixed(2));
+        //alert($("#txtValue").val());
+    }
+
+    function FillBuyerAddress(tp) {
+        if (tp == 'B') {
+            var BillingAddressList = $.grep(BuyerAddressList, function (object) {
+                return object.AddressTypeID == 1;
+            });
+            if (BillingAddressList.length > 0) {
+                $("#txtBillingAddress").dxSelectBox({
+                    dataSource: new DevExpress.data.ArrayStore({
+                        data: BillingAddressList,
+                        key: "PartyAddressID"
+                    }),
+                    displayExpr: "Address",
+                    valueExpr: "PartyAddressID",
+                    placeholder: "Billing Address",
+                    searchEnabled: true,
+                    onValueChanged: function (data) {
+                        FillCountryStateCityPin('B', data.value);
+                    }
+                });
+
+                if (BillingAddressList.length == 1) {
+                    FillCountryStateCityPin('B', BillingAddressList[0].PartyAddressID)
+                    $("#txtSalesPerson").val(BillingAddressList[0].SalesPerson);
+                }
+
+            }
+            else {
+                $("#txtSalesPerson").val('');
+            }
+        }
+
+        if (tp == 'C') {
+            var ShippingAddressList = $.grep(BuyerAddressList, function (object) {
+                return object.AddressTypeID == 2;
+            });
+            if (ShippingAddressList.length > 0) {
+                $("#txtShippingAddress").dxSelectBox({
+                    dataSource: new DevExpress.data.ArrayStore({
+                        data: ShippingAddressList,
+                        key: "PartyAddressID"
+                    }),
+                    displayExpr: "Address",
+                    valueExpr: "PartyAddressID",
+                    placeholder: "Shipping Address",
+                    searchEnabled: true,
+                    onValueChanged: function (data) {
+                        FillCountryStateCityPin('S', data.value);
+                    }
+                });
+
+                if (ShippingAddressList.length == 1) {
+                    FillCountryStateCityPin('S', ShippingAddressList[0].PartyAddressID)
+                }
+            }
+        }
+    }
+
+    function FillCountryStateCityPin(tp, vl) {
+        var AddressList = $.grep(BuyerAddressList, function (object) {
+            return object.PartyAddressID == vl;
+        });
+        debugger;
+        if (tp == 'B') {
+            $("#txtBillingAddress").dxSelectBox('instance').option('value', AddressList[0].PartyAddressID);
+            $("#hiddenBCountryID").val(AddressList[0].CountryID);
+            $("#txtBCountry").val(AddressList[0].ZZCountry);
+            $("#hiddenBStateID").val(AddressList[0].StateID);
+            $("#txtBState").val(AddressList[0].ZZState);
+            $("#hiddenBCityID").val(AddressList[0].Cityid);
+            $("#txtBCity").val(AddressList[0].ZZCity);
+            $("#txtBPin").val(AddressList[0].Pin);
+            IsUT = AddressList[0].ZZIsUT;
+            StateID = AddressList[0].StateID;
+        }
+        else if(tp == 'S'){
+            $("#txtShippingAddress").dxSelectBox('instance').option('value', AddressList[0].PartyAddressID);
+            $("#hiddenSCountryID").val(AddressList[0].CountryID);
+            $("#txtSCountry").val(AddressList[0].ZZCountry);
+            $("#hiddenSStateID").val(AddressList[0].StateID);
+            $("#txtSState").val(AddressList[0].ZZState);
+            $("#hiddenSCityID").val(AddressList[0].Cityid);
+            $("#txtSCity").val(AddressList[0].ZZCity);
+            $("#txtSPin").val(AddressList[0].Pin);
+        }
+    }
+
+    function GetFreightTypeMaster() {
+        var arrayFreightTypeList = @Html.Raw(Json.Encode(@ViewData["FreightTypeList"]));
+        try {
+            if (arrayFreightTypeList.Data.StatusId != "99") {
+                if (arrayFreightTypeList.Data.Result.length > 0) {
+                    for (var i = 0; i < arrayFreightTypeList.Data.Result.length; i++) {
+                        FreightTypeList[i] = arrayFreightTypeList.Data.Result[i];
+                    }
+
+                    $("#txtFreight").dxSelectBox({
+                        dataSource: new DevExpress.data.ArrayStore({
+                            data: FreightTypeList,
+                            key: "FreightTypeID"
+                        }),
+                        displayExpr: "FreightType",
+                        valueExpr: "FreightTypeID",
+                        placeholder: "Freight",
+                        searchEnabled: true
+                    });
+                }
+            }
+            else {
+                alert(arrayFreightTypeList.Data.Status);
+            }
+        }
+        catch (e){
+            alert("Data size is too large!");
+        }
+        }
+
+    function GetChargeMaster() {
+        var arrayChargeList = @Html.Raw(Json.Encode(@ViewData["ChargeList"]));
+        try {
+            if (arrayChargeList.Data.StatusId != "99") {
+                if (arrayChargeList.Data.Result.length > 0) {
+                    for (var i = 0; i < arrayChargeList.Data.Result.length; i++) {
+                        ChargeList[i] = arrayChargeList.Data.Result[i];
+                    }
+                }
+            }
+            else {
+                alert(arrayChargeList.Data.Status);
+            }
+        }
+        catch (e){
+            alert("Data size is too large!");
+        }
+        }
+
+    function Search() {
+        if (varddlCustomer == "" && $("#hdnCurrentUserTypeId").val() == "22") {
+            alert("Stockist is required");
+            $('#ddlCustomer').focus();
+            return false;
+        }
+        var html = ""
+        html += "<div class='row'>";
+        html += "<div class='col-md-12'>";
+        html += "<div class='col-md-3'><label>From Date</label><br>";
+        html += "<div class='floating-input' id='dtFrom'></div></div>";
+        html += "<div class='col-md-3'><label>To Date</label><br>";
+        html += "<div class='floating-input' id='dtTo'></div></div>";
+        html += "<div class='col-md-1'><br><label>Or</label></div>";
+        html += "<div class='col-md-3'><label>Invoice No.</label><br>";
+        html += "<input type='text' class='floating-input' id='txtSearchInvoiceNo' style='height:30px;'/></div>";
+        html += "<div class='col-md-2'><br><button class='btn btn-success' type='button' style='margin-top: 5px;' onclick='DealerSalesChallanGetByFromDateToDate()'> <i class='fa fa-search'></i></button></div>";
+        html += "</div></div>";
+        html += "<br/>";
+        html += "<div class='row'>";
+        html += "<div class='col-md-12 table-responsive' style='overflow:scroll;height:450px'>";
+        html += "<table width='100%' id='tblSearch' class='tablesoter tablesorter tablesorter-blue hasFilters hasStickyHeaders'>";
+        html += "<thead><tr>";
+        html += "<th>Invoice No.</th>";
+        html += "<th>Invoice Date</th>";
+        html += "<th>Customer</th>";
+        html += "<th>Status</th>";
+        html += "<th class='text-center'>Action/Print</th>";
+        html += "</tr></thead>";
+        html += "<tbody id='tbodySearchData'></tbody>";
+        html += "</table>";
+        html += "</div></div>";
+
+        $("#PopupSearch").dxPopup({
+            showTitle: true,
+            title: 'Search',
+            height: 600,
+            width: 1100,
+            contentTemplate: function (contentElement) {
+                contentElement.append(html)
+
+                $("#dtFrom").dxDateBox({
+                    applyValueMode: "useButtons",
+                    height: 30,
+                    width:150,
+                    type: "date",
+                    value: formattedDate,//DtNow,
+                    displayFormat: "dd/MM/yyyy"
+
+                });
+                $("#dtTo").dxDateBox({
+                    applyValueMode: "useButtons",
+                    height: 30,
+                    width: 150,
+                    type: "date",
+                    value: DtNow,
+                    displayFormat: "dd/MM/yyyy"
+
+                });
+            }
+
+        });
+
+        if ($("#hdnCurrentUserTypeId").val() == "22") {
+            if (varddlCustomer != "") {
+                //alert("1");
+                $("#PopupSearch").dxPopup("instance").show();
+            }
+            else {
+                //alert("2");
+                $("#PopupSearch").dxPopup("instance").hide();
+            }
+        }
+        else {
+            //alert("3");
+            $("#PopupSearch").dxPopup("instance").show();
+        }
+    }
+
+    function DealerSalesChallanGetByFromDateToDate() {
+        debugger
+        try {
+            if ($("#dtFrom").dxDateBox('instance').option('value') == null || $("#dtFrom").dxDateBox('instance').option('value') == "" || $("#dtFrom").dxDateBox('instance').option('value') == undefined ||
+                $("#dtTo").dxDateBox('instance').option('value') == null || $("#dtTo").dxDateBox('instance').option('value') == "" || $("#dtTo").dxDateBox('instance').option('value') == undefined) {
+                return false
+            }
+
+            var FromDate = SetDate($("#dtFrom").dxDateBox('instance').option('value'));
+            var ToDate = SetDate($("#dtTo").dxDateBox('instance').option('value'));
+            var txtSearchInvoiceNo = $("#txtSearchInvoiceNo").val();
+            var strParty = $("#ddlCustomer").dxSelectBox('instance').option('value');
+            //alert(strParty);
+            var data = { 'FromDate': FromDate, 'ToDate': ToDate,'InvoiceNo': txtSearchInvoiceNo, 'SuperStockist':  strParty};
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Home/DealerSalesChallanPurchaseReturnGetByFromDateToDate",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: dataWithAntiforgeryToken,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        SearchDataList = Response.Result;
+                        BindSearchData();
+                    }
+                    else {
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            alert("Data size is too large!");
+        }
+    }
+
+    function BindSearchData() {
+        var varHTML = '';
+        try {
+            $.each(SearchDataList, function (Index, Object) {
+                varHTML += "<tr>";
+                varHTML += '<td>' + (Object.InvoiceNo) + '</td>';
+                varHTML += '<td>' + (Object.InvoiceDate) + '</td>';
+                varHTML += '<td>' + (Object.Customer) + '</td>';
+                varHTML += '<td>' + (Object.Status) + '</td>';
+                varHTML += "<td align='center'><i class='fa fa-info-circle' title='Info' style='background-color: #28a745;border-color: #28a745;' onclick='DealerSalesChallanGetById(" + Object.DealerSalesChallanID + ")'></i>";
+                varHTML += "<i class='fa fa-print' title='Print Original Invoice for Recipient' style='background-color: #28a745;border-color: #28a745;margin-left:5px;' onclick='GetSalesInvoicePrint(" + Object.DealerSalesChallanID + ",1)'>&nbsp;O</i>";
+                varHTML += "<i class='fa fa-print' title='Print Duplicate Invoice for Transporter' style='background-color: #28a745;border-color: #28a745;margin-left:5px;' onclick='GetSalesInvoicePrint(" + Object.DealerSalesChallanID + ",2)'>&nbsp;D</i>";
+                varHTML += "<i class='fa fa-print' title='Print Triplicate Invoice for Supplier' style='background-color: #28a745;border-color: #28a745;margin-left:5px;' onclick='GetSalesInvoicePrint(" + Object.DealerSalesChallanID + ",3)'>&nbsp;T</i>";
+                varHTML += "</td >";
+                varHTML += '</tr>';
+            });
+            $('#tbodySearchData').html(varHTML);
+        } catch (e) {
+            alert(e.message);
+        }
+    }
+
+    function GetSalesInvoicePrint(DSCID, n) {
+        debugger;
+        try {
+            var data = { 'DealerSalesChallanID': DSCID };
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Home/GetSalesInvoicePrint",
+                type: 'POST',
+                dataType: 'json',
+                data: dataWithAntiforgeryToken,
+                async: true,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        //PrintRecord(JSON.parse(Response.ResultHeader), JSON.parse(Response.ResultDetail), JSON.parse(Response.ResultGST));
+                        //alert(Response.StatusId);
+                        //alert(JSON.parse(Response.ResultHeader));
+                        //alert(JSON.parse(Response.ResultDetail));
+                        //alert(JSON.parse(Response.ResultGST));
+                        PrintRecord(JSON.parse(Response.ResultHeader), JSON.parse(Response.ResultDetail), JSON.parse(Response.ResultGST),n);
+                    }
+                    else {
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            alert("Data size is too large!");
+        }
+    }
+    function arrayBufferToBase64( buffer ) {
+        var image = new Image();
+        image.src = 'data:image/png;base64,iVBORw0K...';
+        document.body.appendChild(image);
+        return btoa(String.fromCharCode.apply(null, new Uint8Array(buffer)));
+
+    }
+    function escapeUnicode(str) {
+        return str.replace(/[^\0-~]/g, function (ch) {
+            return "\\u" + ("0000" + ch.charCodeAt().toString(16)).slice(-4);
+        });
+    }
+
+    function PrintRecord(HE, DE, GS, prno) {
+        //alert("hi in print");
+        debugger;
+        var GSTType = HE[0].GSTType;
+        var PHtml = '';
+        var PHtml1 = '';
+        var PHtml2 = '';
+        var PHtml3 = '';
+        var FinalPHtml = '';
+        //alert("1a");
+
+        //<span style="float:right;height:5px !important;margin-bottom:-10px;">Original for Recipient</span>
+        PHtml1 += '<div style="font-family: Arial, sans-serif !important;font-size: 12px !important;">';
+        PHtml1 += '<div  style="height: 210px;position: fixed;top: 0px;width: 98.5%">';
+        if (HE[0].QRCodeBase64Text != "") {
+            PHtml1 += '<div  style="height: 100px;width=100px;position: fixed;float:left"><img width="100px" height="100px" style="border:0px" border="0" src="data:image/png;base64, ' + HE[0].QRCodeBase64Text + '" alt="QR Code"></div>';
+        }
+        PHtml1 += '<div style="width: 100%; float: left; text-align: center;"><span style="float:right;height:5px !important;margin-bottom:-10px;">Original for Recipient</span>';
+        PHtml1 += '<h2 style="margin: 0; text-transform: uppercase;">' + HE[0].Factory + '</h2>';
+        //PHtml1 += '<p style="margin-top: 0;"><img width="70px" height="70px" src="data:image/png;base64,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" alt="QR Code"></p>';
+        //PHtml1 += '<p style="margin-top: 0;"><img src="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==" alt="Red dot" /></p>';
+        PHtml1 += '<p style="margin-top: 0;">' + HE[0].FactoryAddress + '</p>';
+        PHtml1 += '<div style="width: 100%;">';
+        PHtml1 += '<span style="margin-right: 50px;"><b>GSTIN No. :</b> ' + HE[0].FactoryGSTNo + '</span>';
+        PHtml1 += '<span><b>PAN NO. :</b> ' + HE[0].FactoryPANNo + '</span>';
+        PHtml1 += '<b style="text-transform: uppercase; float: right;">Purchase Return</b>';
+        PHtml1 += '</div>';
+        PHtml1 += '</div>';
+
+        //alert("2");
+        PHtml2 += '<div style="font-family: Arial, sans-serif !important;font-size: 12px !important;">';
+        PHtml2 += '<div   style="height: 210px;position: fixed;top: 0px;width: 98.5%;">';
+        PHtml2 += '<div  style="height: 100px;width=100px;position: fixed;float:left"><img width="100px" height="100px" style="border:0px" border="0" src="data:image/png;base64, ' + HE[0].QRCodeBase64Text + '" alt="QR Code"></div>';
+        PHtml2 += '<div style="width: 100%; float: left; text-align: center;"><span style="float:right;height:5px !important;margin-bottom:-10px;">Duplicate for Transporter</span>';
+        PHtml2 += '<h2 style="margin: 0; text-transform: uppercase;">' + HE[0].Factory + '</h2>';
+        PHtml2 += '<p style="margin-top: 0;">' + HE[0].FactoryAddress + '</p>';
+        PHtml2 += '<div style="width: 100%;">';
+        PHtml2 += '<span style="margin-right: 50px;"><b>GSTIN No. :</b> ' + HE[0].FactoryGSTNo + '</span>';
+        PHtml2 += '<span><b>PAN NO. :</b> ' + HE[0].FactoryPANNo + '</span>';
+        PHtml2 += '<b style="text-transform: uppercase; float: right;">Purchase Return</b>';
+        PHtml2 += '</div>';
+        PHtml2 += '</div>';
+        //alert("3");
+        PHtml3 += '<div style="font-family: Arial, sans-serif !important;font-size: 12px !important;">';
+        PHtml3 += '<div   style="height: 210px;position: fixed;top: 0px;width: 98.5%;">';
+        PHtml3 += '<div  style="height: 100px;width=100px;position: fixed;float:left"><img width="100px" height="100px" style="border:0px" border="0" src="data:image/png;base64, ' + HE[0].QRCodeBase64Text + '" alt="QR Code"></div>';
+        PHtml3 += '<div style="width: 100%; float: left; text-align: center;"><span style="float:right;height:5px !important;margin-bottom:-10px;">Triplicate for Supplier</span>';
+        PHtml3 += '<h2 style="margin: 0; text-transform: uppercase;">' + HE[0].Factory + '</h2>';
+        PHtml3 += '<p style="margin-top: 0;">' + HE[0].FactoryAddress + '</p>';
+        PHtml3 += '<div style="width: 100%;">';
+        PHtml3 += '<span style="margin-right: 50px;"><b>GSTIN No. :</b> ' + HE[0].FactoryGSTNo + '</span>';
+        PHtml3 += '<span><b>PAN NO. :</b> ' + HE[0].FactoryPANNo + '</span>';
+        PHtml3 += '<b style="text-transform: uppercase; float: right;">Purchase Return</b>';
+        PHtml3 += '</div>';
+        PHtml3 += '</div>';
+        //PHtml += '<div style="width: 100%; float: right;">';
+        //PHtml += '<div style="width: 50%; float: left;">';
+        //PHtml += '<span style="margin-right: 50px;"><b>GSTIN No. :</b> ' + HE[0].FactoryGSTNo + '</span>';
+        //PHtml += '<span><b>PAN NO. :</b> ' + HE[0].FactoryPANNo + '</span>';
+        //PHtml += '</div>';
+        //PHtml += '<div style="width: 50%; float: right;">';
+        //PHtml += '<b style="text-transform: uppercase; float: right;">Tax Invoice</b>';
+        //PHtml += '</div>';
+        //PHtml += '</div>';
+
+        if (prno == 1)
+            FinalPHtml = PHtml1;
+        if (prno == 2)
+            FinalPHtml = PHtml2;
+        if (prno == 3)
+            FinalPHtml = PHtml3;
+        //alert("in");
+        PHtml += '<div style="width: 100%; float: left; margin-top: 40px;">';
+        PHtml += '<table border="0" style="border-spacing: 0;border-bottom: 2px solid #000;border-top: 2px solid #000;border-left: 2px solid #000;border-right: 2px solid #000;">';
+        PHtml += '<tr>';
+        if (HE[0].IRNNo != "")
+            PHtml += '<td style="width:33.33%; vertical-align:top;border-right: 1px solid #000;border-bottom: 1px solid #000;">';
+        else
+            PHtml += '<td style="width:33.33%; vertical-align:top;border-right: 1px solid #000;">';
+        //PHtml += '<td style="width:33.33%; vertical-align:top;border-right: 1px solid #000;">';
+        PHtml += '<p style="margin-top: 0;font-weight: 600; margin-bottom: 0;"><b style="border-bottom: 1px solid #000;">Recipient (Billed To-Place or Supply)</b></p>';
+        PHtml += '<p style="margin-top: 0;font-weight: 600;">' + HE[0].Customer + '</p>';
+        PHtml += '<p style="margin-top: 0;font-size: 12px;">' + HE[0].CustomerAddress + '</p>';
+        PHtml += '<p style="margin-top: 0;width: 50%; float: left; margin-bottom: 0; font-size: 12px;"><b>State :</b> ' + HE[0].CustomerState + '</p>';
+        PHtml += '<p style="margin-top: 0;width: 50%; float: left; margin-bottom: 0; font-size: 12px;"><b>Pan No. :</b> ' + HE[0].CustomerPAN + '</p>';
+        PHtml += '<p style="margin-top: 0;width: 90%; float: left; margin-bottom: 0; font-size: 12px;"><b>GISTIN No. :</b> ' + HE[0].CustomerGST + '</p>';
+        PHtml += '<p style="margin-top: 5px;width: 90%; float: left; margin-bottom: 0; font-size: 12px;"><b>Mobile :</b> ' + HE[0].RecepientMobile + '</p>';
+        PHtml += '</td>';
+        if (HE[0].IRNNo != "")
+            PHtml += '<td style="width:33.33%; vertical-align:top;border-right: 1px solid #000;border-bottom: 1px solid #000;">';
+        else
+            PHtml += '<td style="width:33.33%; vertical-align:top;border-right: 1px solid #000;">';
+        PHtml += '<p style="margin-top: 0;font-weight: 600; margin-bottom: 0;"><b style="border-bottom: 1px solid #000;">Consignee (Billed To-Place or Supply)</b></p>';
+        PHtml += '<p style="margin-top: 0;font-weight: 600;">' + HE[0].Consignee + '</p>';
+        PHtml += '<p style="margin-top: 0;font-size: 12px;">' + HE[0].ConsigneeAddress + '</p>';
+        PHtml += '<p style="margin-top: 0;width: 50%; float: left; margin-bottom: 0; font-size: 12px;"><b>State :</b> ' + HE[0].ConsigneeState + '</p>';
+        PHtml += '<p style="margin-top: 0;width: 50%; float: left; margin-bottom: 0; font-size: 12px;"><b>Pan No. :</b> ' + HE[0].ConsigneePAN + '</p>';
+        PHtml += '<p style="margin-top: 0;width: 90%; float: left; margin-bottom: 0; font-size: 12px;"><b>GISTIN No. :</b> ' + HE[0].ConsigneeGST + '</p>';
+        PHtml += '<p style="margin-top: 5px;width: 90%; float: left; margin-bottom: 0; font-size: 12px;"><b>Mobile :</b> ' + HE[0].ConsigneeMobile + '</p>';
+        PHtml += '</td>';
+        if (HE[0].IRNNo != "")
+            PHtml += '<td style="width:33.33%; vertical-align:top;border-bottom: 1px solid #000;">';
+        else
+            PHtml += '<td style="width:33.33%; vertical-align:top">';
+        //PHtml += '<td  style="width:33.33%; vertical-align:top">';
+        PHtml += '<p style="margin-top: 0;width: 60%; float: left;  font-size: 12px; font-weight:600;line-height:10px"><b>Invoice No.: </b> ' + HE[0].InvoiceNo + '</p>';
+        PHtml += '<p style="margin-top: 0;width: 40%; float: left;  font-size: 12px;line-height:10px"><b>Date: </b> ' + HE[0].InvoiceDate + '</p>';
+        PHtml += '<p style="margin-top: 0;width: 60%; float: left;  font-size: 12px;line-height:10px"><b>Order No: </b></p>'; /*<b>SO# :</b> By Phone*/
+        PHtml += '<p style="margin-top: 0;width: 40%; float: left;  font-size: 12px;line-height:10px"><b>Order Date: </b></p>'; /*<b>Date :</b> 19/06/2020*/
+        PHtml += '<p style="margin-top: 0;width: 60%; float: left;  font-size: 12px;line-height:10px"><b>Transporter: </b> ' + HE[0].Transporter + '</p>';
+        PHtml += '<p style="margin-top: 0;width: 40%; float: left;  font-size: 12px;line-height:10px"><b>Due Date: </b> ' + HE[0].DueDateVal + '</p>';
+        PHtml += '<p style="margin-top: 0;width: 60%; float: left;  font-size: 12px;line-height:10px"><b>LR No.: </b> ' + HE[0].LRNo + '</p>';
+        PHtml += '<p style="margin-top: 0;width: 40%; float: left;  font-size: 12px;line-height:10px"><b>Date: </b> ' + HE[0].LRDate + '</p>';
+        PHtml += '<p style="margin-top: 0;width: 60%; float: left;  font-size: 12px;line-height:10px"><b>Vechicle No.: </b> ' + HE[0].VehicleNo + '</p>';
+        PHtml += '<p style="margin-top: 0;width: 40%; float: left;  font-size: 12px;line-height:10px"><b>No Of Boxes: </b> ' + HE[0].NoOfBoxes + '</p>';
+        PHtml += '<p style="margin-top: 0;width: 100%; float: left;  font-size: 11px;line-height:10px"><b>Private marks: </b> ' + HE[0].PrivateMarks + '</p>';
+        PHtml += '</td>';
+        if (HE[0].IRNNo != "")
+        {
+            PHtml += '</tr>';
+            PHtml += '<tr>';
+            PHtml += '<td colspan="3">';
+            PHtml += '<div><p style="margin-top: 2;width: 100%; float: left;  font-size: 11px;line-height:10px"><b>IRN No.: </b> ' + HE[0].IRNNo + '</p></div>';
+            PHtml += '</td>';
+            PHtml += '</tr>';
+        }
+        PHtml += '</table>';
+        PHtml += '</div>';
+        PHtml += '</div>';
+
+        PHtml += '<table>';
+        PHtml += '<thead>';
+        PHtml += '<tr>';
+        PHtml += '<td>';
+        PHtml += '<div style="height: 240px;">&nbsp;</div>';
+        PHtml += '</td>';
+        PHtml += '</tr>';
+        PHtml += '</thead>';
+        PHtml += '<tbody>';
+        PHtml += '<tr>';
+        PHtml += '<td>';
+
+        var CheckIndex = 0;
+        var PageCount = 0
+        var MaxPageRows = 15
+        var GiveABreak = false;
+        var PageRatio = parseFloat(DE.length / MaxPageRows);
+
+        if (PageRatio > parseInt(PageRatio))
+            PageCount = (parseInt(PageRatio) + 1);
+        else
+            PageCount = (parseInt(PageRatio));
+        //alert(PageCount);
+        for (var i = 1; i <= PageCount; i++) {
+            if (i == 1)
+                PHtml += '<div style="page-break-before: always;margin-top:35px;">';
+            else
+                PHtml += '<div style="margin-top:270px;page-break-before: always;">';
+            PHtml += '<table border="0" width="100%" style="border-collapse: collapse;">';
+            PHtml += '<tr style="font-size:14px;">';
+            PHtml += '<th align="center" width="40px;" style="border:1px solid black;border-right:none;padding:0px 3px 0px 3px;">Sr<br />No.</th>';
+            PHtml += '<th align="leftauto" width="290px;" style="border:1px solid black;border-right:none;padding:0px 3px 0px 3px;">Description Of Goods</th>';
+            PHtml += '<th align="center" width="60px;" style="border:1px solid black;border-right:none;padding:0px 3px 0px 3px;">HSN<br />Code</th>';
+            PHtml += '<th align="center" width="30px;" style="border:1px solid black;border-right:none;padding:0px 3px 0px 3px;">UOM</th>';
+            //PHtml += '<th align="right" width="50px;" style="border:1px solid black;border-right:none;padding:0px 3px 0px 3px;">Pkt/<br />CTN</th>';
+            //PHtml += '<th align="right" width="50px;" style="border:1px solid black;border-right:none;padding:0px 3px 0px 3px;">Qty/<br />CTN</th>';
+            PHtml += '<th align="center" width="50px;" style="border:1px solid black;border-right:none;padding:0px 3px 0px 3px;">Qty</th>';
+            PHtml += '<th align="center" width="50px;" style="border:1px solid black;border-right:none;padding:0px 3px 0px 3px;">Rate</th>';
+            PHtml += '<th align="center" width="50px;" style="border:1px solid black;border-right:none;padding:0px 3px 0px 3px;">Trade<br />Disc. %</th>';
+            PHtml += '<th align="center" width="50px;" style="border:1px solid black;border-right:none;padding:0px 3px 0px 3px;">Scheme<br />Disc. %</th>';
+            PHtml += '<th align="center" width="50px;" style="border:1px solid black;border-right:none;padding:0px 3px 0px 3px;">Special<br />Disc. %</th>';
+            //PHtml += '<th align="right" width="50px;" style="border:1px solid black;border-right:none;padding:0px 3px 0px 3px;">Net<br />Rate</th>';
+            PHtml += '<th align="center" width="50px;" style="border:1px solid black;border-right:none;padding:0px 3px 0px 3px;">Taxable<br />Value</th>';
+            PHtml += '<th align="center" width="30px;" style="border:1px solid black;border-right:none;padding:0px 3px 0px 3px;">GST<br />(%)</th>';
+            if (GSTType == "CS") {
+                PHtml += '<th align="center" width="50px;" style="border:1px solid black;border-right:none;padding:0px 3px 0px 3px;">CGST<br />Value</th>';
+                PHtml += '<th align="center" width="50px;" style="border:1px solid black;border-right:none;padding:0px 3px 0px 3px;">SGST<br />Value</th>';
+            }
+            else {
+                PHtml += '<th align="center" width="50px;" style="border:1px solid black;border-right:none;padding:0px 3px 0px 3px;">IGST<br />Value</th>';
+            }
+
+            PHtml += '<th align="center" width="50px;" style="border:1px solid black;">Amount</th>';
+            PHtml += '</tr>';
+
+            var TotAMT = 0;
+            var NoofPkt = 0;
+            var QtyperPkt = 0;
+            var PageRow = 0
+            var TaxableValue = 0;
+            var CGSTTotal = 0;
+            var SGSTTotal = 0;
+            var IGSTTotal = 0;
+            $.each(DE, function (index, data) {
+                if (index == CheckIndex && PageRow < MaxPageRows) {
+                    PHtml += '<tr style="font-size:11px;height:25px;">';
+                    PHtml += '<td align="center" style="border-left:1px solid black;padding:0px 3px 0px 3px;">' + (index + 1) + '</td>';
+                    PHtml += '<td align="left" style="border-left:1px solid black;padding:0px 3px 0px 3px;">' + data.ItemName + '</td>';
+                    PHtml += '<td align="center" style="border-left:1px solid black;padding:0px 3px 0px 3px;">' + data.HSNCode + '</td>';
+                    PHtml += '<td align="center" style="border-left:1px solid black;padding:0px 3px 0px 3px;">' + data.UnitOfMeasure + '</td>';
+                    //PHtml += '<td align="right" style="border-left:1px solid black;padding:0px 3px 0px 3px;">' + data.NoofPkt + '</td>';
+                    //PHtml += '<td align="right" style="border-left:1px solid black;padding:0px 3px 0px 3px;">' + parseFloat(data.QtyperPkt).toFixed(2) + '</td>';
+                    PHtml += '<td align="right" style="border-left:1px solid black;padding:0px 3px 0px 3px;">' + parseFloat(data.Quantity).toFixed(2) + '</td>';
+                    PHtml += '<td align="right" style="border-left:1px solid black;padding:0px 3px 0px 3px;">' + parseFloat(data.BasicRate).toFixed(2) + '</td>';
+                    PHtml += '<td align="right" style="border-left:1px solid black;padding:0px 3px 0px 3px;">' + parseFloat(data.Discount1).toFixed(2) + '</td>';
+                    PHtml += '<td align="right" style="border-left:1px solid black;padding:0px 3px 0px 3px;">' + parseFloat(data.Discount2).toFixed(2) + '</td>';
+                    PHtml += '<td align="right" style="border-left:1px solid black;padding:0px 3px 0px 3px;">' + parseFloat(data.Discount3).toFixed(2) + '</td>';
+                    //PHtml += '<td align="right" style="border-left:1px solid black;padding:0px 3px 0px 3px;">' + parseFloat(data.NetRate).toFixed(2) + '</td>';
+                    PHtml += '<td align="right" style="border-left:1px solid black;padding:0px 3px 0px 3px;">' + parseFloat(data.TaxableValue).toFixed(2) + '</td>';
+                    PHtml += '<td align="right" style="border-left:1px solid black;padding:0px 3px 0px 3px;">' + parseFloat(data.GSTPer).toFixed(0) + '</td>';
+                    if (GSTType == "CS") {
+                        PHtml += '<td align="right" style="border-left:1px solid black;padding:0px 3px 0px 3px;">' + parseFloat(data.CGSTAMT).toFixed(2) + '</td>';
+                        PHtml += '<td align="right" style="border-left:1px solid black;padding:0px 3px 0px 3px;">' + parseFloat(data.SGSTAMT).toFixed(2) + '</td>';
+                    }
+                    else {
+                        PHtml += '<td align="right" style="border-left:1px solid black;padding:0px 3px 0px 3px;">' + parseFloat(data.IGSTAMT).toFixed(2) + '</td>';
+                    }
+                    PHtml += '<td align="right" style="border-left:1px solid black;border-right:1px solid black;padding:0px 3px 0px 3px;">' + parseFloat(data.Amount).toFixed(2) + '</td>';
+                    PHtml += '</tr>';
+                    CheckIndex = CheckIndex + 1;
+                    PageRow = PageRow + 1
+                }
+
+                TaxableValue = TaxableValue + parseFloat(data.TaxableValue);
+                TotAMT = TotAMT + parseFloat(data.Amount);
+                NoofPkt = NoofPkt + parseFloat(data.NoofPkt);
+                QtyperPkt = QtyperPkt + parseFloat(data.QtyperPkt);
+                CGSTTotal = CGSTTotal + parseFloat(data.CGSTAMT);
+                SGSTTotal = SGSTTotal + parseFloat(data.SGSTAMT);
+                IGSTTotal = IGSTTotal + parseFloat(data.IGSTAMT);
+            });
+            if ((i==PageCount && PageRow >=9)) {
+                for (var ii = PageRow; ii < MaxPageRows; ii++) {
+                    PHtml += '<tr style="font-size:11px;height:25px;">';
+                    PHtml += '<td align="center" style="border-left:1px solid black;"><br></td>';
+                    PHtml += '<td style="border-left:1px solid black;></td>';
+                    PHtml += '<td align="center" style="border-left:1px solid black;"></td>';
+                    PHtml += '<td align="center" style="border-left:1px solid black;"></td>';
+                    //PHtml += '<td align="right" style="border-left:1px solid black;"></td>';
+                    //PHtml += '<td align="right" style="border-left:1px solid black;"></td>';
+                    PHtml += '<td align="right" style="border-left:1px solid black;"></td>';
+                    PHtml += '<td align="right" style="border-left:1px solid black;"></td>';
+                    PHtml += '<td align="right" style="border-left:1px solid black;"></td>';
+                    PHtml += '<td align="right" style="border-left:1px solid black;"></td>';
+                    PHtml += '<td align="right" style="border-left:1px solid black;"></td>';
+                    //PHtml += '<td align="right" style="border-left:1px solid black;"></td>';
+                    PHtml += '<td align="right" style="border-left:1px solid black;"></td>';
+                    PHtml += '<td align="right" style="border-left:1px solid black;"></td>';
+                    PHtml += '<td align="right" style="border-left:1px solid black;"></td>';
+                    if (GSTType == "CS") {
+                        PHtml += '<td align="right" style="border-left:1px solid black;"></td>';
+                        PHtml += '<td align="right" style="border-left:1px solid black;"></td>';
+                    }
+                    else {
+                        PHtml += '<td align="right" style="border-left:1px solid black;"></td>';
+                    }
+                    PHtml += '<td align="right" style="border-left:1px solid black;border-right:1px solid black;"></td>';
+                    PHtml += '</tr>';
+                }
+                GiveABreak = true;
+            }
+            if (i == PageCount) {
+                PHtml += '<tr style="font-size:11px;">';
+                PHtml += '<td colspan="2" align="center" style="border:1px solid black;border-right:none;padding:0px 3px 0px 3px;"><b>Total:</b></td>';
+                PHtml += '<td style="border:1px solid black;border-right:none;"></td>';
+                PHtml += '<td style="border:1px solid black;border-right:none;"></td>';
+                //PHtml += '<td align="right" style="border:1px solid black;border-right:none;padding:0px 3px 0px 3px;"><b>' + ((i == PageCount) ? parseFloat(NoofPkt).toFixed(2) : '') + '</b></td>';
+                //PHtml += '<td align="right" style="border:1px solid black;border-right:none;padding:0px 3px 0px 3px;"><b>' + ((i == PageCount) ? parseFloat(QtyperPkt).toFixed(2) : '') + '</b></td>';
+                PHtml += '<td style="border:1px solid black;border-right:none;"></td>';
+                PHtml += '<td style="border:1px solid black;border-right:none;"></td>';
+                PHtml += '<td style="border:1px solid black;border-right:none;"></td>';
+                PHtml += '<td style="border:1px solid black;border-right:none;"></td>';
+                PHtml += '<td style="border:1px solid black;border-right:none;"></td>';
+                //PHtml += '<td style="border:1px solid black;border-right:none;"></td>';
+                PHtml += '<td align="right" style="border:1px solid black;border-right:none;padding:0px 3px 0px 3px;"><b>' + ((i == PageCount) ? parseFloat(TaxableValue).toFixed(2) : '') + '</b></td>';
+                PHtml += '<td style="border:1px solid black;border-right:none;"></td>';
+                if (GSTType == "CS") {
+                    PHtml += '<td align="right" style="border:1px solid black;border-right:none;padding:0px 3px 0px 3px;"><b>' + ((i == PageCount) ? parseFloat(CGSTTotal).toFixed(2) : '') + '</b></td>';
+                    PHtml += '<td align="right" style="border:1px solid black;border-right:none;padding:0px 3px 0px 3px;"><b>' + ((i == PageCount) ? parseFloat(SGSTTotal).toFixed(2) : '') + '</b></td>';
+                }
+                else {
+                    PHtml += '<td align="right" style="border:1px solid black;border-right:none;padding:0px 3px 0px 3px;"><b>' + ((i == PageCount) ? parseFloat(IGSTTotal).toFixed(2) : '') + '</b></td>';
+                }
+                PHtml += '<td align="right" style="border:1px solid black;padding:0px 3px 0px 3px;height:25px"><b>' + ((i == PageCount) ? parseFloat(TotAMT).toFixed(2) : '') + '</b></td>';
+                PHtml += '</tr>';
+            }
+            PHtml += '</table>';
+            PHtml += '</div>';
+
+
+
+
+        }
+        //alert(pager);
+        if (GiveABreak == true) {
+            PHtml += '<div style="margin-top:275px;page-break-before: always;">';
+        }
+        //position: absolute;bottom: 0;left: 0;
+        PHtml += '<table border="1" width="100%" style="border-spacing: 0;" cellspacing="0" cellpadding="0">';
+        PHtml += '<tr style="font-size:11px;">';
+        PHtml += '<td style="vertical-align: top">';
+        PHtml += '<table width="100%" style="border-spacing: 0;" cellspacing="0" cellpadding="0">';
+        PHtml += '<tr>';
+        PHtml += '<td style="border-right: 1px solid #000;">';
+        PHtml += '<table border="1" width="100%" style="border-spacing: 0; cellspacing="0" cellpadding="0"">';
+        PHtml += '<tr style="font-size:9px;">';
+        PHtml += '<th>HSN Code</th>';
+        PHtml += '<th>Taxable Val</th>';
+        if (GSTType == "CS") {
+            PHtml += '<th>CGST Rate</th>';
+            PHtml += '<th>CGST Amt</th>';
+        }
+        PHtml += '<th>UTGST Rate</th>';
+        PHtml += '<th>UTGST Amt</th>';
+        if (GSTType != "CS") {
+            PHtml += '<th>IGST Rate</th>';
+            PHtml += '<th>IGST Amt</th>';
+        }
+        PHtml += '</tr>';
+
+        //if (i == PageCount) {
+            $.each(GS, function (index, data) {
+                //PHtml += '<tr style="font-size:11px;">';
+                //PHtml += '<td  align="right">' + ((i == PageCount) ? data.HSNCode : '') + '</td>';
+                //PHtml += '<td  align="right">' + ((i == PageCount) ? data.CgstRate : '') + '</td>';
+                //PHtml += '<td  align="right">' + ((i == PageCount) ? data.CgstAmt : '') + '</td>';
+                //PHtml += '<td  align="right">' + ((i == PageCount) ? data.SGSTRATE : '') + '</td>';
+                //PHtml += '<td  align="right">' + ((i == PageCount) ? data.SGSTAMT : '') + '</td>';
+                //PHtml += '<td  align="right">' + ((i == PageCount) ? data.IGSTRATE : '') + '</td>';
+                //PHtml += '<td  align="right">' + ((i == PageCount) ? data.IGSTAMT : '') + '</td>';
+                //PHtml += '</tr>';
+                PHtml += '<tr style="font-size:9px;">';
+                PHtml += '<td  align="right">' + data.HSNCode + '</td>';
+                PHtml += '<td  align="right">' + data.TaxableValue + '</td>';
+
+                if (GSTType == "CS") {
+                    PHtml += '<td  align="right">' + data.CgstRate + '</td>';
+                    PHtml += '<td  align="right">' + data.CgstAmt + '</td>';
+                }
+                PHtml += '<td  align="right">' + data.SGSTRATE + '</td>';
+                PHtml += '<td  align="right">' + data.SGSTAMT + '</td>';
+
+                if (GSTType != "CS") {
+                    PHtml += '<td  align="right">' + data.IGSTRATE + '</td>';
+                    PHtml += '<td  align="right">' + data.IGSTAMT + '</td>';
+                }
+                PHtml += '</tr>';
+            });
+        //}
+
+        PHtml += '</table>';
+        PHtml += '</td>';
+        PHtml += '<td width="300px;" style="font-size:11px;">';
+        //PHtml += '<p style="margin-top: 0;"><b>E-Way Bill Number :</b> ' + ((i == PageCount) ? HE[0].EWayBillNo : '') + '</p>';
+        //PHtml += '<p style="margin-top: 0;"><b>Date :</b> ' + ((i == PageCount) ? HE[0].EWayBillDate : '') + '</p>';
+        PHtml += '<p style="margin-top: 0;"><b>E-Way Bill Number :</b> ' + HE[0].EWayBillNo + '</p>';
+        PHtml += '<p style="margin-top: 0;"><b>Date :</b> ' + HE[0].EWayBillDate + '</p>';
+
+        PHtml += '</td>';
+        PHtml += '</tr>';
+        PHtml += '<tr style="font-size:11px;">';
+        PHtml += '<td style="border-top:1px solid #000;" colspan="2">';
+        //PHtml += '<p style="margin-top: 0;margin-bottom: 0;"><b>Amount Chargable (In Words) : ' + ((i == PageCount) ? HE[0].AmountinWords : '') + '</b></p>';
+        PHtml += '<p style="margin-top: 0;margin-bottom: 0;font-size:10px;"><b>Amount Chargable (In Words) : ' + HE[0].AmountinWords + '</b></p>';
+        //PHtml += '<p style="margin-top: 0;margin-bottom: 0;"><b>Remark : ' + ((i == PageCount) ? HE[0].Remark : '') + '</b></p>';
+        PHtml += '<p style="margin-top: 0;margin-bottom: 0;font-size:10px;"><b>Remark : ' + HE[0].Remark  + '</b></p>';
+        PHtml += '</td>';
+        PHtml += '</tr>';
+        PHtml += '</table>';
+        PHtml += '</td>';
+        PHtml += '<td width="300px;">';
+        //PHtml += '<table width="100%">';
+        //PHtml += '<tr>';
+        //PHtml += '<td>';
+        PHtml += '<p style="margin-top: 0;margin-bottom: 0;">Taxable: <span style="float: right;">' + parseFloat(TaxableValue).toFixed(2) + '</span></p>';
+        if (GSTType == "CS") {
+            PHtml += '<p style="margin-top: 0;margin-bottom: 0;">CGST: <span style="float: right;">' + parseFloat(CGSTTotal).toFixed(2) + '</span></p>';
+            PHtml += '<p style="margin-top: 0;margin-bottom: 0;">SGST: <span style="float: right;">' + parseFloat(SGSTTotal).toFixed(2) + '</span></p>';
+        }
+        else {
+            PHtml += '<p style="margin-top: 0;margin-bottom: 0;">IGST: <span style="float: right;">' + parseFloat(IGSTTotal).toFixed(2) + '</span></p>';
+        }
+        if (HE[0].TCSChargeCodeID != 0) {
+            PHtml += '<p style="margin-top: 0;margin-bottom: 0;">' + HE[0].TCSChargeName + ': <span style="float: right;">' + parseFloat(HE[0].TCSAmount).toFixed(2) + '</span></p>';
+        }
+        //PHtml += '</td>';
+        //PHtml += '</tr>';
+        //PHtml += '<tr>';
+        //PHtml += '<td>';
+        //PHtml += '<p style="margin-top: 0;margin-bottom: 0;"><br></p>'; /*Taxable Amount: <span style="float: right; font-weight: 600;">' + ((i == PageCount) ? HE[0].TotTaxableAmount : '') + '</span>*/
+        //PHtml += '<p style="margin-top: 0;margin-bottom: 0;"><br></p>';
+        ////IGST 12%: <span style="float: right;">14693.63</span>
+        //PHtml += '<p style="margin-top: 0;margin-bottom: 0;"><br></p>';
+        //IGST 18%: <span style="float: right;">0</span>
+        //PHtml += '<p style="margin-top: 0;margin-bottom: 0;padding-top: 20px;">Round Off: <span style="float: right;">' + ((i == PageCount) ? HE[0].RoundOff : '') + '</span></p>';
+        //PHtml += '<p style="margin-top: 0;font-weight: 600; margin-bottom: 0; border-top: 1px solid #000;">Final Amount: <span style="float: right;">' + ((i == PageCount) ? HE[0].TotalAmount : '') + '</span></p>';
+        PHtml += '<p style="margin-top: 0;margin-bottom: 0;padding-top: 20px;">Round Off: <span style="float: right;">' + HE[0].RoundOff + '</span></p>';
+        PHtml += '<p style="margin-top: 0;font-weight: 600; margin-bottom: 0; border-top: 1px solid #000;">Final Amount: <span style="float: right;">' + (HE[0].TCSChargeCodeID != 0 ? (parseFloat(HE[0].TotalAmount) + parseFloat(HE[0].TCSAmount)).toFixed(2) : HE[0].TotalAmount)  +'</span></p>';
+        //PHtml += '</td>';
+        //PHtml += '</tr>';
+        //PHtml += '</table>';
+
+        PHtml += '</td>';
+        PHtml += '</tr>';
+        PHtml += '<tr style="font-size:8px;">';
+        PHtml += '<td style="vertical-align:top;">';
+        PHtml += '<table width="100%" border="0" style="border-spacing:0;">';
+        PHtml += '<tr style="font-size:8px;">';
+        PHtml += '<td style="border-right:1px solid #000;vertical-align:top;height:60px">';
+        PHtml += '<p style="margin-top: 0;margin-bottom: 0;"><b>Terms & Conditions</b></p>';
+        if (HE[0].TermsnCondition != "") {
+            PHtml += '<p style="margin-top: 0;margin-bottom: 0;">' + HE[0].TermsnCondition + '</p>';
+        }
+        else {
+            PHtml += '<p style="margin-top: 0;margin-bottom: 0;">1. We are not responsible for any damage, shortage and any losses for what so ever reason once the goods leave our premises.</p>';
+            PHtml += '<p style="margin-top: 0;margin-bottom: 0;">2. Goods once sold will not be taken back or exchanged.</p>';
+            PHtml += '<p style="margin-top: 0;margin-bottom: 0;">3. Complaints should be brought to our notice in writting within 24 hours of receipt of goods.</p>';
+            PHtml += '<p style="margin-top: 0;margin-bottom: 0;">4. Goods are dispached soley at buyer\'s risk and responsibility.</p > ';
+        }
+        //PHtml += '<p style="margin-bottom: 0; padding-top:20px;"><b>' + HE[0].Juridiction + '</b></p>';
+        PHtml += '</td>';
+        PHtml += '<td style="vertical-align:top; width:200px;" rowspan="2">';
+        //PHtml += '<p style="margin-top: 0;"><b>Bank Details: ' + ((i == PageCount) ? HE[0].BankDetails : '') + '</b></p>';
+        PHtml += '<p style="margin-top: 0;"><b>Bank Details: <br>' + HE[0].BankDetails + '</b></p>';
+        PHtml += '</td>';
+
+        PHtml += '</tr>';
+
+        PHtml += '<tr style="font-size:11px;"><td style="border-right:1px solid #000;vertical-align:bottom;"><p style = "margin-top: 0;margin-bottom: 0;" > ' + HE[0].Juridiction + '&nbsp;</p>';
+        PHtml += '</td>';
+        PHtml += '</tr>';
+        PHtml += '</table>';
+
+
+        PHtml += '</td>';
+        PHtml += '<td width="400px;" style="vertical-align:top">';
+        //PHtml += '<p style="margin-top: 0;margin-bottom: 0;"> <span style="float: right; font-weight: 600; font-size:14px;">' + ((i == PageCount) ? HE[0].FactoryNm : '') + '</span></p>';
+        PHtml += '<p style="margin-top: 0;margin-bottom: 0;"> <span style="float: right; font-weight: 600; font-size:12px;">' + HE[0].FactoryNm + '</span></p>';
+        //PHtml += '<p style="margin-top: 0;margin-bottom: 0; width:40%; float:left; text-align:center; padding-top:80px"><span style="font-weight: 600; ">E.& O.E.</span></p>';
+        PHtml += '<p style="margin-top: 0;margin-bottom:0; width:100%; text-align:center; padding-top:60px"><span style="font-weight: 600;float:left; ">E.& O.E.</span><span style="font-weight: 600;float:right; ">Authorised Signatory</span></p>';
+
+
+        PHtml += '</td>';
+        PHtml += '</tr>';
+        PHtml += '</table>';
+
+        PHtml += '</td>';
+        PHtml += '</tr>';
+        PHtml += '</tbody>';
+        PHtml += '</table></tfoot>';
+        PHtml += '</div>';
+        PHtml += '</div>';
+        //var w = window.open();
+
+
+        //$(w.document.body).html((PHtml1 + PHtml) + (PHtml2 + PHtml) + (PHtml3 + PHtml));
+        FnPrint((FinalPHtml + PHtml));
+    }
+
+    function FnPrint(txtcontant) {
+        var frame1 = document.createElement('iframe');
+        frame1.name = "frame1";
+        frame1.style.position = "absolute";
+        frame1.style.top = "-1000000px";
+        document.body.appendChild(frame1);
+        var frameDoc = (frame1.contentWindow) ? frame1.contentWindow : (frame1.contentDocument.document) ? frame1.contentDocument.document : frame1.contentDocument;
+        frameDoc.document.open();
+        frameDoc.document.write(txtcontant);
+        frameDoc.document.close();
+        setTimeout(function () {
+            window.frames["frame1"].focus();
+            window.frames["frame1"].print();
+            document.body.removeChild(frame1);
+        }, 500);
+    }
+
+    function DealerSalesChallanGetById(DSCID) {
+        try {
+            var data = { 'DealerSalesChallanID': DSCID };
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Home/DealerSalesChallanGetById",
+                type: 'POST',
+                dataType: 'json',
+                data: dataWithAntiforgeryToken,
+                async: true,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        HeaderData = Response.ResultHeader;
+                        DetailData = Response.ResultDetail;
+                        FillRecord();
+                    }
+                    else {
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            alert("Data size is too large!");
+        }
+    }
+
+    function FillRecord() {
+        debugger;
+        $("#btnSave").prop('disabled', true);
+        Clear();
+        //Code Added by Kamini on 04August2021 --- start
+        if (HeaderData.InvoiceDate != '' && HeaderData.InvoiceDate != null) {
+            if (Number($("#hdnCurrentUserTypeId").val()) != 22) {
+                //Yesterdays Date
+                let today = new Date();
+                let yesterday = new Date();
+                yesterday.setDate(today.getDate() - 2)
+
+                //Invoice Date
+                var dateString = HeaderData.InvoiceDate.substr(6);
+                var date = SetDate(parseInt(dateString));
+
+                var g1 = new Date(date);
+                var g2 = new Date(yesterday);
+
+                //alert(g1.setHours(0, 0, 0, 0));
+                //alert(g2.setHours(0, 0, 0, 0));
+                if (g1.setHours(0, 0, 0, 0) >= g2.setHours(0, 0, 0, 0)) {
+                    $("#btnEdit").prop('disabled', false);
+                }
+                else {
+                    $("#btnEdit").prop('disabled', true);
+                }
+            }
+            else {
+                $("#btnEdit").prop('disabled', false);
+            }
+        }
+        //Code Added by Kamini on 04August2021 --- end
+        //alert(HeaderData.SuperStockistID);
+        //$("#ddlCustomer").dxSelectBox('instance').option('value', HeaderData.SuperStockistID);
+        //alert(HeaderData.InvoiceDateVal);
+        GetBuyersbyPartyID();
+        var varDate = Date.parse(HeaderData.InvoiceDateVal);
+        //alert(varDate);
+        //$("#txtInvoiceDate").val(ConvertJSONDateToYYYYMMDD(HeaderData.InvoiceDate));
+        $("#txtInvoiceDate").val(ConvertJSONDateToDDMMYYYYNew(varDate));
+        GetBuyersAddressbyPartyID(HeaderData.CustomerID,'B');
+        $("#txtBuyer").dxSelectBox('instance').option('value', HeaderData.CustomerID);
+        GetBuyersAddressbyPartyID(HeaderData.ConsigneeID,'C');
+        $("#txtConsignee").dxSelectBox('instance').option('value', HeaderData.ConsigneeID);
+        $('#txtInvoiceNo').val(HeaderData.InvoiceNo);
+        $("#hiddenCustomerGSTNo").val(HeaderData.CustomerGST);
+        $("#hiddenConsigneeGSTNo").val(HeaderData.ConsigneeGST);
+        $("#txtFreight").dxSelectBox('instance').option('value', HeaderData.FreightId);
+        $("#txtSealNo").val(HeaderData.SealNo);
+        $("#txtLRNo").val(HeaderData.LRNo);
+        $("#txtTransporter").val(HeaderData.Transporter);
+        $("#txtTransporterGST").val(HeaderData.TransporterGST);
+        $("#txtVechicleNo").val(HeaderData.VehicleNo);
+        $("#txtGrossWeight").val(HeaderData.GrossWeight);
+        $("#txtNetWeight").val(HeaderData.NetWeight);
+        $("#txtEWayBillNo").val(HeaderData.EWayBillNo);
+        $("#txtTransporterGST").val(HeaderData.TransporterGstNo);
+        $("#txtRemark").val(HeaderData.Remark);
+        $("#txtBillingAddress").dxSelectBox('instance').option('value', HeaderData.BillingPartyAddressID);
+        $("#hiddenBCountryID").val(HeaderData.BillingCountryID);
+        $("#txtBCountry").val(HeaderData.BillingCountry);
+        $("#hiddenBStateID").val(HeaderData.BillingStateID);
+        $("#txtBState").val(HeaderData.BillingState);
+        $("#hiddenBCityID").val(HeaderData.BillingCityID);
+        $("#txtBCity").val(HeaderData.BillingCity);
+        $("#txtBPin").val(HeaderData.BillingPIN);
+        $("#txtShippingAddress").dxSelectBox('instance').option('value', HeaderData.ShippingPartyAddressID);
+        $("#hiddenSCountryID").val(HeaderData.ShippingCountryID);
+        $("#txtSCountry").val(HeaderData.ShippingCountry);
+        $("#hiddenSStateID").val(HeaderData.ShippingStateID);
+        $("#txtSState").val(HeaderData.ShippingState);
+        $("#hiddenSCityID").val(HeaderData.ShippingCityID);
+        $("#txtSCity").val(HeaderData.ShippingCity);
+        $("#txtSPin").val(HeaderData.ShippingPIN);
+        $("#txtLRDate").val(ConvertJSONDateToYYYYMMDD(HeaderData.LRDate));
+        $("#txtEWayBillDate").val(ConvertJSONDateToYYYYMMDD(HeaderData.EWayBillDate));
+
+        $('#hdnDealerSalesChallanId').val(HeaderData.DealerSalesChallanID);
+        $("#txtNoOfBoxes").val(HeaderData.NoOfBoxes);
+        $("#txtCreditDays").val(HeaderData.CreditDays);
+        if (HeaderData.RoundOff != "" && HeaderData.RoundOff != null)
+            $('#chkRoundOff').prop('checked', true);
+        else
+            $('#chkRoundOff').prop('checked', false);
+
+        $("#txtPrivateMarks").val(HeaderData.PrivateMarks);
+        DetailList = [];
+        $.each(DetailData, function (Index, Object) {
+            var model = {};
+            model.Pk = Object.DealerSalesChallanDetailID
+            model.ItemId = Object.ItemID
+            model.ItemName = Object.ZZItemName
+            model.ItemCode = Object.ZZOurCode
+            model.IsCharge = Object.IsCharge
+            model.NetRate = Object.Rate
+            model.Qty = Object.Quantity
+            model.DP = Object.BasicRate
+            model.TradeDis = Object.Discount1
+            model.ScheDis = Object.Discount2
+            model.SpecialDis = Object.Discount3
+            model.TradeDisRate = Object.Dis1Rate
+            model.ScheDisRate = Object.Dis2Rate
+            model.SpecialDisRate = Object.Dis3rate
+
+            if (Object.NetRate == "" || Object.NetRate == null)
+                model.NetRate = "0";
+            else
+                model.NetRate = Object.Rate
+
+            if (Object.GrossValue == "" || Object.GrossValue == null)
+                model.Value = "0";
+            else
+                model.Value = Object.GrossValue
+
+            if (Object.NetValue == "" || Object.NetValue == null)
+                model.NetAmount = "0";
+            else
+                model.NetAmount = Object.NetValue
+
+            model.GST = Object.GSTRate
+
+            if (Object.CGST == "" || Object.CGST == null)
+                model.CGST = "0";
+            else
+                model.CGST = Object.CGST
+
+
+            if (Object.SGSTORUTGST == "" || Object.SGSTORUTGST == null)
+                model.SGSTUTGST = "0";
+            else
+                model.SGSTUTGST = Object.SGSTORUTGST
+
+            model.IGST = Object.IGST
+            //Added on 23 feb 2022 for multiple DP rate selection
+            model.DPRate = Object.DPRate
+            DetailList.push(model);
+        });
+        $('#tbody').html('');
+        Bindtbl();
+        FillItemList();
+        EnDisable(true);
+        $("#txtBillingAddress").dxSelectBox('instance').option('disabled', true);
+        $("#txtShippingAddress").dxSelectBox('instance').option('disabled', true);
+        $("#txtItem").dxSelectBox('instance').option('disabled', true);
+        GetAllPartyMaster();
+        $("#ddlCustomer").dxSelectBox('instance').option('value', Number(HeaderData.SuperStockistID));
+
+        $("#PopupSearch").dxPopup("instance").hide();
+    }
+
+    function SetDDMMYYYYDate(dateStr) {
+        var strDate
+        var now = new Date(dateStr);
+        var Day = now.getDate()
+        var Month = (now.getMonth() + 1)
+        var Year = now.getFullYear()
+        if (Day < 10) {
+            Day = "0" + Day;
+        }
+        if (Month < 10) {
+            Month = "0" + Month;
+        }
+        strDate = Day + "/" + Month + "/" + Year
+        return strDate;
+    }
+
+    function SetDate(dateStr) {
+        var strDate
+        var now = new Date(dateStr);
+        var Day = now.getDate()
+        var Month = (now.getMonth() + 1)
+        var Year = now.getFullYear()
+        if (Day < 10) {
+            Day = "0" + Day;
+        }
+        if (Month < 10) {
+            Month = "0" + Month;
+        }
+        strDate = Month + "/" + Day + "/" + Year
+        return strDate;
+    }
+
+    function GetTCSChargeMaster() {
+        var arrayTCSChargeList = @Html.Raw(Json.Encode(@ViewData["TCSChargeList"]));
+        try {
+            if (arrayTCSChargeList.Data.StatusId != "99") {
+
+                if (arrayTCSChargeList.Data.Result.length > 0) {
+                    for (var i = 0; i < arrayTCSChargeList.Data.Result.length; i++) {
+                        TCSChargeList[i] = arrayTCSChargeList.Data.Result[i];
+                    }
+                }
+            }
+            else {
+                alert(arrayTCSChargeList.Data.Status);
+            }
+        }
+        catch (e){
+            alert("Data size is too large!");
+        }
+
+        }
+
+    function chkTCSChange() {
+        ClearTCSDetails();
+        if ($("#chkTCS").is(':checked')) {
+            $.each(TCSChargeList, function (Index, Object) {
+                $("#HdnChkTCSID").val(Object.ChargeId);
+                $("#lblTCSCharge").html(Object.Charge);
+                //alert(Object.RoundType);
+                $("#lblTCSValue").html(parseFloat($("#lblValue").html()) * Object.ChargeRate);
+                //alert(parseFloat($("#lblTCSValue").html()) + parseFloat($("#lblValue").html()));
+                var ceilvalue = Math.ceil(parseFloat($("#lblValue").html()) * Object.ChargeRate);
+                var floorvalue = Math.floor(parseFloat($("#lblValue").html()) * Object.ChargeRate);
+                var roundvalue = Math.round(parseFloat($("#lblValue").html()) * Object.ChargeRate, Object.RoundOffDigit);
+                //alert(ceilvalue);
+                //alert(floorvalue);
+                //alert(roundvalue);
+
+                if (Object.RoundType == "1") {
+                    $("#lblTCSValue").html(ceilvalue);
+                    $("#lblGrandValue").html(parseFloat($("#lblValue").html()) + ceilvalue.toFixed(2));
+                }
+                if (Object.RoundType == "2") {
+                    $("#lblTCSValue").html(floorvalue.toFixed(2));
+                    $("#lblGrandValue").html(parseFloat(parseFloat($("#lblValue").html()) + floorvalue).toFixed(2));
+                }
+
+                if (Object.RoundType == "3") {
+                    {
+                        $("#lblTCSValue").html(roundvalue.toFixed(2));
+                        $("#lblGrandValue").html(parseFloat(parseFloat($("#lblValue").html()) + roundvalue).toFixed(2));
+                    }
+                }
+                //alert($("#lblGrandValue").html());
+
+            });
+
+        }
+        else {
+            $("#lblTCSCharge").html('');
+            $("#lblTCSValue").html('');
+            $("#lblGrandValue").html($("#lblValue").html());
+        }
+    }
+
+
+    function ClearTCSDetails() {
+        $("#lblTCSCharge").html('');
+        $("#lblTCSValue").html('');
+        $("#lblGrandValue").html('');
+    }
+
+    function PrintInvoice() {
+        if ($('#hdnDealerSalesChallanId').val() != "") {
+            GetSalesInvoicePrint($('#hdnDealerSalesChallanId').val(),1);
+        }
+        else {
+            alert("Please select invoice to print");
+            return false;
+        }
+    }
+
+    //Added by Kamini 29May2021---Customer Dropdown
+    function GetAllPartyMaster()
+    {
+        try {
+            var dataWithAntiforgeryToken = ({ '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            loadPanel.show();
+            $.ajax({
+                url: "../Home/PartyMasterGetAll",
+                type: 'POST',
+                dataType: 'json',
+                async: false,
+                data: dataWithAntiforgeryToken,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        PartyList = Response.Result;
+                        $("#ddlCustomer").dxSelectBox({
+                            height: 30,
+                            dataSource: new DevExpress.data.ArrayStore({
+                                data: PartyList,
+                                key: "PartyID"
+                            }),
+                            displayExpr: "Party",
+                            valueExpr: "PartyID",
+                            placeholder: "Select Stockist",
+                            searchEnabled: true,
+                            onValueChanged: function (data) {
+                                varddlCustomer = data.value
+                                GetBuyersbyPartyID();
+                                //Set session value of selected Superstockist in Admin Login
+                                if (Number($("#hdnCurrentUserTypeId").val()) == 22) {
+                                    GetSuperStockistLoginSessionDetails();
+                                }
+                            }
+                        });
+
+                        loadPanel.hide();
+                    }
+                    else {
+                        loadPanel.hide();
+                        //$('#ddlCustomer').dxSelectBox('instance').option('value', '');
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+    function CalculateDueDate() {
+        //var result = new Date(document.getElementById("txtInvoiceDate").value);
+        //var finalresult = result.setDate(result.getDate() + document.getElementById("txtCreditDays").value);
+        //alert(finalresult);
+        //result.setDate(date.getDate() + days);
+
+
+        var DateVal = document.getElementById("txtInvoiceDate").value;
+        var result = new Date(DateVal);
+        var finalresult = result.addDays(Number(document.getElementById("txtCreditDays").value));
+        document.getElementById("lblCreditDate").innerHTML = finalresult.toDateString();
+    }
+
+    Date.prototype.addDays = function (days) {
+        const date = new Date(this.valueOf());
+        date.setDate(date.getDate() + days);
+        return date;
+    };
+    //Added by Kamini 29May2021---Customer Dropdown
+
+    function ClearItemGridData() {
+        DetailList = [];
+        $('#tbody').html('');
+        $("#chkTCS").prop('checked', false);
+    }
+
+
+    function GetSuperStockistLoginSessionDetails() {
+        try {
+            debugger;
+            var strParty = $("#ddlCustomer").dxSelectBox('instance').option('value');
+            var data = { 'SuperStockist': strParty };
+            //var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Home/GetSuperStockistLoginSessionDetails",
+                type: 'POST',
+                dataType: 'json',
+                data: { 'SuperStockist': strParty},
+                async: true,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        SuperStockistArr = Response.Result;
+
+                        if (SuperStockistArr.length > 0) {
+                            $("#hiddenIsUT").val(SuperStockistArr[0].ZZIsUT);
+                            $("#hiddenStateID").val(SuperStockistArr[0].StateID);
+                        }
+                    }
+                    else {
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            alert("Data size is too large!");
+        }
+    }
+</script>

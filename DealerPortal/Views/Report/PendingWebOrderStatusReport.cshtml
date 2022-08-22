@@ -1,0 +1,534 @@
+﻿
+@{
+    ViewBag.Title = "PendingWebOrderStatusReport";
+}
+
+@Html.AntiForgeryToken()
+
+<div class="box box-warning">
+    <div class="box-header with-border">
+        <div class="box-header-left">
+            <h3 class="box-title" style="line-height:2px;">Pending Web Order Status Report</h3>
+        </div>
+        <div class="box-header-right">
+            <ul>
+                <li>
+                    <a href="javascript:void(0)" title="Excel" class="cart" onclick="Excel()"><i class="fa fa-file-excel-o"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="box-body">
+        <form class="form-horizontal">
+            <div class="row" id="DivddlCustomer" style="display:none">
+                <div class="col-md-6">
+                    <div id="ddlCustomer"></div>
+                </div><br /><br />
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <div id="txtFromDate"></div>
+                </div>
+                <div class="col-md-2">
+                    <div id="txtToDate"></div>
+                </div>
+                <div class="col-md-3">
+                    <div id="ddlSubCategory"></div>
+                </div>
+                <div class="col-md-3">
+                    <div id="ddlItem"></div>
+                </div>
+                <div class="col-md-2">
+                    <a href='javascript:void(0)' class='btn btn-danger btn-flat' style='background: #e32228;' onclick='PendingWebOrderStatusReport ()'>Get Data</a><input type="hidden" id="HdnUserTypeId"><input type="hidden" id="HdnSelectedUser">
+                </div>
+            </div>
+        </form>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive ">
+                    <div id="tblitem">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="PopshowItem"></div>
+<script>
+    var RetailCategoryList = [];
+    var varddlSubCategory = "";
+    var ItemList = [];
+    var LedgerReportList = [];
+    var LedgeritemDetails = [];
+    var varddlCategory = "";
+    var varddlItem = "";
+    var Now = new Date()
+    var FDate = new Date()
+    //Added by Kamini 17May2021---Customer Dropdown
+    var CustomerList = [];
+    var varddlCustomer = "";
+    //Added by Kamini 17May2021---Customer Dropdown
+
+    arrayCr = @Html.Raw(Json.Encode(@ViewBag.RetailCategoryList));
+    if(arrayCr !=null)
+    {
+        for(var i = 0; i < arrayCr.length; i++){
+            RetailCategoryList[i] = arrayCr[i];
+        }
+         //model = {};
+         //model.RetailCategoryID = -1
+         //model.RetailCategory = "All"
+         //RetailCategoryList.push(model);
+
+    }
+
+    //Added by Kamini 17May2021---Customer Dropdown
+    strUserTypeId = @Html.Raw(@ViewBag.UserTypeID);
+    //$("#HdnUserTypeId").value = strUserTypeId;
+    arrayCr1 = @Html.Raw(Json.Encode(@ViewBag.CustomerList));
+    if(arrayCr1 !=null)
+    {
+        for(var i = 0; i < arrayCr1.length; i++){
+            CustomerList[i] = arrayCr1[i];
+        }
+         //model = {};
+         //model.PartyId = -1
+         //model.Party = "All"
+         //CustomerList.push(model);
+
+    }
+    //alert(strUserTypeId);
+    if (strUserTypeId == "22" || strUserTypeId == "23") {
+        $("#DivddlCustomer").removeAttr("style");
+    }
+    //Added by Kamini 17May2021---Customer Dropdown
+
+    $(document).ready(function () {
+        $("#ddlSubCategory").dxSelectBox({
+           height: 30,
+           dataSource: new DevExpress.data.ArrayStore({
+                data: RetailCategoryList,
+                key: "RetailCategoryID"
+            }),
+            displayExpr: "RetailCategory",
+            valueExpr: "RetailCategoryID",
+            placeholder: "Select Category",
+            searchEnabled: true,
+            onValueChanged: function (data) {
+                varddlSubCategory = data.value
+                ItemMasterGetByRetailCategoryId()
+            }
+        });
+        $("#ddlItem").dxSelectBox({
+           height: 30,
+           dataSource: new DevExpress.data.ArrayStore({
+                data: ItemList,
+                key: "ItemId"
+            }),
+            displayExpr: "ItemName",
+            valueExpr: "ItemId",
+            placeholder: "Select Item",
+            searchEnabled: true,
+            onValueChanged: function (data) {
+                varddlItem = data.value
+            }
+        });
+
+        $("#txtFromDate").dxDateBox({
+        height: 30,
+        type: "date",
+        value: FDate.setDate(FDate.getDate()-7),
+        placeholder: "From Date",
+        displayFormat: "dd/MM/yyyy"
+    });
+        $("#txtToDate").dxDateBox({
+        height: 30,
+        type: "date",
+        value: Now,
+        placeholder: "To Date",
+        displayFormat: "dd/MM/yyyy"
+        });
+
+    //Added by Kamini 17May2021---Customer Dropdown
+        $("#ddlCustomer").dxSelectBox({
+            height: 30,
+            dataSource: new DevExpress.data.ArrayStore({
+                data: CustomerList,
+                key: "PartyID"
+            }),
+            displayExpr: "Party",
+            valueExpr: "PartyID",
+            placeholder: "Select Stockist",
+            searchEnabled: true,
+            onValueChanged: function (data) {
+                varddlCustomer = data.value
+            }
+        });
+    //Added by Kamini 17May2021---Customer Dropdown
+        BindReportdata()
+    });
+
+    function SetDate(dateStr) {
+    var strDate
+    var now = new Date(dateStr);
+    var Day = now.getDate()
+    var Month = (now.getMonth() + 1)
+    var Year = now.getFullYear()
+    if (Day < 10) {
+        Day = "0" + Day;
+    }
+    if (Month < 10) {
+        Month = "0" + Month;
+    }
+    strDate = Month + "/" + Day + "/" + Year
+    return strDate;
+}
+
+    function ItemMasterGetByRetailCategoryId() {
+        try {
+          if (varddlSubCategory == undefined || varddlSubCategory == null || varddlSubCategory == "") {
+                return true
+            }
+            loadPanel.show();
+            var data = { 'RetailCategoryId': varddlSubCategory };
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Report/ItemMasterGetByRetailCategoryId",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: dataWithAntiforgeryToken,
+                success: function (Response) {
+                    loadPanel.hide();
+                    if (Response.StatusId != "99") {
+                        ItemList = Response.Result;
+                        //model = {};
+                        //model.ItemId = -1
+                        //model.ItemName = "All"
+                        //ItemList.push(model);
+                        $("#ddlItem").dxSelectBox('instance').option("dataSource", ItemList);
+                    }
+                    else {
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+        }
+
+    function PendingWebOrderStatusReport () {
+        if (CheckHeaderValidation()) {
+            try {
+                debugger;
+                if (varddlSubCategory == undefined || varddlSubCategory == null || varddlSubCategory == "" || varddlItem == undefined || varddlItem == null || varddlItem == "") {
+                    return true
+                }
+
+                loadPanel.show();
+                var VarFromdate = SetDate($("#txtFromDate").dxDateBox('instance').option('value'));
+                var VarToDate = SetDate($("#txtToDate").dxDateBox('instance').option('value'));
+
+                //Added by Kamini 17May2021---Customer Dropdown
+                var VarPartyId = "0";
+
+                if (strUserTypeId == "22" || strUserTypeId == "23") {
+                    VarPartyId = varddlCustomer;
+                }
+
+                if (varddlItem == -1 || varddlItem == "-1") {
+                    varddlItem = "0";
+                }
+
+                if (varddlSubCategory == -1 || varddlSubCategory == "-1") {
+                    varddlSubCategory = "0";
+                }
+
+                var data = {
+                    'SubCategoryId': varddlSubCategory, 'ItemId': varddlItem, 'Fromdate': VarFromdate, 'Todate': VarToDate, 'PartyId': VarPartyId, 'DateTypeFilter':0 };
+                //Added by Kamini 17May2021---Customer Dropdown
+
+                var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+                //alert(dataWithAntiforgeryToken);
+                $.ajax({
+                    url: "../Report/PendingWebOrderStatusReportFromDateToDate ",
+                    type: 'POST',
+                    dataType: 'json',
+                    async: true,
+                    data: dataWithAntiforgeryToken,
+                    success: function (Response) {
+                        loadPanel.hide();
+                        if (Response.StatusId != "99") {
+                            LedgerReportList = Response.Result;
+                            $("#tblitem").dxDataGrid('instance').option("dataSource", LedgerReportList);
+                        }
+                        else {
+                            alert(Response.Status);
+                        }
+                    },
+                    error: function (xhr) {
+                        loadPanel.hide();
+                        alert("Data size is too large!");
+                    }
+                });
+            }
+            catch (e) {
+                loadPanel.hide();
+                alert("Data size is too large!");
+            }
+        }
+    }
+
+    function BindReportdata(){
+        $("#tblitem").dxDataGrid({
+        dataSource: LedgerReportList,
+        loadPanel: {
+            enabled: true
+        },
+        height: 500,
+        allowSorting: true,
+        columnAutoWidth: true,
+        allowColumnResizing: true,
+        filterRow: { visible: true },
+        headerFilter: {
+            visible: true,
+            allowSearch: true
+        },
+        paging: {
+            pageSize: 20,
+            enabled: false
+        },
+        columnFixing: {
+            enabled: true
+        },
+        columns: [
+            { dataField: "ClientOrder", caption: "ClientOrder" },
+            { dataField: "OrderDate", caption: "OrderDate" },
+            {
+                dataField: "SalesOrderNo", caption: "Sales Order No",
+                headerCellTemplate: function (header, info) {
+                    $('<div>').html("Sales <br/> Order No").css('text-align', 'center').appendTo(header);
+                }
+                , format: { type: "fixedPoint", precision: 4 }
+            },
+            {
+                dataField: "OrderDate", caption: "Sales Order Date",
+                headerCellTemplate: function (header, info) {
+                    $('<div>').html("Sales <br/> Order Date").css('text-align', 'center').appendTo(header);
+                }
+                , format: { type: "fixedPoint", precision: 4 }
+            },
+            {
+                dataField: "ExpiryDate", caption: "Expiry Date",
+                headerCellTemplate: function (header, info) {
+                    $('<div>').html("Expiry <br/>Date").css('text-align', 'center').appendTo(header);
+                }
+                , format: { type: "fixedPoint", precision: 4 }
+            },
+            //{ dataField: "ItemName", caption: "ItemName" },
+            //{
+            //    dataField: "BalQty", caption: "Opening Balance Qty",
+            //    headerCellTemplate: function (header, info) {
+            //        $('<div>').html("Opening<br/>Bal  Qty").css('text-align', 'center').appendTo(header);
+            //    }
+            //    ,format: { type: "fixedPoint", precision: 2 }
+            //},
+            { dataField: "ItemName", caption: "Item Name" },
+            { dataField: "ItemCode", caption: "Item Code" },
+            { dataField: "MRP", caption: "MRP", format: { type: "fixedPoint", precision: 2 } },
+            { dataField: "BasicRate", caption: "Basic Rate", format: { type: "fixedPoint", precision: 2 } },
+            { dataField: "Discrate", caption: "Disc Rate" ,format: {type: "fixedPoint", precision: 4 }},
+            { dataField: "SchDate", caption: "Sch Date", format: 'dd/MM/yyyy'},
+            { dataField: "SchQty", caption: "Sch Qty", format: { type: "fixedPoint", precision: 4 } },
+            { dataField: "SchBox", caption: "Sch Box" },
+            { dataField: "DispQty", caption: "Disp Qty", format: { type: "fixedPoint", precision: 4 } },
+            { dataField: "BalQty", caption: "Bal Qty", format: { type: "fixedPoint", precision: 4 } },
+            { dataField: "BalBox", caption: "Bal Box" },
+            { dataField: "SalesInvoiceNo", caption: "Sales Invoice No" },
+            { dataField: "InvQty", caption: "Inv Qty", format: { type: "fixedPoint", precision: 4 } },
+            { dataField: "InvDate", caption: "Inv Date" },
+        ],
+        export: {
+            fileName: "Pending Web Order Status Report"
+        },
+        showRowLines: true,
+        showBorders: true,
+        //summary: {
+        //            totalItems: [
+        //                { name: "Opening Balance Qty", column: "OpeningBalanceQty", summaryType: "custom", valueFormat: {type: "fixedPoint", precision: 2 } },
+        //                { name: "Opening Balance Amt", column: "OpeningBalanceAmt", summaryType: "custom", valueFormat: {type: "fixedPoint", precision: 4 } },
+        //                { name: "Quantity In", column: "QuantityIn", summaryType: "custom", valueFormat: { type: "fixedPoint", precision: 2 } },
+        //                { name: "Amount In", column: "AmountIn", summaryType: "custom", valueFormat: { type: "fixedPoint", precision: 4 } },
+        //                { name: "Quantity Out", column: "QuantityOut", summaryType: "custom", valueFormat: { type: "fixedPoint", precision: 2 } },
+        //                { name: "Amount Out", column: "AmountOut", summaryType: "custom", valueFormat: {type: "fixedPoint", precision: 4 }},
+        //                { name: "Closing Balance Qty", column: "ClosingBalanceQty", summaryType: "custom", valueFormat: { type: "fixedPoint", precision: 2 } },
+        //                { name: "Closing Balance Amt", column: "ClosingBalanceAmt", summaryType: "custom", valueFormat: {type: "fixedPoint", precision: 4 } },
+
+        //            ],
+        //            calculateCustomSummary: function (options) {
+        //                (
+        //                    options.name === "Opening Balance Qty"
+        //                    || options.name === "Opening Balance Amt"
+        //                    || options.name === "Quantity In"
+        //                    || options.name === "Amount In"
+        //                    || options.name === "Quantity Out"
+        //                    || options.name === "Amount Out"
+        //                    || options.name === "Closing Balance Qty"
+        //                    || options.name === "Closing Balance Amt"
+
+        //                )
+        //                if (options.summaryProcess === "start") {
+        //                    options.totalValue = 0;
+        //                }
+        //                if (options.summaryProcess === "calculate") {
+        //                    if (options.value > 0) {
+        //                        options.totalValue = options.totalValue + options.value;
+        //                    }
+        //                }
+        //            }
+        //        }
+
+    });
+    }
+
+    //function PopShowitemDetails(itemcd, itemnm, openingqty, closingqty) {
+    //   $("#PopshowItem").dxPopup({
+    //       showTitle: true,
+    //       title: 'Stock Details - ' + itemcd + ' - ' + itemnm,
+    //       height: 600,
+    //       width: 1000,
+    //       contentTemplate: function (contentElement) {
+    //           contentElement.append("<div style='margin-top:5px;width:100%;float:left;margin-bottom:10px'><div style='float:left'><b>Opening Qty</b>: " + openingqty + "</div><div style='float:right'><b>Closing Qty:</b> " + closingqty+"</div></div><div class='row'style='margin-top:5px'><div class='col-md-12' id='tblItemDetails'></div></div>");
+    //       }
+    //   });
+    //    $("#PopshowItem").dxPopup("instance").show();
+
+    //}
+
+    //function ItemLedgerDetailGetByItemIdFromDateToDate(VarItemId) {
+    //    try {
+    //      if (VarItemId == undefined || VarItemId == null || VarItemId == "") {
+    //            return true
+    //        }
+    //        loadPanel.show();
+    //        var VarFromdate = SetDate($("#txtFromDate").dxDateBox('instance').option('value'));
+    //        var VarToDate = SetDate($("#txtToDate").dxDateBox('instance').option('value'));
+    //        //Added by Kamini 17May2021---Customer Dropdown
+    //        var VarPartyId = "0";
+
+    //        if (strUserTypeId == "22") {
+    //            VarPartyId = varddlCustomer;
+    //        }
+
+    //        var data = { 'ItemId': VarItemId, 'Fromdate': VarFromdate, 'Todate': VarToDate, 'PartyId': VarPartyId };
+    //        //Added by Kamini 17May2021---Customer Dropdown
+
+
+    //        var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+    //        $.ajax({
+    //            url: "../Report/ItemLedgerDetailGetByItemIdFromDateToDate",
+    //            type: 'POST',
+    //            dataType: 'json',
+    //            async: true,
+    //            data: dataWithAntiforgeryToken,
+    //            success: function (Response) {
+    //debugger
+    //                loadPanel.hide();
+    //                if (Response.StatusId != "99") {
+    //                    LedgeritemDetails = Response.Result;
+    //                    BindLedgerItemDetails();
+    //                }
+    //                else {
+    //                    alert(Response.Status);
+    //                }
+    //            },
+    //            error: function (xhr) {
+    //                alert("Data size is too large!");
+    //            }
+    //        });
+    //    }
+    //    catch (e) {
+    //        alert("Data size is too large!");
+    //    }
+    //}
+
+    //function BindLedgerItemDetails() {
+    //    $("#tblItemDetails").dxDataGrid({
+    //    dataSource: LedgeritemDetails,
+    //    loadPanel: {
+    //        enabled: true
+    //        },
+    //        height: 500,
+    //    allowSorting: true,
+    //    filterRow: { visible: true },
+    //    headerFilter: {
+    //        visible: true,
+    //        allowSearch: true
+    //    },
+    //    paging: {
+    //        pageSize: 20
+    //    },
+    //        columns: [
+
+    //        { dataField: "LedgerDate", width: "15%", caption: "Ledger Date", format:"dd/MM/yyyy" },
+    //        { dataField: "VoucherNo", width: "20%", caption: "Document No." },
+    //        { dataField: "QuantityIn", width: "15%", caption: "Quantity In" ,format: {type: "fixedPoint", precision: 2 }},
+    //        { dataField: "QuantityOut", width: "15%", caption: "Quantity Out", format: { type: "fixedPoint", precision: 2 } },
+    //        { dataField: "BasicRate", width: "20%", caption: "DP Rate" ,format: {type: "fixedPoint", precision: 4 }},
+    //        { dataField: "Rate", width: "15%", caption: "Net Rate" ,format: {type: "fixedPoint", precision: 4 }},
+    //        { dataField: "EntryType", width: "20%", caption: "Entry Type" },
+
+    //    ],
+
+    //    showRowLines: true,
+    //    showBorders: true,
+    //        summary: {
+    //                totalItems: [
+    //                    { name: "Quantity In", column: "QuantityIn", summaryType: "custom",  valueFormat: { type: "fixedPoint", precision: 2 } },
+    //                    { name: "Quantity Out", column: "QuantityOut", summaryType: "custom",  valueFormat: { type: "fixedPoint", precision: 2 } },
+
+    //                ],
+    //                calculateCustomSummary: function (options) {
+    //                    (
+    //                        options.name === "Quantity In"
+    //                        || options.name === "Quantity Out"
+
+    //                    )
+    //                    if (options.summaryProcess === "start") {
+    //                        options.totalValue = 0.00;
+    //                    }
+    //                    if (options.summaryProcess === "calculate") {
+    //                        if (options.value > 0) {
+    //                            options.totalValue = options.totalValue + options.value;
+    //                        }
+    //                    }
+    //                }
+    //            }
+
+    //});
+
+    //}
+
+    function Excel() {
+         $("#tblitem").dxDataGrid("instance").exportToExcel(false);
+    }
+    function CheckHeaderValidation() {
+        var Flag = true;
+        //Added by Kamini 29May2021---Customer Dropdown
+        if (varddlCustomer == "" && (strUserTypeId == "22" || strUserTypeId == "23")) {
+            alert("Please select Stockist.");
+            $('#ddlCustomer').focus();
+            Flag = false;
+        }
+        return Flag
+    }
+
+</script>
+

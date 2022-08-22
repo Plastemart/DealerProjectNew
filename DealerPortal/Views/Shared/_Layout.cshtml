@@ -1,0 +1,435 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>@ViewBag.Title</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link href="~/Template/css/bootstrap1.min.css" rel="stylesheet" />
+    <link href="~/Template/css/styles.css" rel="stylesheet" />
+    <link href="~/Template/css/skins.min.css" rel="stylesheet" />
+    <link href="~/Template/css/font-awesome-min.css" rel="stylesheet" />
+    <link href="~/Template/css/flaticon.css" rel="stylesheet" />
+    <link href="~/Template/Alert/jquery-confirm.min.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="~/Template/js/bootstrap1.min.js"></script>
+    <script src="~/Template/js/jsGlobalFunctions.js"></script>
+
+
+
+
+
+
+    @Styles.Render("~/Content/bundle")
+    @Styles.Render("~/Content/DevExtremeBundle")
+    @Scripts.Render("~/Scripts/bundle")
+    @Scripts.Render("~/Scripts/DevExtremeBundle")
+
+
+    @*<link rel="stylesheet" href="@Url.Content("//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css")">
+        <script src="@Url.Content("//code.jquery.com/jquery-1.10.2.js")"></script>
+        <script src="@Url.Content("//code.jquery.com/ui/1.11.4/jquery-ui.js")"></script>*@
+</head>
+
+<body class="skin-blue sidebar-mini" style="height: auto; min-height: 100%;">
+    <div class="wrapper" style="height: auto; min-height: 100%;">
+        <header class="main-header">
+            <!-- Logo -->
+            <a href="javascript:void(0)" class="logo">
+                <span class="logo-mini"><b>P</b></span>
+                <span class="logo-mini"></span>
+                <span class="logo-lg">
+                    <img src="~/Template/images/logo.png">
+                </span>
+            </a>
+            <nav class="navbar navbar-static-top">
+                <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                </a>
+                @*<div class="mrp-filter">
+                        <label>MRP Filter</label>
+                        <select>
+                            <option></option>
+                            <option>5 - 10</option>
+                            <option>10 - 15</option>
+                            <option>15 - 20</option>
+                            <option>20 - 25</option>
+                            <option>25 - 30</option>
+
+                        </select>
+
+                    </div>*@
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown user user-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <img src="~/Template/images/face5.png" class="user-image" alt="User Image">
+                                @*<strong>Plastemart</strong>,*@
+                                <span>@(Session["UserName"])</span>
+                                <span class="hidden-xs" id="displayName"></span>
+                            </a>
+                            <ul class="dropdown-menu" style="width: 100%;">
+                                <li class="user-footer">
+                                    <a href="javascript:void(0)">Profile</a>
+                                    <a href="@Url.Action("Logout", "Home")">Sign out</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown user user-menu">
+                            <a href="#" data-toggle="dropdown">
+                                @*<img src="~/Template/images/face5.png" class="user-image" alt="User Image">*@
+                                <strong>@Session["PartyName"]</strong>
+                                @*<span class="hidden-xs" id="displayName"></span>*@
+                            </a>
+                            @*<ul class="dropdown-menu" style="width: 100%;">
+                                    <li class="user-footer">
+                                        <a href="javascript:void(0)">Profile</a>
+                                        <a href="@Url.Action("Logout", "Home")">Sign out</a>
+                                    </li>
+                                </ul>*@
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        @{
+            var controllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+            var actionName = this.ViewContext.RouteData.Values["action"].ToString();
+            string url = "/" + controllerName + "/" + actionName;
+            string Master = "";
+            string UserMaster = "";
+            string CustomerMaster = "";
+            string ItemMaster = "";
+            string PartyMaster = "";
+            string PartyItemLink = "";
+            string OptionList = "";
+            string Parameter = "";
+            string CountryStateCity = "";
+            string Dashboard = "";
+            string PlaceOrder = "";
+            string OrderHistory = "";
+            switch (url)
+            {
+                case "/Home/Dashboard":
+                    Dashboard = "class = active";
+                    break;
+
+                case "/Home/UserMaster":
+                    UserMaster = "active";
+                    Master = "active";
+                    break;
+
+                case "/Home/CustomerMaster":
+                    CustomerMaster = "active";
+                    Master = "active";
+                    break;
+
+                case "/Home/ItemMaster":
+                    ItemMaster = "active";
+                    Master = "active";
+                    break;
+
+                case "/Home/PartyMaster":
+                    PartyMaster = "active";
+                    Master = "active";
+                    break;
+
+                case "/Home/PartyItemLink":
+                    PartyItemLink = "active";
+                    Master = "active";
+                    break;
+
+                case "/Home/OptionList":
+                    OptionList = "active";
+                    Master = "active";
+                    break;
+
+                case "/Home/Parameter":
+                    Parameter = "active";
+                    Master = "active";
+                    break;
+
+                case "/Home/CountryStateCity":
+                    CountryStateCity = "active";
+                    Master = "active";
+                    break;
+
+                case "/Home/PlaceOrder":
+                    PlaceOrder = "class = active";
+                    break;
+
+                case "/Home/OrderHistory":
+                    OrderHistory = "class = active";
+                    break;
+            }
+        }
+        <aside class="main-sidebar">
+            <section class="sidebar" style="height: auto;">
+                <ul class="sidebar-menu tree" data-widget="tree">
+                    <li @Dashboard>
+                        <a href="@Url.Action("Dashboard", "Home")"><i class="fa fa-dashboard text-red"></i><span>Dashboard</span></a>
+                    </li>
+                    @if (Convert.ToInt32(Session["UserTypeId"]) == 22)
+                    {
+                        <li class="@Master treeview">
+                            <a href="#">
+                                <i class="fa fa-cogs text-red"></i><span>Master</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li class="@UserMaster ML15"><a href="@Url.Action("UserMaster", "Home")">User Master</a></li>
+                                <li class="@ItemMaster ML15"><a href="@Url.Action("ItemMaster", "Home")">Item Master</a></li>
+                                <li class="@PartyMaster ML15"><a href="@Url.Action("PartyMaster", "Home")">Party Master</a></li>
+                                <li class="@PartyItemLink ML15"><a href="@Url.Action("PartyItemLink", "Home")">Party Item Link</a></li>
+                                @*<li class="@OptionList ML15"><a href="@Url.Action("OptionList", "Home")">Option List</a></li>
+                    <li class="@Parameter ML15"><a href="@Url.Action("Parameter", "Home")">Parameter</a></li>*@
+                                @*<li class="@CountryStateCity ML15"><a href="@Url.Action("CountryStateCity", "Home")">Country/State/City</a></li>*@
+                            </ul>
+                        </li>
+                        <li class="@Master treeview">
+                            <a href="#">
+                                <i class="fa fa-cogs text-red"></i><span>Reports</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href="@Url.Action("StockLedgerReport", "Report")"><i class="fa fa-money text-red"></i><span>Stock Report</span></a></li>
+                                <li><a href="@Url.Action("PartyProductWiseSummarySalesReport", "Report")"><i class="fa fa-money text-red"></i><span>Sales Report</span></a></li>
+                                <li><a href="@Url.Action("PendingWebOrderStatusReport", "Report")"><i class="fa fa-money text-red"></i><span>Pending Web Order Status </span></a></li>
+                                <li><a href="@Url.Action("StockReportValuation", "Report")"><i class="fa fa-money text-red"></i><span>Stock Valuation Report</span></a></li>
+                                <li><a href="@Url.Action("InvoiceStatisticsDataReport", "Report")"><i class="fa fa-money text-red"></i><span>Invoice Statistics Report</span></a></li>
+                                <li><a href="@Url.Action("ReprimarySaleReport", "Report")"><i class="fa fa-money text-red"></i><span>Reprimary Sales Report</span></a></li>
+                            </ul>
+                        </li>
+                        <li><a href="@Url.Action("SalesInvoice", "Home")"><i class="fa fa-file text-red"></i><span>Sales Invoice</span></a></li>
+                    }
+
+
+                    @if (Convert.ToInt32(Session["UserTypeId"]) == 21)
+                    {
+                        <li @PlaceOrder>
+                            <a href="@Url.Action("PlaceOrder", "Home")"><i class="fa fa-shopping-cart text-red"></i><span>Order</span></a>
+                        </li>
+
+                        <li @CustomerMaster><a href="@Url.Action("CustomerMaster", "Home")"><i class="fa fa-users text-red"></i><span>Customer Master</span></a></li>
+                        <li @CustomerMaster><a href="@Url.Action("AddEditItemMaster", "Home")"><i class="fa fa-list text-red"></i><span>Item Master</span></a></li>
+
+                        <li @CustomerMaster><a href="@Url.Action("CustomerDiscountMaster", "Home")"><i class="fa fa-users text-red"></i><span>Discount Master</span></a></li>
+                        <li @OrderHistory><a href="@Url.Action("OrderHistory", "Home")"><i class="fa fa-history text-red"></i><span>History</span></a></li>
+                        <li><a href="@Url.Action("PendingPurchaseInvoice", "Home")"><i class="fa fa-shopping-bag text-red"></i><span>Purchase</span></a></li>
+                        @*<li><a href="#"><i class="fa fa-exchange text-red"></i><span>Purchase Returns</span></a></li>*@
+                        <li><a href="@Url.Action("StockAdjustment", "Home")"><i class="fa fa-money text-red"></i><span>Stock Adjustment</span></a></li>
+                        <li class="@Master treeview">
+                            <a href="#">
+                                <i class="fa fa-cogs text-red"></i><span>Reports</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href="@Url.Action("StockLedgerReport", "Report")"><i class="fa fa-money text-red"></i><span>Stock Report</span></a></li>
+                                <li><a href="@Url.Action("PartyProductWiseSummarySalesReport", "Report")"><i class="fa fa-money text-red"></i><span>Sales Report</span></a></li>
+                                <li><a href="@Url.Action("DownloadReports", "Report")"><i class="fa fa-money text-red"></i><span>Download Report</span></a></li>
+                                <li><a href="@Url.Action("PendingWebOrderStatusReport", "Report")"><i class="fa fa-money text-red"></i><span>Pending Web Order Status </span></a></li>
+                                <li><a href="@Url.Action("StockReportValuation", "Report")"><i class="fa fa-money text-red"></i><span>Stock Valuation Report</span></a></li>
+                            </ul>
+                        </li>
+
+                        <li><a href="@Url.Action("SalesInvoice", "Home")"><i class="fa fa-file text-red"></i><span>Sales Invoice</span></a></li>
+                        if (Convert.ToBoolean(Session["isEInvoiceApplicable"]) == true)
+                        {
+                            <li><a href="@Url.Action("EInvoice", "Home")"><i class="fa fa-file text-red"></i><span>E-Invoice</span></a></li>
+                        }
+                        <li><a href="@Url.Action("PurchaseReturn", "Home")"><i class="fa fa-exchange text-red"></i><span>Purchase Returns</span></a></li>
+                        <li><a href="@Url.Action("SalesReturn", "Home")"><i class="fa fa-exchange text-red"></i><span>Sales Returns</span></a></li>
+                        @*<li><a href="@Url.Action("StockAdjustment", "Home")"><i class="fa fa-money text-red"></i><span>Stock Adjustment</span></a></li>*@
+                    }
+                    @if (Convert.ToInt32(Session["UserTypeId"]) == 23)
+                    {
+
+                        <li class="@Master treeview">
+                            <a href="#">
+                                <i class="fa fa-cogs text-red"></i><span>Reports</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href="@Url.Action("StockLedgerReport", "Report")"><i class="fa fa-money text-red"></i><span>Stock Report</span></a></li>
+                                <li><a href="@Url.Action("PartyProductWiseSummarySalesReport", "Report")"><i class="fa fa-money text-red"></i><span>Sales Report</span></a></li>
+                                <li><a href="@Url.Action("PendingWebOrderStatusReport", "Report")"><i class="fa fa-money text-red"></i><span>Pending Web Order Status </span></a></li>
+                                <li><a href="@Url.Action("StockReportValuation", "Report")"><i class="fa fa-money text-red"></i><span>Stock Valuation Report</span></a></li>
+                                <li><a href="@Url.Action("InvoiceStatisticsDataReport", "Report")"><i class="fa fa-money text-red"></i><span>Invoice Statistics Report</span></a></li>
+                                <li><a href="@Url.Action("ReprimarySaleReport", "Report")"><i class="fa fa-money text-red"></i><span>Reprimary Sales Report</span></a></li>
+                            </ul>
+                        </li>
+                    }
+                </ul>
+            </section>
+            <!-- /.sidebar -->
+        </aside>
+        <style>
+        </style>
+        <div class="content-wrapper" style="min-height: 529px;">
+            <section class="content">
+                <main role="main">
+                    @RenderBody()
+                </main>
+            </section>
+        </div>
+        <footer class="main-footer">
+            <div class="pull-right hidden-xs"></div>
+            <strong>Copyright © 2019 <a href="javascript:void(0)">ERP Pens Company</a>.</strong> All rights reserved.
+        </footer>
+        <div class="control-sidebar-bg">
+        </div>
+        <div id="loadPanel"></div>
+    </div>
+
+
+    <script src="~/Template/js/adminlte.min.js"></script>
+    <script src="~/Template/js/bootstrap3-wysihtml5.all.min.js"></script>
+    <script src="~/Template/js/jquery.slimscroll.min.js"></script>
+    <script src="~/Template/js/moment.min.js"></script>
+    <script src="~/Template/Alert/jquery-confirm.min.js"></script>
+    <script src="https://cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script>
+    <script>
+        function alert(msg) {
+            $.confirm({
+                title: 'Alert!',
+                content: msg,
+                icon: 'fa fa-warning',
+                closeIcon: false,
+                animation: 'scale',
+                type: 'red',
+                buttons: {
+                    deleteUser: {
+                        text: 'Ok',
+                        action: function () {
+                            //$.alert('Deleted the user!');
+                        }
+                    }
+                }
+            });
+        }
+
+        function alertSuccess(msg) {
+            $.confirm({
+                title: 'Success!',
+                content: msg,
+                icon: 'fa fa-check',
+                closeIcon: false,
+                animation: 'scale',
+                type: 'green',
+                buttons: {
+                    MyFunction: {
+                        text: 'Ok',
+                        action: function () {
+                            //$.alert('Deleted the user!');
+                        }
+                    }
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            var quantitiy = 0;
+            $('.quantity-right-plus').click(function (e) {
+                e.preventDefault();
+                var quantity = parseInt($('#quantity').val());
+                $('#quantity').val(quantity + 1);
+            });
+
+            $('.quantity-left-minus').click(function (e) {
+                e.preventDefault();
+                var quantity = parseInt($('#quantity').val());
+                if (quantity > 0) {
+                    $('#quantity').val(quantity - 1);
+                }
+            });
+            //TableSorter();
+            //$(".MyCart").hover(function () {
+            //    $(".DET").show();
+            //},
+            //function () {
+            //    $(".DET").hide();
+            //});
+
+        });
+        function TableSorter() {
+            $('#TblDistributor').trigger("destroy");
+            $('#TblDistributor').tablesorter({
+                theme: 'blue',
+                widthFixed: true,
+                headerTemplate: '{content} {icon}',
+                widgets: ['zebra', 'stickyHeaders', 'filter'],
+                widgetOptions: {
+                    stickyHeaders_attachTo: '.WrapperDistributor'
+                }
+            });
+        }
+
+        var Holdid = '';
+        var spanPrv = '';
+        function changeColor(id) {
+            if (id != Holdid || Holdid == "") {
+                $("#tr_" + Holdid + "").removeClass('highlighted');
+                $("#sp_" + Holdid).css("visibility", "hidden");
+                $("#tr_" + id + "").addClass('highlighted');
+                Holdid = id;
+            }
+            else {
+                if ($("#tr_" + id + "").hasClass('highlighted')) {
+                    $("#tr_" + id + "").removeClass('highlighted');
+                    Holdid = 0;
+                }
+                else {
+                    $("#tr_" + id + "").addClass('highlighted');
+                    Holdid = id;
+                }
+            }
+        }
+
+        function DisplayButton(id) {
+            $("#sp_" + id).css("visibility", "visible");
+            if (spanPrv != id) {
+                if ($("#tr_" + spanPrv + "").hasClass('highlighted'))
+                    $("#sp_" + spanPrv).css("visibility", "visible");
+                else
+                    $("#sp_" + spanPrv).css("visibility", "hidden");
+                spanPrv = id;
+            }
+        }
+
+        $("#tbody").mouseleave(function () {
+            if ($("#tr_" + spanPrv + "").hasClass('highlighted'))
+                $("#sp_" + spanPrv).css("visibility", "visible");
+            else
+                $("#sp_" + spanPrv).css("visibility", "hidden");
+        });
+
+        var loadPanel = $("#loadPanel").dxLoadPanel({
+            shadingColor: "rgba(0,0,0,0.4)",
+            visible: false,
+            showIndicator: true,
+            showPane: true,
+            shading: true,
+            closeOnOutsideClick: false
+        }).dxLoadPanel("instance");
+
+
+    </script>
+</body>
+
+</html>

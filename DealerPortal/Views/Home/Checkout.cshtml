@@ -1,0 +1,191 @@
+﻿
+@{
+    ViewBag.Title = "Checkout";
+}
+
+<div class="box box-warning">
+    <div class="box-header with-border">
+        <div class="box-header-left">
+            <div class="row">
+                <div class="col-md-3">
+                    <h3 class="box-title bounce">Checkout</h3>
+                </div>
+            </div>
+        </div>
+        @*<div class="box-header-right">
+            <a href="" title="View To Cart"><i class="fa fa-shopping-basket MyCart" value="3"></i></a>
+            <div class="DET animated tada" style="display: none;">
+                <div class="table-responsive" style="padding: 5px; overflow-y: auto; max-height: 200px;">
+                    <table class="table table-hover table-bordered" style="margin-bottom: -1px;">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Ultron Ballpen blue</td>
+                                <td>50</td>
+                            </tr>
+                            <tr>
+                                <td>Ultron Ballpen blue</td>
+                                <td>50</td>
+                            </tr>
+                            <tr>
+                                <td>Ultron Ballpen blue</td>
+                                <td>50</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2" align="right"><a href="@Url.Action("Checkout", "Home")" class="btn btn-danger btn-flat" style="background: #e32228;">Checkout</a></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>*@
+    </div>
+    <div class="box-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive ">
+                    <table class="tablesoter tablesorter tablesorter-blue hasFilters hasStickyHeaders">
+                        <thead>
+                            <tr>
+                                <th width="7%">Code</th>
+                                <th width="20%">Product</th>
+                                <th width="7%">Pack Size</th>
+                                <th width="10%">Order Carton</th>
+                                <th width="10%">Order Units</th>
+                                <th width="7%">MRP</th>
+                                <th width="7%">DP</th>
+                                <th width="10%">Scheme Disc</th>
+                                <th width="10%">Trade Disc</th>
+                                @*<th width="7%">Add. <br />Disc</th>
+                                <th width="7%">GST%</th>
+                                <th width="7%">Tax</th>*@
+                                <th width="7%">Total</th>
+                                <th width="7%" class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="hover-tooltip">ULT-0001 <div class="tooltip-content"><strong>HSN :- </strong>90081019 </div></span></td>
+                                <td>Ultron Ballpen blue</td>
+                                <td><span class="hover-tooltip">2,500<div class="tooltip-content"><strong>UOM :- </strong>10 </div></span></td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-btn">
+                                            <button type="button" class="quantity-left-minus btn btn-danger btn-number" data-type="minus" data-field="">
+                                                <span class="glyphicon glyphicon-minus"></span>
+                                            </button>
+                                        </span>
+                                        <input type="text" id="quantity" name="quantity" class="form-control input-number" value="50" min="1" max="100">
+                                        <span class="input-group-btn">
+                                            <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus" data-field="">
+                                                <span class="glyphicon glyphicon-plus"></span>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </td>
+                                <td>25,000</td>
+                                <td>10.00</td>
+                                <td>10.00</td>
+                                <td>5.00</td>
+                                <td>5.00</td>
+                                @*<td>12.00</td>
+            <td>10%</td>
+            <td>12,345.00</td>*@
+                                <td>1,23,456.00</td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-danger">
+                                        <span class="fa fa-trash-o"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="hover-tooltip">ULT-0001 <div class="tooltip-content"><strong>HSN :- </strong>90081019 </div></span></td>
+                                <td>Ultron Ballpen blue</td>
+                                <td><span class="hover-tooltip">2,500<div class="tooltip-content"><strong>UOM :- </strong>10 </div></span></td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-btn">
+                                            <button type="button" class="quantity-left-minus btn btn-danger btn-number" data-type="minus" data-field="">
+                                                <span class="glyphicon glyphicon-minus"></span>
+                                            </button>
+                                        </span>
+                                        <input type="text" id="quantity" name="quantity" class="form-control input-number" value="50" min="1" max="100">
+                                        <span class="input-group-btn">
+                                            <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus" data-field="">
+                                                <span class="glyphicon glyphicon-plus"></span>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </td>
+                                <td>25,000</td>
+                                <td>10.00</td>
+                                <td>10.00</td>
+                                <td>5.00</td>
+                                <td>5.00</td>
+                                @*<td>12.00</td>
+            <td>10%</td>
+            <td>12,345.00</td>*@
+                                <td>1,23,456.00</td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-danger">
+                                        <span class="fa fa-trash-o"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="hover-tooltip">ULT-0001 <div class="tooltip-content"><strong>HSN :- </strong>90081019 </div></span></td>
+                                <td>Ultron Ballpen blue</td>
+                                <td><span class="hover-tooltip">2,500<div class="tooltip-content"><strong>UOM :- </strong>10 </div></span></td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-btn">
+                                            <button type="button" class="quantity-left-minus btn btn-danger btn-number" data-type="minus" data-field="">
+                                                <span class="glyphicon glyphicon-minus"></span>
+                                            </button>
+                                        </span>
+                                        <input type="text" id="quantity" name="quantity" class="form-control input-number" value="50" min="1" max="100">
+                                        <span class="input-group-btn">
+                                            <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus" data-field="">
+                                                <span class="glyphicon glyphicon-plus"></span>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </td>
+                                <td>25,000</td>
+                                <td>10.00</td>
+                                <td>10.00</td>
+                                <td>5.00</td>
+                                <td>5.00</td>
+                                @*<td>12.00</td>
+            <td>10%</td>
+            <td>12,345.00</td>*@
+                                <td>1,23,456.00</td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-danger">
+                                        <span class="fa fa-trash-o"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th colspan="9" style="text-align: right;">Total</th>
+                                <th colspan="2" style="text-align: right;">12345.00</th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <a href="@Url.Action("Checkout", "Home")" class="btn btn-danger btn-flat pull-right" style="background: #e32228; margin-top: 15px; margin-left: 10px;">Place Order</a>
+                <a href="@Url.Action("PlaceOrder", "Home")" class="btn btn-danger btn-flat pull-right" style="background: #e32228; margin-top: 15px;">Add More Item</a>
+            </div>
+        </div>
+    </div>
+</div>
+

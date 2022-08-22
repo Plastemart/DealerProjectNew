@@ -1,0 +1,770 @@
+﻿﻿@{
+    ViewBag.Title = "PlaceOrder";
+}
+
+@Html.AntiForgeryToken()
+<style>
+    .enabledisabled {
+        pointer-events: none;
+    }
+</style>
+<div class="box box-warning">
+    <div class="box-header with-border">
+        <div class="box-header-left">
+            <h3 class="box-title" style="line-height:2;">Order</h3>
+        </div>
+        <div class="box-header-right">
+            <ul>
+                <li>
+                    <a id="ATCart" href="javascript:void(0)" title="Add To Cart" class="cart" onclick="CartInsert()"><i class="fa fa-cart-plus"></i></a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)" title="View To Cart" id="Cart">
+                        <i class="MyCart flaticon-cart"><span class="spanViewToCart"></span></i>
+                    </a>
+                </li>
+            </ul>
+            <div class="DET" style="display: none;">
+                <div class="table-responsive" style="padding: 5px;">
+                    <div id="Carttbl" style="margin-bottom: 5px;"></div>
+                    <a id="disableanchor" href="javascript:void(0)" data-toggle="modal" data-target="#CheckoutModal" class="btn btn-danger btn-flat" style="background: #e32228; float: right;" onclick="PopuCheckout()">Checkout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box-body">
+        <form class="form-horizontal">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label col-sm-4" for="">Item Category</label>
+                        <div class="col-sm-8 MY8">
+                            <div id="ddlCategory"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label col-sm-4" for="">Item Group</label>
+                        <div class="col-sm-8 MY8">
+                            <div id="ddlCategoryGroup"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label col-sm-4" for="">MRP Filter</label>
+                        <div class="col-sm-8 MY8">
+                            <div id="ddlMRP"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive ">
+                    <div id="tblitem">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-md-12" style="padding-right: 18px !important;">
+                <div class="box-header-right" style="width: 100%;">
+                    <ul>
+                        <li>
+                            <a id="ATCart1" href="javascript:void(0)" title="Add To Cart" class="cart" onclick="CartInsert()" style="background: #f79a06 !important; color: #FFF; padding: 5px 5px 5px 5px;">Add To Cart</a>
+                        </li>
+                        <li>
+                            <a id="disableanchor1" href="javascript:void(0)" data-toggle="modal" data-target="#CheckoutModal" class="btn btn-danger btn-flat" style="background: #e32228;  float: right;" onclick="PopuCheckout()">Checkout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="PopuCheckout"></div>
+
+<script>
+    var RetailCategoryList = [];
+    var RetailCategoryGroupList = [];
+    var MRPCategoryGroupList = [];
+    var CartList = [];
+    var CartDetailsList = [];
+    var ItemList = [];
+    var varddlCategory = "";
+    var varddlCategoryGroup = "";
+    var varddlMRP = "";
+   arrayCr = @Html.Raw(Json.Encode(@ViewBag.RetailCategoryList));
+    if(arrayCr !=null)
+    {
+        for(var i = 0; i < arrayCr.length; i++){
+            RetailCategoryList[i] = arrayCr[i];
+        }
+    }
+
+   arrayCr = @Html.Raw(Json.Encode(@ViewBag.MRPCategoryGroupList));
+    if(arrayCr !=null)
+    {
+        for(var i = 0; i < arrayCr.length; i++){
+            MRPCategoryGroupList[i] = arrayCr[i];
+        }
+    }
+       arrayCr = @Html.Raw(Json.Encode(@ViewBag.TempCartViewList));
+    if(arrayCr !=null)
+    {
+        for(var i = 0; i < arrayCr.length; i++){
+            CartList[i] = arrayCr[i];
+        }
+    }
+
+    $(document).ready(function () {;
+        $('#disableanchor1').addClass("enabledisabled");
+       $('#ATCart').addClass("enabledisabled"); //if(disble kerna hai to)
+        $('#ATCart1').addClass("enabledisabled");
+        $(".MyCart").hover(function () {
+            if (CartList.length == 0) {
+                $(".spanViewToCart").html("");
+                $(".DET").hide();
+            } else {
+                $(".DET").show();
+            }
+        });
+
+        $(".DET").mouseleave(function () {
+            $(".DET").hide();
+        });
+
+        $("#ddlCategory").dxSelectBox({
+           height: 30,
+           dataSource: new DevExpress.data.ArrayStore({
+                data: RetailCategoryList,
+                key: "RetailCategoryID"
+            }),
+            displayExpr: "RetailCategory",
+            valueExpr: "RetailCategoryID",
+            placeholder: "Select Category",
+            onValueChanged: function (data) {
+                varddlCategory = data.value
+                 ItemList = [];
+                 $("#tblitem").dxDataGrid('instance').option("dataSource", ItemList);
+                RetailCategoryMasterGetByParentId()
+                ItemMasterGetByCategoryGroupIdMRPCategoryIdPartyIdUserId()
+            }
+
+       });
+
+        $("#ddlCategoryGroup").dxSelectBox({
+           height: 30,
+           dataSource: new DevExpress.data.ArrayStore({
+                data: RetailCategoryGroupList,
+                key: "RetailCategoryID"
+            }),
+            displayExpr: "RetailCategory",
+            valueExpr: "RetailCategoryID",
+            placeholder: "Select Group",
+            value: RetailCategoryGroupList[0],
+            onValueChanged: function (data) {
+                varddlCategoryGroup = data.value
+                ItemMasterGetByCategoryGroupIdMRPCategoryIdPartyIdUserId()
+            }
+
+          });
+
+        $("#ddlMRP").dxSelectBox({
+           height: 30,
+           dataSource: new DevExpress.data.ArrayStore({
+                data: MRPCategoryGroupList,
+                key: "MRPCategoryId"
+            }),
+            displayExpr: "MRPCategory",
+            valueExpr: "MRPCategoryId",
+            placeholder: "Select MRP",
+            value: MRPCategoryGroupList[0],
+            onValueChanged: function (data) {
+                varddlMRP = data.value
+                ItemMasterGetByCategoryGroupIdMRPCategoryIdPartyIdUserId()
+
+            }
+
+        });
+        BinditemList()
+        BinditemCart()
+
+    });
+
+    function RetailCategoryMasterGetByParentId() {
+        try {
+          if (varddlCategory == undefined || varddlCategory == null || varddlCategory == "") {
+                return true
+            }
+            loadPanel.show();
+            var data = { 'ParentId': varddlCategory };
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Home/RetailCategoryMasterGetByParentId",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: dataWithAntiforgeryToken,
+                success: function (Response) {
+                    loadPanel.hide();
+                    if (Response.StatusId != "99") {
+                        RetailCategoryGroupList = Response.Result;
+                        $("#ddlCategoryGroup").dxSelectBox('instance').option("dataSource", RetailCategoryGroupList);
+                        $("#ddlCategoryGroup").dxSelectBox('instance').option('value', RetailCategoryGroupList[0].RetailCategoryID);
+                        $("#ddlMRP").dxSelectBox('instance').option('value', MRPCategoryGroupList[0].MRPCategoryId);
+                    }
+                    else {
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            alert("Data size is too large!");
+        }
+    }
+
+    function ItemMasterGetByCategoryGroupIdMRPCategoryIdPartyIdUserId() {
+        try {
+             if ( varddlCategory == undefined|| varddlCategory == null|| varddlCategory == ""||  varddlCategoryGroup == undefined || varddlCategoryGroup == null || varddlCategoryGroup == ""||varddlMRP == undefined || varddlMRP == null || varddlMRP == "") {
+                return true
+            }
+              loadPanel.show();
+            var data = {'CategoryId':varddlCategory, 'CategoryGroupId': varddlCategoryGroup, 'CategoryMRPId': varddlMRP };
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Home/ItemMasterGetByCategoryGroupIdMRPCategoryIdPartyIdUserId",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: dataWithAntiforgeryToken,
+                success: function (Response) {
+                    loadPanel.hide();
+                    if (Response.StatusId != "99") {
+                        ItemList = Response.Result;
+                        CartList = Response.CartList
+                        $("#tblitem").dxDataGrid('instance').option("dataSource", ItemList);
+                        BinditemCart()
+                    }
+                    else {
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            alert("Data size is too large!");
+        }
+    }
+
+    function BinditemList() {
+        $("#tblitem").dxDataGrid({
+            dataSource: ItemList,
+            loadPanel: {
+                enabled: true
+            },
+            height: 370,
+            allowSorting: true,
+            filterRow: { visible: true },
+            headerFilter: {
+                visible: true,
+                allowSearch: true
+            },
+            paging: { enabled: true },
+            allowColumnResizing: true,
+            //columnResizingMode: "widget",
+            columnAutoWidth: true,
+            wordWrapEnabled: false,
+            columns: [
+                { dataField: "ZZProduct", caption: "Product" },
+                { dataField: "ZZItemCode", caption: "Code" },
+                 {
+                    dataField: "ZZItemPackSize",
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Pack <br/> Size").appendTo(header);
+                    }
+                },
+                { dataField: "", caption: "Order Carton", cellTemplate: function (container, options) {
+                $("<div style='font-size:12px'>").dxNumberBox({
+                  max: 100,
+                    min: 1,
+                    height: 22,
+                  value :options.data.ZZOrderQty,
+                  onValueChanged: function (e) {
+                    Onchangequantity(options.data.RowNumber , e)
+                }
+                   })
+                .append(options.value)
+                .appendTo(container);
+                  }
+                },
+                { dataField: "ZZOrderUnits", caption: "Order Units" , valueFormat: "#,###", },
+                { dataField: "ZZMRP",  caption: "MRP" , valueFormat: "#,###", format: {type: "fixedPoint",  precision: "2" },},
+                { dataField: "ZZDP", caption: "DP", valueFormat: "#,###", format: { type: "fixedPoint", precision: "2" }, },
+                  {
+                    dataField: "ZZTradeDiscountPercentage", valueFormat: "#,###", format: {type: "fixedPoint",  precision: "2" },
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Trade <br/> Discount").appendTo(header);
+                    }
+                },
+                //{
+                //    dataField: "ZZSchemeDiscountPercentage", valueFormat: "#,###", format: {type: "fixedPoint",  precision: "2" },
+                //    headerCellTemplate: function (header, info) {
+                //        $('<div>').html("Scheme <br/> Discount").appendTo(header);
+                //    }
+                //},
+                {
+                    dataField: "", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Scheme <br/> Discount").appendTo(header);
+                    }, cellTemplate: function (container, options) {
+                        $("<div style='font-size:12px'>").dxNumberBox({
+                            height: 22,
+                            value: options.data.ZZSchemeDiscountPercentage,
+                            onValueChanged: function (e) {
+                                Onchangeschemediscount(options.data.RowNumber, e)
+                            }
+                        })
+                            .append(options.value)
+                            .appendTo(container);
+                    }
+                },
+                {
+                    dataField: "ZZAddlDiscountPercentage", valueFormat: "#,###", format: {type: "fixedPoint",  precision: "2" },
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Special<br/> Discount").appendTo(header);
+                    }
+                },
+                { dataField: "ZZGSTPercent", caption: "GST%" , valueFormat: "#,###", },
+                { dataField: "ZZTax", caption: "Tax" , valueFormat: "#,###", format: {type: "fixedPoint",  precision: "2" }, },
+                { dataField: "ZZTotal", caption: "Value" , valueFormat: "#,###", format: {type: "fixedPoint",  precision: "2" }, },
+
+            ]
+            ,
+          
+            showRowLines: true,
+            showBorders: true,
+            summary: {
+                totalItems: [
+                    { name: "Tax", column: "ZZTax", summaryType: "sum", displayFormat: "Total: {0}", valueFormat: "#,###.##", valueFormat: { type: "fixedPoint", precision: 2} },
+                    { name: "Total", column: "ZZTotal", summaryType: "sum", displayFormat: "Total: {0}", valueFormat: "#,###.##", valueFormat: { type: "fixedPoint", precision: 2} }
+
+                ],
+            }
+        });
+    }
+
+    function Onchangequantity(RowId, e) {
+        var obj = $.grep(ItemList, function (object) {
+            return object.RowNumber == RowId;
+        });
+        if (obj.length > 0) {
+            //alert(e.value + "  - qty");
+            //alert(obj[0].ZZSchemeDiscountPercentage + "  - Scheme disc");
+            obj[0].ZZOrderQty = e.value;
+            obj[0].ZZOrderUnits = (e.value * obj[0].ZZItemPackSize).toFixed(2)
+            var Amt = (obj[0].ZZOrderUnits * obj[0].ZZDP);
+            Amt = Amt - (Amt * obj[0].ZZSchemeDiscountPercentage / 100)
+            Amt = Amt - (Amt * obj[0].ZZTradeDiscountPercentage / 100)
+            Amt = Amt - (Amt * obj[0].ZZAddlDiscountPercentage / 100)
+            var GSTAmt = (Amt * obj[0].ZZGSTPercent / 100)
+            obj[0].ZZTax = GSTAmt.toFixed(2);
+            obj[0].ZZTotal = (GSTAmt + Amt).toFixed(2);
+           // $('#ATCart').attr("disabled", "Enabled");
+            $('#ATCart').removeClass("enabledisabled");
+            $('#ATCart1').removeClass("enabledisabled");
+        }
+        $("#tblitem").dxDataGrid('instance').option("dataSource", ItemList);
+    }
+
+    function Onchangeschemediscount(RowId, e) {
+        var obj = $.grep(ItemList, function (object) {
+            return object.RowNumber == RowId;
+        });
+        CartonVal = 0;
+        if (obj.length > 0) {
+            obj[0].ZZSchemeDiscountPercentage = e.value;
+            CartonVal = obj[0].ZZOrderQty;
+            obj[0].ZZOrderUnits = (CartonVal * obj[0].ZZItemPackSize).toFixed(2)
+            var Amt = (obj[0].ZZOrderUnits * obj[0].ZZDP);
+            Amt = Amt - (Amt * e.value / 100)
+            Amt = Amt - (Amt * obj[0].ZZTradeDiscountPercentage / 100)
+            Amt = Amt - (Amt * obj[0].ZZAddlDiscountPercentage / 100)
+            var GSTAmt = (Amt * obj[0].ZZGSTPercent / 100)
+            obj[0].ZZTax = GSTAmt.toFixed(2);
+            obj[0].ZZTotal = (GSTAmt + Amt).toFixed(2);
+            // $('#ATCart').attr("disabled", "Enabled");
+            $('#ATCart').removeClass("enabledisabled");
+            $('#ATCart1').removeClass("enabledisabled");
+        }
+        $("#tblitem").dxDataGrid('instance').option("dataSource", ItemList);
+        //alert(CartonVal + "-- CArton Val ");
+    }
+
+    function CartInsert() {
+        try {
+            var ObjItemList = [];
+            var ObjdbmlCommon = {};
+              loadPanel.show();
+            $.each(ItemList, function (index, object) {
+                if (object.ZZOrderQty > 0) {
+                    var modal = {};
+                    modal.CartId = 0;
+                    modal.ItemId = object.ItemId;
+                    modal.PartyId = object.PartyId;
+                    modal.QuantityAdded = object.ZZOrderQty;
+                    modal.OrderUnits = object.ZZOrderUnits;
+                    modal.MRP = object.ZZMRP;
+                    modal.DP = object.ZZDP;
+                    modal.SchemeDiscountPercentage = object.ZZSchemeDiscountPercentage;
+                    modal.TradeDiscountPercentage = object.ZZTradeDiscountPercentage;
+                    modal.AddiDiscountPercentage = object.ZZAddlDiscountPercentage;
+                    modal.GSTPercentage = object.ZZGSTPercent;
+                    modal.TaxAmount = object.ZZTax;
+                    modal.TotalAmount = object.ZZTotal;
+                    modal.UserId = 0;
+                    ObjItemList.push(modal);
+                }
+            });
+            ObjdbmlCommon.StringOne = varddlCategoryGroup;
+            ObjdbmlCommon.StringTwo = varddlMRP;
+            ObjdbmlCommon.StringFive = varddlCategory;
+            if (ObjItemList.length > 0) {
+                var data = JSON.stringify({ objdbmlCart: ObjItemList, ObjdbmlCommon: ObjdbmlCommon });
+                $.ajax({
+                    url: "../Home/CartInsert",
+                    type: 'POST',
+                    dataType: 'json',
+                    async: true,
+                    data: data,
+                    contentType: "application/json; charset=utf-8",
+                    success: function (Response) {
+                        loadPanel.hide();
+                        if (Response.StatusId == "1") {
+                            ItemList = Response.Result;
+                            CartList = Response.CartList
+                            $("#tblitem").dxDataGrid('instance').option("dataSource", ItemList);
+                            BinditemCart()
+                              $('#ATCart').addClass("enabledisabled");
+                            $('#ATCart1').addClass("enabledisabled");
+                        }
+                        else {
+                            ItemList = [];
+                            CartList = [];
+                            $("#tblitem").dxDataGrid('instance').option("dataSource", ItemList);
+                            BinditemCart()
+                            alert(Response.Status);
+
+                        }
+                    },
+                    error: function (xhr) {
+                        alert("Data size is too large!");
+                    }
+                });
+            }
+        }
+        catch (e) {
+            alert("Data size is too large!");
+        }
+        }
+
+    function BinditemCart() {
+        if (CartList.length == 0) {
+            $(".spanViewToCart").html("")
+            $(".DET").hide();
+              $('#disableanchor1').addClass("enabledisabled");
+        }
+        else {
+            $(".spanViewToCart").html(CartList.length)
+             $('#disableanchor1').removeClass("enabledisabled");
+        }
+          $("#Carttbl").dxDataGrid({
+                    dataSource: CartList,
+                    height: 275,
+                    paging: { enabled: false },
+                    allowColumnResizing: true,
+                    columnResizingMode: "widget",
+                    columnAutoWidth: true,
+                    columns: [
+                        { dataField: "ZZProduct", width: '45%', caption: "Product" },
+                        { dataField: "QuantityAdded", width: '20%', caption: "Quantity" },
+                        { dataField: "TotalAmount", width: '35%', caption: "Value" , valueFormat: "#,###.##" },
+                        ],
+                    filterRow: { visible: false },
+                    showRowLines: true,
+                    showBorders: true,
+              summary: {
+                  totalItems: [
+                      { column: "ZZProduct", summaryType: "count"},
+                      { name: "Value", column: "TotalAmount", summaryType: "sum", displayFormat: "Total: {0}", valueFormat: "#,###.##", valueFormat: { type: "fixedPoint", precision: 2} }
+                  ],
+              }
+                });
+
+
+    }
+
+    function PopuCheckout() {
+        $(".DET").hide();
+        var html = ""
+        html += "<div class='row'><div class='col-md-12' id='tblCheckout'></div></div>";
+        html += "<div class='row' style='margin-top: 10px;'>";
+        html += "<div class='col-md-6' style='padding-left: 0px !important;'>";
+        html += "<div class='form-group'>";
+        html += "<textarea class='form-control' placeholder='Remark' id='txtRemark'></textarea>";
+        html += "</div>";
+        html += "</div>";
+        html += "<div class='col-md-6' style='padding-right: 0px !important;'>";
+        html += "<a href='javascript:void(0)' data-toggle='modal' class='btn btn-danger btn-flat' style='background: #e32228; float: right; margin-left: 10px;' onclick='PopuClose()'>Cancel</a>";
+        html += "<a href='javascript:void(0)' data-toggle='modal' class='btn btn-danger btn-flat' style='background: #e32228; float: right;' onclick='OrderInsert()'>Place Order</a >";
+        html += "</div>";
+        $("#PopuCheckout").dxPopup({
+            showTitle: true,
+            title: 'Checkout',
+            height: 500,
+            width: 1200,
+            contentTemplate: function (contentElement) {
+                contentElement.append(html)
+                $("#tblCheckout").dxDataGrid({
+                    dataSource: CartDetailsList,
+                    height: 350,
+                    paging: { enabled: false },
+                    allowColumnResizing: true,
+                    columnResizingMode: "widget",
+                    columnAutoWidth: true,
+                    wordWrapEnabled: false,
+                    loadPanel: { enabled: true },
+                    scrolling: { mode: "virtual" },
+                    onContentReady: function (e) { e.component.option("loadPanel.enabled", false); },
+                    columns: [
+                        { dataField: "ZZItemCode", width: '6%', caption: "Code" },
+                        { dataField: "ZZProduct", width: '15%', caption: "Product" },
+                        { dataField: "ZZITemPackSize", width: '8%', caption: "Pack Size" , valueFormat: "#,###" },
+                        { dataField: "QuantityAdded", width: '9%', caption: "Order Carton", valueFormat: "#,###" },
+                        { dataField: "OrderUnits", width: '9%', caption: "Order Units", valueFormat: "#,###" },
+                        { dataField: "MRP", width: '5%', caption: "MRP", valueFormat: "#,###", format: {type: "fixedPoint",  precision: "2" }, },
+                        { dataField: "DP", width: '5%', caption: "DP", valueFormat: "#,###", format: {type: "fixedPoint",  precision: "2" },  },
+                         {
+                            dataField: "TradeDiscountPercentage", width: '5%', valueFormat: "#,###", format: {type: "fixedPoint",  precision: "2" },
+                            headerCellTemplate: function (header, info) {
+                                $('<div>').html("Trade <br/> Dis").appendTo(header);
+                            }
+                        },
+                        {
+                            dataField: "SchemeDiscountPercentage", width: '5%', valueFormat: "#,###", format: {type: "fixedPoint",  precision: "2" },
+                            headerCellTemplate: function (header, info) {
+                                $('<div>').html("Sch <br/> Dis").appendTo(header);
+                            }
+                        },
+
+                        {
+                            dataField: "AddiDiscountPercentage", width: '5%', valueFormat: "#,###", format: {type: "fixedPoint",  precision: "2" },
+                            headerCellTemplate: function (header, info) {
+                                $('<div>').html("special<br/> Dis").appendTo(header);
+                            }
+                        },
+                        { dataField: "TaxAmount", width: '11%', caption: "Tax", valueFormat: "#,###", format: {type: "fixedPoint",  precision: "2" },  },
+                        { dataField: "TotalAmount", width: '11%', caption: "Value", valueFormat: "#,###" , format: {type: "fixedPoint",  precision: "2" },},
+                        {
+                            dataField: "", width: '6%', alignment: "center", caption: "Action", cellTemplate: function (container, options) {
+                                $("<div id='Delete'>").dxButton({
+                                    class: "btn btn-danger",
+                                    icon: "fa fa-trash-o",
+                                    onClick: function () {
+                                        CartDelete(options.data.CartId)
+                                    }
+                                }).append(options.value).appendTo(container);
+
+                            }
+                        },
+
+                    ],
+                    filterRow: { visible: false },
+                    showRowLines: true,
+                    showBorders: true,
+                    summary: {
+                    totalItems: [
+                        { name: "Tax", column: "TaxAmount", summaryType: "sum", displayFormat: "Total: {0}",  valueFormat: "#,###.##", valueFormat: { type: "fixedPoint", precision: 2} },
+                        { name: "Total", column: "TotalAmount", summaryType: "sum", displayFormat: "Total: {0}",  valueFormat: "#,###.##", valueFormat: { type: "fixedPoint", precision: 2} }
+                       ],
+
+                    }
+                });
+            }
+
+        });
+        $("#PopuCheckout").dxPopup("instance").show();
+        CartGetByUserId();
+    }
+
+    function CartGetByUserId() {
+        try {
+            loadPanel.show();
+            var dataWithAntiforgeryToken = ({'__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Home/CartGetByUserId",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: dataWithAntiforgeryToken,
+                success: function (Response) {
+                    loadPanel.hide();
+                    if (Response.StatusId != "99") {
+                       CartDetailsList = Response.Result;
+                       $("#tblCheckout").dxDataGrid('instance').option("dataSource", CartDetailsList);
+
+                    }
+                    else {
+                        CartDetailsList = [];
+                        $("#tblCheckout").dxDataGrid('instance').option("dataSource", CartDetailsList);
+                        loadPanel.hide();
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+    function CartDelete(intCartId) {
+        try {
+         var result = DevExpress.ui.dialog.confirm("Do you want to delete ...?", "Confirm changes");
+             result.done(function (dialogResult) {
+                 if (dialogResult) {
+                     loadPanel.show();
+                     var data = {'intCartId': intCartId };
+                     var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+                     $.ajax({
+                         url: "../Home/CartDelete",
+                         type: 'POST',
+                         dataType: 'json',
+                         async: true,
+                         data: dataWithAntiforgeryToken,
+                         success: function (Response) {
+                             loadPanel.hide();
+                             if (Response.StatusId != "99") {
+                                 CartDetailsList = Response.Result;
+                                 $("#tblCheckout").dxDataGrid('instance').option("dataSource", CartDetailsList);
+                                 ItemMasterGetByCategoryGroupIdMRPCategoryIdPartyIdUserId()
+                             }
+                             else {
+                                 loadPanel.hide();
+                                 alert(Response.Status);
+                             }
+                         },
+                         error: function (xhr) {
+                             loadPanel.hide();
+                             alert("Data size is too large!");
+                         }
+                     });
+
+                 }
+             });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+    function OrderInsert() {
+        try {
+            var ObjCartItemList = [];
+            var ObjdbmlCommon = {};
+              loadPanel.show();
+            $.each(CartDetailsList, function (index, object) {
+                    var modal = {};
+                    modal.RowNumber = object.RowNumber;
+                    modal.CartId = object.CartId;
+                    modal.ItemId = object.ItemId;
+                    modal.ZZProduct = object.ZZProduct;
+                    modal.ZZItemCode = object.ZZItemCode;
+                    modal.ZZITemPackSize = object.ZZITemPackSize;
+                    modal.QuantityAdded = object.QuantityAdded;
+                    modal.OrderUnits = object.OrderUnits;
+                    modal.MRP = object.MRP;
+                    modal.DP = object.DP;
+                    modal.SchemeDiscountPercentage = object.SchemeDiscountPercentage;
+                    modal.TradeDiscountPercentage = object.TradeDiscountPercentage;
+                    modal.AddiDiscountPercentage = object.AddiDiscountPercentage;
+                    modal.TaxAmount = object.TaxAmount;
+                    modal.GSTPercentage = object.GSTPercentage;
+                    modal.TotalAmount = object.TotalAmount;
+                    ObjCartItemList.push(modal);
+            });
+            ObjdbmlCommon.StringTwo = varddlCategoryGroup;
+            ObjdbmlCommon.StringThree = varddlMRP;
+            ObjdbmlCommon.StringFour = $("#txtRemark").val();
+            var data = JSON.stringify({ objdbmlTempCartMaster: ObjCartItemList, ObjdbmlCommon: ObjdbmlCommon });
+            $.ajax({
+                url: "../Home/OrderInsert",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: data,
+                contentType: "application/json; charset=utf-8",
+                success: function (Response) {
+                    loadPanel.hide();
+                    if (Response.StatusId != "99") {
+                        if (Response.StatusId == 11 || Response.StatusId == 1) {
+                            localStorage.setItem("OrderId", Response.Status);
+                            localStorage.setItem("StatusOrderId", Response.StatusId);
+                            var url = '@Url.Action("Thankyou", "Home")';
+                            loadPanel.hide();
+                            window.location.href = url;
+                        }
+                        else {
+                            loadPanel.hide();
+                               alert(Response.Status);
+                        }
+                    }
+                    else {
+                        loadPanel.hide();
+                          alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+        }
+
+    function PopuClose() {
+        $("#PopuCheckout").dxPopup("instance").hide();
+    }
+
+</script>
+
+
+
+
+
+
+
+
+
+
+

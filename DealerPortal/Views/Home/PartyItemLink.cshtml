@@ -1,0 +1,487 @@
+﻿
+@{
+    ViewBag.Title = "Party Item Link";
+}
+<style>
+    .dx-button-text {
+        color: #FFF !important;
+    }
+</style>
+
+@Html.AntiForgeryToken()
+<div class="row">
+    <div class="col-md-4">
+        <div class="box box-warning">
+            <div class="box-header with-border">
+                <h4 class="box-title">Party</h4>
+            </div>
+            <div class="box-body">
+                <div class="table-responsive">
+                    <div id="tblParty"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="box box-warning">
+            <div class="box-header with-border">
+                <h4 class="box-title" id="PartyNameLinkH"></h4>
+                <button class="button btn-small pull-right" onclick="ItemPartyLinkDelete()"><i class="fa fa-arrow-down"></i></button>
+            </div>
+            <div class="box-body">
+                <div class="table-responsive">
+                    <div class="demo-container">
+                        <div id="grid">
+                            <div id="tblPartyItemLink"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="box box-warning">
+            <div class="box-header with-border">
+                <h4 class="box-title" id="PartyNotH"></h4>
+                <button class="button btn-small pull-right" onclick="ItemPartyLinkInsert()"><i class="fa fa-arrow-up"></i></button>
+            </div>
+            <div class="box-body">
+                <div class="table-responsive">
+                    <div id="tblAvailableParty"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var PartyMasterList = [];
+    var PartyItemLink = [];
+    var AvailableParty = [];
+    var VarPartyId = "";
+    var VarCopyPartyId = ""
+    var VarPastePartyId = ""
+
+    $(document).ready(function () {
+        PartyMasterGetData();
+        BindPartyMasterList()
+    });
+
+    function BindPartyMasterList() {
+
+        $("#tblParty").dxDataGrid({
+            dataSource: PartyMasterList,
+             keyExpr: 'PartyID',
+            allowColumnResizing: true,
+            columnResizingMode: "widget",
+            columnAutoWidth: true,
+            wordWrapEnabled: false,
+            height: 485,
+            paging: { enabled: false },          
+            columns: [
+                    {
+                    dataField: "Party", width: '45%', caption: "Party", cellTemplate: function (container, options) {
+                        $('<a style="color:#06406F" />').addClass('dx-link')
+                            .text(options.value)
+                            .on('dxclick', function (e) {
+                                VarPartyId = options.data.PartyID
+                                $("#PartyNameLinkH").html("Linked with: " + options.data.Party)
+                                $("#PartyNotH").html("Not linked with: " + options.data.Party)
+                                ItemPartyLinkGetByPartyId()
+                            })
+                            .appendTo(container);
+                    }
+
+                },
+
+
+                { dataField: "PartyCode", width: '25%', caption: "Code" },
+                {
+                    dataField: "", width: 100, alignment: "center", caption: "Action", cellTemplate: function (container, options) {
+                        $("<div id='Copy'>").dxButton({
+                            class: "btn btn-danger",
+                            icon: "fa fa-copy",
+                            hint: "Copy From",
+                            onClick: function () {
+                                VarCopyPartyId = options.data.PartyID
+                                DevExpress.ui.notify({ message: options.data.Party + " copy successfully !", width: 400, shading: true }, "info", 500);
+                            }
+                        }).append(options.value).appendTo(container);
+
+                        $("<div id='Paste'>").dxButton({
+                            class: "btn btn-danger",
+                            icon: "fa fa-paste",
+                            hint: "Paste To",
+                            onClick: function () {
+                                VarPastePartyId = options.data.PartyID
+                                ItemPartyLinkCopyPaste()
+                            }
+                        }).append(options.value).appendTo(container);
+                    }
+                },
+            ],
+            filterRow: { visible: true },
+            showRowLines: true,
+            showBorders: true,
+            focusedRowEnabled: true,
+            onFocusedRowChanging: function (e) {
+                var rowsCount = e.component.getVisibleRows().length,
+                    pageCount = e.component.pageCount(),
+                    pageIndex = e.component.pageIndex();
+
+                if (e.event.key && e.prevRowIndex === e.newRowIndex) {
+                    if (e.newRowIndex === rowsCount - 1 && pageIndex < pageCount - 1) {
+                        e.component.pageIndex(pageIndex + 1).done(function () {
+                            e.component.option("focusedRowIndex", 0);
+                        });
+                    } else if (e.newRowIndex === 0 && pageIndex > 0) {
+                        e.component.pageIndex(pageIndex - 1).done(function () {
+                            e.component.option("focusedRowIndex", rowsCount - 1);
+                        });
+                    }
+                }
+            },
+        });
+
+        $("#tblPartyItemLink").dxDataGrid({
+            dataSource: PartyItemLink,
+            keyExpr: "ItemId",
+            showBorders: true,
+            paging: { enabled: false },           
+            allowColumnResizing: true,
+            columnResizingMode: "widget",
+            columnAutoWidth: true,
+            wordWrapEnabled: false,
+            height: 485,
+            filterRow: { visible: true },
+            showRowLines: true,
+            showBorders: true,
+            columns: [
+                {
+                    dataField: "ZZAction", width: 30, caption: "#", allowFiltering: false,  fixed: true, cellTemplate: function (container, options) {
+                        $("<div>")
+                            .append(options.value)
+                            .appendTo(container);
+                    }
+                },
+                { dataField: "ZZItemCode", fixed: true, caption: "Code", width: 100 },
+                { dataField: "ZZItemName", caption: "Name", width: 360 }]
+        });
+
+        $("#tblAvailableParty").dxDataGrid({
+            dataSource: AvailableParty,
+            keyExpr: "ItemId",
+            showBorders: true,
+            paging: { enabled: false },           
+            allowColumnResizing: true,
+            columnResizingMode: "widget",
+            columnAutoWidth: true,
+            wordWrapEnabled: false,
+            height: 485,
+            filterRow: { visible: true },
+            showRowLines: true,
+            showBorders: true,
+            columns: [
+                {
+                    dataField: "ZZAction", width: 30, caption: "#", allowFiltering: false,  fixed: true, cellTemplate: function (container, options) {
+                        $("<div>")
+                            .append(options.value)
+                            .appendTo(container);
+                    }
+                },
+                { dataField: "ZZItemCode", fixed: true, caption: "Code", width: 100 },
+                { dataField: "ZZItemName", caption: "Name", width: 360 }]
+        });
+
+    }
+
+    function PartyMasterGetData() {
+        try {
+            var dataWithAntiforgeryToken = ({ '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            loadPanel.show();
+            $.ajax({
+                url: "../Home/PartyMasterGetAll",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: dataWithAntiforgeryToken,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        PartyMasterList = Response.Result;
+                        loadPanel.hide();
+                        $("#tblParty").dxDataGrid('instance').option("dataSource", PartyMasterList);
+                    }
+                    else {
+                        loadPanel.hide();
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+    function ItemPartyLinkGetByPartyId() {
+        try {
+            if (VarPartyId == undefined || VarPartyId == null || VarPartyId == "") {
+                return true
+            }
+            var data = { 'strPartyId': VarPartyId };
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            loadPanel.show();
+            $.ajax({
+                url: "../Home/ItemPartyLinkGetByPartyId",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: dataWithAntiforgeryToken,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        PartyItemLink = Response.ResultLinked;
+                        AvailableParty = Response.ResultNotLinked;
+                        $.each(PartyItemLink, function (index, object) {
+                            var html = "";
+                            html += "<input type='checkbox' id='chk" + object.ItemId + "'   onchange='CheckBoxchange(this," + object.ItemId + ",1)'/>";
+                            PartyItemLink[index].ZZAction = html
+                        });
+
+                        $.each(AvailableParty, function (index, object) {
+                            var html = "";
+                            html += "<input type='checkbox' id='chk" + object.ItemId + "'  onchange='CheckBoxchange(this," + object.ItemId + ",2)'/>";
+                            AvailableParty[index].ZZAction = html
+                        });
+
+                        $("#tblPartyItemLink").dxDataGrid('instance').option("dataSource", PartyItemLink);
+                        $("#tblAvailableParty").dxDataGrid('instance').option("dataSource", AvailableParty);
+                        loadPanel.hide();
+                    }
+                    else {
+                        loadPanel.hide();
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+    function CheckBoxchange(e,VarItemId, listId) {     
+        if (listId == "1") {
+            var obj = $.grep(PartyItemLink, function (object) {
+                return object.ItemId == VarItemId;
+            });
+            if (obj.length > 0) {
+                    if (e.checked) {
+                    obj[0].ZZFlag = 1;
+                }
+                else
+                    obj[0].ZZFlag = 0;
+            }
+
+        }
+        else {
+            var obj = $.grep(AvailableParty, function (object) {
+                return object.ItemId == VarItemId;
+            });
+            if (obj.length > 0) {
+                if (e.checked)
+                    obj[0].ZZFlag = 1;
+                else
+                    obj[0].ZZFlag = 0;
+            }
+        }
+
+    }
+
+    function ItemPartyLinkInsert() {
+        try {
+            var ObjAvailableList = [];
+            loadPanel.show();
+            $.each(AvailableParty, function (index, object) {
+                if (object.ZZFlag == 1) {
+                    var modal = {};
+                    modal.ItemId = object.ItemId;
+                    modal.PartyId = VarPartyId;
+                    modal.UserId = 0;
+                    ObjAvailableList.push(modal);
+                }
+            });
+            if (ObjAvailableList.length > 0) {
+                var data = JSON.stringify({ ObjAvailableList: ObjAvailableList });
+                $.ajax({
+                    url: "../Home/ItemPartyLinkInsert",
+                    type: 'POST',
+                    dataType: 'json',
+                    async: true,
+                    data: data,
+                    contentType: "application/json; charset=utf-8",
+                    success: function (Response) {
+                        loadPanel.hide();
+                        if (Response.StatusId == "1") {
+                            PartyItemLink = Response.ResultLinked;
+                            AvailableParty = Response.ResultNotLinked;
+                            $.each(PartyItemLink, function (index, object) {
+                                var html = "";
+                                html += "<input type='checkbox' id='chk" + object.ItemId + "'  onchange='CheckBoxchange(this," + object.ItemId + ",1)'/>";
+                                PartyItemLink[index].ZZAction = html
+                            });
+
+                            $.each(AvailableParty, function (index, object) {
+                                var html = "";
+                                html += "<input type='checkbox' id='chk" + object.ItemId + "'  onchange='CheckBoxchange(this," + object.ItemId + ",2)'/>";
+                                AvailableParty[index].ZZAction = html
+                            });
+                            $("#tblPartyItemLink").dxDataGrid('instance').option("dataSource", PartyItemLink);
+                            $("#tblAvailableParty").dxDataGrid('instance').option("dataSource", AvailableParty);
+
+                        } else {
+                            alert(Response.Status);
+                        }
+
+                    },
+                    error: function (xhr) {
+                        alert("Data size is too large!");
+                    }
+                });
+            }
+        }
+        catch (e) {
+            alert("Data size is too large!");
+        }
+    }
+
+    function ItemPartyLinkDelete() {
+        try {
+            var ObjLinkList = [];
+            loadPanel.show();
+            $.each(PartyItemLink, function (index, object) {
+                if (object.ZZFlag == 1) {
+                    var modal = {};
+                    modal.ItemId = object.ItemId;
+                    modal.PartyId = VarPartyId;
+                    modal.UserId = 0;
+                    ObjLinkList.push(modal);
+                }
+            });
+            if (ObjLinkList.length > 0) {
+                var data = JSON.stringify({ ObjLinkList: ObjLinkList });
+                $.ajax({
+                    url: "../Home/ItemPartyLinkDelete",
+                    type: 'POST',
+                    dataType: 'json',
+                    async: true,
+                    data: data,
+                    contentType: "application/json; charset=utf-8",
+                    success: function (Response) {
+                        loadPanel.hide();
+                        if (Response.StatusId == "1") {
+                            PartyItemLink = Response.ResultLinked;
+                            AvailableParty = Response.ResultNotLinked;
+                            $.each(PartyItemLink, function (index, object) {
+                                var html = "";
+                                html += "<input type='checkbox' id='chk" + object.ItemId + "'  onchange='CheckBoxchange(this," + object.ItemId + ",1)'/>";
+                                PartyItemLink[index].ZZAction = html
+                            });
+
+                            $.each(AvailableParty, function (index, object) {
+                                var html = "";
+                                html += "<input type='checkbox' id='chk" + object.ItemId + "'  onchange='CheckBoxchange(this," + object.ItemId + ",2)'/>";
+                                AvailableParty[index].ZZAction = html
+                            });
+                            $("#tblPartyItemLink").dxDataGrid('instance').option("dataSource", PartyItemLink);
+                            $("#tblAvailableParty").dxDataGrid('instance').option("dataSource", AvailableParty);
+
+                        } else {
+                            alert(Response.Status);
+                        }
+
+                    },
+                    error: function (xhr) {
+                        alert("Data size is too large!");
+                    }
+                });
+            }
+        }
+        catch (e) {
+            alert("Data size is too large!");
+        }
+    }
+
+    function ItemPartyLinkCopyPaste() {
+        try {
+            if (VarCopyPartyId == undefined || VarCopyPartyId == null || VarCopyPartyId == "" || VarPastePartyId == undefined || VarPastePartyId == null || VarPastePartyId == "") {
+                return true
+            }
+            if (VarCopyPartyId == VarPastePartyId) {
+                alert("Invalid operation ");
+                return true
+            }
+            var result = DevExpress.ui.dialog.confirm("Do you want to copy ...?", "Confirm changes");
+            result.done(function (dialogResult) {
+                if (dialogResult) {
+                    loadPanel.show();
+                    var modal = {};
+                    modal.StringOne = VarCopyPartyId;
+                    modal.StringTwo = VarPastePartyId;
+                    modal.StringThree = 0;
+                    var data = JSON.stringify({ objinput: modal });
+                    $.ajax({
+                        url: "../Home/ItemPartyLinkCopyPaste",
+                        type: 'POST',
+                        dataType: 'json',
+                        async: true,
+                        data: data,
+                        contentType: "application/json; charset=utf-8",
+                        success: function (Response) {
+                            loadPanel.hide();
+                            if (Response.StatusId == "1") {
+                                PartyItemLink = Response.ResultLinked;
+                                AvailableParty = Response.ResultNotLinked;
+                                $.each(PartyItemLink, function (index, object) {
+                                    var html = "";
+                                    html += "<input type='checkbox' id='chk" + object.ItemId + "'  onchange='CheckBoxchange(this," + object.ItemId + ",1)'/>";
+                                    PartyItemLink[index].ZZAction = html
+                                });
+
+                                $.each(AvailableParty, function (index, object) {
+                                    var html = "";
+                                    html += "<input type='checkbox' id='chk" + object.ItemId + "'  onchange='CheckBoxchange(this," + object.ItemId + ",2)'/>";
+                                    AvailableParty[index].ZZAction = html
+                                });
+                                $("#tblPartyItemLink").dxDataGrid('instance').option("dataSource", PartyItemLink);
+                                $("#tblAvailableParty").dxDataGrid('instance').option("dataSource", AvailableParty);
+
+                            } else {
+                                alert(Response.Status);
+                            }
+
+                        },
+                        error: function (xhr) {
+                            alert("Data size is too large!");
+                        }
+                    });
+                }
+            });
+        }
+        catch (e) {
+            alert("Data size is too large!");
+        }
+    }
+
+</script>
+
+

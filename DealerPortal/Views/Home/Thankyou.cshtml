@@ -1,0 +1,241 @@
+﻿﻿@{
+    ViewBag.Title = "Thankyou";
+}
+@Html.AntiForgeryToken()
+<style>
+
+    body, html {
+        font-size: 14px !important;
+    }
+</style>
+<div class="box box-warning">
+    @*<div class="box-header with-border">
+            <div class="box-header-left">
+                <h3 class="box-title">Thank You</h3>
+            </div>
+        </div>*@
+    <div class="box-body" style="min-height: 490px;">
+        <div class="row">
+            <div class="col-md-offset-2 col-md-8">
+                <div class="callout callout-danger" style="background: #e32228 !important; text-align:center;">
+                    @*<strong>Thank You&nbsp;</strong><span id="SpanOrder"></span>*@
+                    <strong>Thank You</strong>
+                    <span id="SpanOrder"></span>
+                    <p><a href="javascript:void(0)" data-toggle='modal' data-target='#Details' onclick=" OrderDetailGetByOrderId()">Click here to view order details</a></p>
+                </div>
+            </div>
+            <div class="col-md-offset-4 col-md-4">
+                @*<span class="text-center">Click here to view&nbsp;<a href="javascript:void(0)" data-toggle='modal' data-target='#Details' onclick=" OrderDetailGetByOrderId()">order details</a></span>
+            <hr />*@
+                <div style="box-shadow: 20px 20px 50px grey; padding: 10px 10px 10px 10px;">
+                    <p><h4 class="text-center">For more information contact</h4><hr /></p>
+                    <p style="padding: 0px 0px 0px 20px;"><span><i class="fa fa-user"></i>&nbsp;@ViewBag.ParameterList[0].Description</span></p>
+                    <p style="padding: 0px 0px 0px 20px;"><span><i class="fa fa-mobile-phone" style="font-size: 21px;"></i>&nbsp;<a href="tel:@ViewBag.ParameterList[1].Description">@ViewBag.ParameterList[1].Description</a></span></p>
+                    <p style="padding: 0px 0px 0px 20px;"><span><i class="fa fa-envelope"></i>&nbsp;<a href="mailto:@ViewBag.ParameterList[2].Description">@ViewBag.ParameterList[2].Description</a></span></p><br />
+                    <p class="text-center">
+                        <a href="@Url.Action("Placeorder", "Home")" class="btn btn-danger btn-flat" style="background: #e32228;">Place Another Order</a>
+                        <a href="@Url.Action("OrderHistory", "Home")" class="btn btn-danger btn-flat" style="background: #e32228;">View Order History</a>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-offset-2 col-md-8 ERROR" style="margin-top: 50px; display: none;">
+                <div class="callout callout-info" style="text-align:center;">
+                    <strong>Error&nbsp;</strong><span>in inserting Sales Order.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="Details" tabindex="-1" role="dialog" aria-labelledby="logoutLabel" aria-hidden="true" style="padding-left: 230px !important;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Order No : <span id="SpanorderNo"></span>&nbsp;&nbsp;&nbsp;&nbsp; Date : <span id="SpanorderDate"></span> </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <div id="tblOrderHistoryDetail"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var OrderHistoryDetail = [];
+    var OrderHeaderList = [];
+    var OrderId = localStorage.getItem("OrderId");
+    $(document).ready(function () {
+        OrderHeaderGetByOrderId();
+    })
+
+    function OrderDetailGetByOrderId() {
+        try {
+            if (OrderId != "") {
+                var data = { 'OrderId': OrderId };
+                var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+                loadPanel.show();
+                $.ajax({
+                    url: "../Home/OrderDetailGetByOrderId",
+                    type: 'POST',
+                    dataType: 'json',
+                    async: true,
+                    data: dataWithAntiforgeryToken,
+                    success: function (Response) {
+                        if (Response.StatusId != "99") {
+                            OrderHistoryDetail = Response.Result; 
+                            loadPanel.hide();
+                            BindOrderHistoryDetailList();
+                        }
+                        else {
+                            loadPanel.hide();
+                            //alert(Response.Status);
+                            $(".ERROR").show();
+                        }
+                    },
+                    error: function (xhr) {
+                        loadPanel.hide();
+                        alert("Data size is too large!");
+                    }
+                });
+            }
+
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+    function BindOrderHistoryDetailList() {
+        $("#tblOrderHistoryDetail").dxDataGrid({
+            dataSource: OrderHistoryDetail,
+            height: 420,
+            paging: { enabled: true },
+            allowColumnResizing: true,
+            columnResizingMode: "widget",
+            columnAutoWidth: true,
+            wordWrapEnabled: false,
+            loadPanel: { enabled: true },
+            scrolling: { mode: "virtual" },
+            onContentReady: function (e) { e.component.option("loadPanel.enabled", false); },
+            columns: [
+                {
+                    dataField: "ItemCode", width: '7%', caption: "Code"
+                },
+                {
+                    dataField: "ItemName", width: '25%',
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Product <br/> Name").appendTo(header);
+                    }
+                },
+                {
+                    dataField: "PackSize", width: '6%',
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Pack <br/> Size").appendTo(header);
+                    }
+                },
+                {
+                    dataField: "OrderCarton", width: '6%',
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Order <br/> Carton").appendTo(header);
+                    }
+                },
+                {
+                    dataField: "OrderUnits", width: '6%',
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Order <br/> Units").appendTo(header);
+                    }
+                },
+                { dataField: "MRP", width: '7%', caption: "MRP" },
+                { dataField: "DealerPrice", width: '7%', caption: "DP" },
+                {
+                    dataField: "DiscountPercentage1", width: '8%',
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Scheme <br/> Disc").appendTo(header);
+                    }
+                },
+                {
+                    dataField: "DiscountPercentage2", width: '8%',
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Trade <br/> Disc").appendTo(header);
+                    }
+                },
+                {
+                    dataField: "DiscountPercentage3", width: '8%',
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Add. <br/> Disc").appendTo(header);
+                    }
+                },
+                { dataField: "GSTRate", width: '7%', caption: "GST%" },
+                { dataField: "Tax", width: '13%', caption: "Tax" , format: { type: "fixedPoint", precision: "2" } },
+                { dataField: "TotalAmount", width: '15%', caption: "Values" , format: { type: "fixedPoint", precision: "2" } },
+            ],
+            filterRow: { visible: false },
+            showRowLines: true,
+            showBorders: true,
+            summary: {
+                totalItems: [
+                    { name: "Tax", column: "Tax", summaryType: "sum", displayFormat: "Total: {0}", valueFormat: "#,###.##", valueFormat: { type: "fixedPoint", precision: 2} },
+                    { name: "Total", column: "TotalAmount", summaryType: "sum", displayFormat: "Total: {0}", valueFormat: "#,###.##", valueFormat: { type: "fixedPoint", precision: 2} }
+                ]
+                //calculateCustomSummary: function (options) {
+                //    if (options.name === "Tax" || options.name === "Total")
+                //        if (options.summaryProcess === "start") {
+                //            options.totalValue = 0;
+                //        }
+                //    if (options.summaryProcess === "calculate") {
+                //        if (options.value > 0) {
+                //            options.totalValue = options.totalValue + options.value;
+                //        }
+                //    }
+                //}
+            }
+        });
+    }
+
+    function OrderHeaderGetByOrderId() {
+        try {
+            if (OrderId != "") {
+                var data = { 'OrderId': OrderId };
+                var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+                loadPanel.show();
+                $.ajax({
+                    url: "../Home/OrderHeaderGetByOrderId",
+                    type: 'POST',
+                    dataType: 'json',
+                    async: true,
+                    data: dataWithAntiforgeryToken,
+                    success: function (Response) {
+                        if (Response.StatusId != "99") {
+                            OrderHeaderList = Response.Result;
+                            $("#SpanOrder").html("for your Web Order No. " + OrderHeaderList[0].OrderNo + " DTD " + OrderHeaderList[0].OrderDate + " for INR " + OrderHeaderList[0].TotalValue);
+                            $("#SpanorderNo").html(OrderHeaderList[0].OrderNo);
+                            $("#SpanorderDate").html(OrderHeaderList[0].OrderDate);
+                            loadPanel.hide();
+                        }
+                        else {
+                            loadPanel.hide();
+                            alert(Response.Status);
+                        }
+                    },
+                    error: function (xhr) {
+                        loadPanel.hide();
+                        alert("Data size is too large!");
+                    }
+                });
+            }
+
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+</script>
+

@@ -1,0 +1,98 @@
+﻿@{
+    ViewBag.Title = "Parameter";
+}
+
+@Html.AntiForgeryToken()
+
+<div class="box box-warning">
+    <div class="box-header with-border">
+        <div class="box-header-left" style="width: 100%;">
+            <h3 class="box-title">Parameter</h3>
+        </div>
+    </div>
+    <div class="box-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <div id="tblParameter"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var ParameterList = [];
+
+    $(document).ready(function () {
+        ParameterGetData();
+    });
+
+    function BindParameterList() {
+        debugger
+        var html = "";
+        $("#tblParameter").dxDataGrid({
+            dataSource: ParameterList,
+            allowColumnResizing: true,
+            columnResizingMode: "widget",
+            columnAutoWidth: true,
+            wordWrapEnabled: false,
+            height: 485,
+            paging: { enabled: true },
+            paging: {
+                pageSize: 10
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [5, 10, 15],
+                showInfo: true
+            },
+            columns: [
+                { dataField: "ParameterTypeId", width: '15%', caption: "Parameter Type Id" },
+                { dataField: "ParameterType", width: '40%', caption: "Parameter Type" },
+                { dataField: "Description", width: '30%', caption: "Description" },
+                { dataField: "Action", width: '10%', caption: "Action" },
+            ],
+            filterRow: { visible: false },
+            showRowLines: true,
+            showBorders: true
+        });
+    }
+
+    function ParameterGetData() {
+        debugger
+        try {
+            var dataWithAntiforgeryToken = ({ '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            // var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            loadPanel.show();
+            $.ajax({
+                url: "../Home/ParameterGetAll",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: dataWithAntiforgeryToken,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        ParameterList = Response.Result;
+                        loadPanel.hide();
+                        BindParameterList();
+                    }
+                    else {
+                        loadPanel.hide();
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+</script>

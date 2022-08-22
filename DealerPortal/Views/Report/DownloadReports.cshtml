@@ -1,0 +1,889 @@
+﻿
+@{
+    ViewBag.Title = "DownloadReport";
+}
+<div class="box box-warning">
+    <div class="box-header with-border">
+        <div class="box-header-left">
+            <h3 class="box-title" style="line-height:2px;">Download Report</h3>
+        </div>
+        <div class="box-header-right">
+            <ul>
+                <li>
+                    <a href="javascript:void(0)" title="Excel" class="cart" id="lnkDownload" onclick="Excel()"><i class="fa fa-file-excel-o"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="box-body">
+        <form class="form-horizontal">
+            <div class="row" id="DivddlCustomer" style="display:none">
+                <div class="col-md-6">
+                    <div id="ddlCustomer"></div>
+                </div><br /><br />
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <div id="txtFromDate"></div>
+                </div>
+                <div class="col-md-2">
+                    <div id="txtToDate"></div>
+                </div>
+                @*<div class="col-md-3">
+                        <div id="ddlSubCategory"></div>
+                    </div>*@
+                @*<div class="col-md-3">
+                        <div id="ddlItem"></div>
+                    </div>*@
+                <div class="col-md-8">
+                    <a href='javascript:void(0)' class='btn btn-danger btn-flat' style='background: #e32228;' onclick='DownloadFromDateToDateReport(1);'>Get SKU Master Data</a>&nbsp;<a href='javascript:void(0)' class='btn btn-danger btn-flat' style='background: #e32228;' onclick='DownloadFromDateToDateReport(2);'>Get Invoice Data</a>&nbsp;<a href='javascript:void(0)' class='btn btn-danger btn-flat' style='background: #e32228;' onclick='DownloadFromDateToDateReport(3);'>Get Invoice Details Data</a><input type="hidden" id="HdnUserTypeId"><input type="hidden" id="HdnSelectedUser"><input type="hidden" id="HdnDownloadType" value='@Session["DownLoadType"]'>
+                </div>
+            </div>
+        </form>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive ">
+                    <div id="tblitem">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var RetailCategoryList = [];
+    var varddlSubCategory = "";
+    var ItemList = [];
+    var InventoryReportList = [];
+    var InventoryitemDetails = [];
+    var varddlCategory = "";
+    var varddlItem = "";
+    var Now = new Date()
+    var FDate = new Date()
+    var CustomerList = [];
+    var varddlCustomer = "";
+
+    @*arrayCr = @Html.Raw(Json.Encode(@ViewBag.RetailCategoryList));
+    if(arrayCr !=null)
+    {
+        for(var i = 0; i < arrayCr.length; i++){
+            RetailCategoryList[i] = arrayCr[i];
+        }
+         model = {};
+         model.RetailCategoryID = -1
+         model.RetailCategory = "All"
+         RetailCategoryList.push(model);
+
+    }*@
+
+    strUserTypeId = @Html.Raw(@ViewBag.UserTypeID);
+    arrayCr1 = @Html.Raw(Json.Encode(@ViewBag.CustomerList));
+    if(arrayCr1 !=null)
+    {
+        for(var i = 0; i < arrayCr1.length; i++){
+            CustomerList[i] = arrayCr1[i];
+        }
+         //model = {};
+         //model.PartyId = -1
+         //model.Party = "All"
+         //CustomerList.push(model);
+
+    }
+    //alert(strUserTypeId);
+    if (strUserTypeId == "22") {
+        $("#DivddlCustomer").removeAttr("style");
+    }
+
+    $(document).ready(function () {
+        //$("#ddlSubCategory").dxSelectBox({
+        //    height: 30,
+        //    dataSource: new DevExpress.data.ArrayStore({
+        //        data: RetailCategoryList,
+        //        key: "RetailCategoryID"
+        //    }),
+        //    displayExpr: "RetailCategory",
+        //    valueExpr: "RetailCategoryID",
+        //    placeholder: "Select Category",
+        //    searchEnabled: true,
+        //    onValueChanged: function (data) {
+        //        varddlSubCategory = data.value
+        //        //ItemMasterGetByRetailCategoryId()
+        //    }
+        //});
+        //$("#ddlItem").dxSelectBox({
+        //    height: 30,
+        //    dataSource: new DevExpress.data.ArrayStore({
+        //        data: ItemList,
+        //        key: "ItemId"
+        //    }),
+        //    displayExpr: "ItemName",
+        //    valueExpr: "ItemId",
+        //    placeholder: "Select Item",
+        //    searchEnabled: true,
+        //    onValueChanged: function (data) {
+        //        varddlItem = data.value
+        //    }
+        //});
+
+        $("#txtFromDate").dxDateBox({
+            height: 30,
+            type: "date",
+            value: FDate.setDate(FDate.getDate() - 7),
+            placeholder: "From Date",
+            displayFormat: "dd/MM/yyyy"
+        });
+        $("#txtToDate").dxDateBox({
+            height: 30,
+            type: "date",
+            value: Now,
+            placeholder: "To Date",
+            displayFormat: "dd/MM/yyyy"
+        });
+
+        //Added by Kamini 17May2021---Customer Dropdown
+        $("#ddlCustomer").dxSelectBox({
+            height: 30,
+            dataSource: new DevExpress.data.ArrayStore({
+                data: CustomerList,
+                key: "PartyID"
+            }),
+            displayExpr: "Party",
+            valueExpr: "PartyID",
+            placeholder: "Select Stockist",
+            searchEnabled: true,
+            onValueChanged: function (data) {
+                varddlCustomer = data.value
+            }
+        });
+        //Added by Kamini 17May2021---Customer Dropdown
+    });
+
+    function SetDate(dateStr) {
+        var strDate
+        var now = new Date(dateStr);
+        var Day = now.getDate()
+        var Month = (now.getMonth() + 1)
+        var Year = now.getFullYear()
+        if (Day < 10) {
+            Day = "0" + Day;
+        }
+        if (Month < 10) {
+            Month = "0" + Month;
+        }
+        strDate = Month + "/" + Day + "/" + Year
+        return strDate;
+    }
+
+
+    function DownloadFromDateToDateReport(n) {
+        debugger;
+        try
+        {
+            //if (varddlSubCategory == undefined || varddlSubCategory == null || varddlSubCategory == "")
+            //{
+            //    return true
+            //}
+
+            loadPanel.show();
+            var VarFromdate = SetDate($("#txtFromDate").dxDateBox('instance').option('value'));
+            var VarToDate = SetDate($("#txtToDate").dxDateBox('instance').option('value'));
+
+            var VarPartyId = "0";
+
+            if (strUserTypeId == "22") {
+                VarPartyId = varddlCustomer;
+            }
+
+            var g1 = new Date($("#txtFromDate").dxDateBox('instance').option('value'));
+            var g2 = new Date($("#txtToDate").dxDateBox('instance').option('value'));
+
+            // To calculate the time difference of two dates
+            var Difference_In_Time = g2.getTime() - g1.getTime();
+
+            // To calculate the no. of days between two dates
+            var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+
+            if (g1.getTime() > g2.getTime()) {
+                alert("From Date should be less than To Date");
+                loadPanel.hide();
+                return false;
+            }
+
+            if (g2.getTime() < g1.getTime()) {
+                alert("To Date should be greater than From Date");
+                loadPanel.hide();
+                return false;
+            }
+            if (Difference_In_Days > 30)
+            {
+                alert("The diferrence in the From & To Dates exceeds 30 days");
+                loadPanel.hide();
+                return false;
+            }
+            else {
+                var data = { 'DowloadReportType': n, 'Fromdate': VarFromdate, 'Todate': VarToDate, 'PartyId': VarPartyId };
+                //alert(varddlSubCategory);
+                //alert(VarFromdate);
+                //alert(VarToDate);
+                //alert(VarPartyId);
+                BindReportdata(n)
+
+                //var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+                //alert(dataWithAntiforgeryToken);
+                $.ajax({
+                    url: "../Report/DownloadFromDateToDateReport",
+                    type: 'POST',
+                    dataType: 'json',
+                    async: true,
+                    data: data,
+                    success: function (Response) {
+                        loadPanel.hide();
+                        if (Response.StatusId != "99") {
+                            InventoryReportList = Response.Result;
+                            $("#tblitem").dxDataGrid('instance').option("dataSource", InventoryReportList);
+                        }
+                        else {
+                            alert(Response.Status);
+                        }
+                    },
+                    error: function (xhr) {
+                        loadPanel.hide();
+                        alert("Data size is too large!");
+                    }
+                });
+
+                $("#tblitem").dxDataGrid("instance").exportToExcel(false);
+            }
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+    function CompareDates()
+    {
+        var g1 = new Date($("#txtFromDate").val());
+        var g2 = new Date($("#txtToDate").val());
+        if (g1.getTime() > g2.getTime()) {
+            alert("From Date should be less than To Date");
+            return false;
+        }
+
+        if (g2.getTime() < g1.getTime())
+        {
+            alert("To Date should be greater than From Date");
+            return false;
+        }
+
+    }
+
+    function BindReportdata(rptVal) {
+        if (Number(rptVal) == 1) {
+            $("#tblitem").dxDataGrid({
+                dataSource: InventoryReportList,
+                loadPanel: {
+                    enabled: true
+                },
+                height: 500,
+                allowSorting: true,
+                columnAutoWidth: true,
+                allowColumnResizing: true,
+                filterRow: { visible: true },
+                headerFilter: {
+                    visible: true,
+                    allowSearch: true
+                },
+                paging: {
+                    pageSize: 20,
+                    enabled: false
+                },
+                columnFixing: {
+                    enabled: true
+                },
+                groupPanel: {
+                    visible: true,
+                    allowColumnDragging: false
+                },
+                columns: [
+                    //{
+                    //dataField: "ItemCode", width: '10%', caption: "Item Code", cellTemplate: function (container, options) {
+                    //    $('<a style="color:#333; text-decoration: underline;" />').addClass('dx-link')
+                    //        .text(options.value)
+                    //        .on('dxclick', function (e) {
+                    //            PopShowitemDetails(options.data.ItemCode, options.data.ItemName, options.data.OpeningBalanceQty, options.data.ClosingBalanceQty)
+                    //            ItemLedgerDetailGetByItemIdFromDateToDate(options.data.ItemId)
+                    //        })
+                    //        .appendTo(container);
+                    //}
+                    //},
+                    { dataField: "HSNCode", width: "20%", caption: "HSN Code" },
+                    { dataField: "OurCode", width: "20%", caption: "SKU CODE" },
+                    { dataField: "OurName", width: "40%", caption: "SKU NAME" },
+                    { dataField: "mrp", width: "10%", caption: "MRP", format: { type: "fixedPoint", precision: 2 } },
+                    { dataField: "DealerPrice", width: "10%", caption: "Dealer Price", format: { type: "fixedPoint", precision: 2 } }
+                ],
+                //export: {
+                //    fileName: "SKU Master Report"
+                //},
+                export: {
+                    fileName: "Download Report"
+                },
+                showRowLines: true,
+                showBorders: true
+            });
+        }
+
+        if (Number(rptVal) == 2)
+            BindReportdata2()
+
+        if (rptVal == 3)
+            BindReportdata3()
+    }
+
+
+    function BindReportdata2() {
+        $("#tblitem").dxDataGrid({
+            dataSource: InventoryReportList,
+            loadPanel: {
+                enabled: true
+            },
+            height: 500,
+            allowSorting: true,
+            columnAutoWidth: true,
+            allowColumnResizing: true,
+            filterRow: { visible: true },
+            headerFilter: {
+                visible: true,
+                allowSearch: true
+            },
+            paging: {
+                pageSize: 20,
+                enabled: false
+            },
+            columnFixing: {
+                enabled: true
+            },
+            groupPanel: {
+                visible: true,
+                allowColumnDragging: false
+            },
+            columns: [
+                {
+                    dataField: "TRANTYPE", caption: "Tran Type",
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Tran<br/>Type").css('text-align', 'center').appendTo(header);
+                    }
+                },
+                { dataField: "InvoiceNo", caption: "Inv No" },
+                { dataField: "InvoiceDate", caption: "Inv Date" },
+                { dataField: "PREFIX", caption: "Prefix" },
+                { dataField: "Customer", caption: "Customer" },
+                { dataField: "CustomerGST", caption: "Customer GST" },
+                {
+                    dataField: "PartyCode", caption: "OUTLET CODE",
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Outlet<br/>Code").css('text-align', 'center').appendTo(header);
+                    }
+                },
+                //{
+                //    dataField: "OurCode", width: "10%", caption: "SKU CODE",
+                //    headerCellTemplate: function (header, info) {
+                //        $('<div>').html("Sku<br/>Code").css('text-align', 'center').appendTo(header);
+                //    }
+                //},
+                //{
+                //    dataField: "BasicRate", width: "15%", caption: "DP", format: { type: "fixedPoint", precision: 2 }
+                //},
+                //{
+                //    dataField: "Quantity", width: "15%", caption: "Quantity", format: { type: "fixedPoint", precision: 2 }
+                //},
+                {
+                    dataField: "GrossItemAmount", caption: "GrossAmount", format: { type: "fixedPoint", precision: 2 },
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Gross<br/>Amt.").css('text-align', 'center').appendTo(header);
+                    }
+                },
+                //{
+                //    dataField: "SchemeDiscount", caption: "Scheme Discount", format: { type: "fixedPoint", precision: 2 },
+                //    headerCellTemplate: function (header, info) {
+                //        $('<div>').html("Scheme<br/>Disc.").css('text-align', 'center').appendTo(header);
+                //    }
+                //},
+                {
+                    dataField: "Discount1", caption: "Disc1 Amt", format: { type: "fixedPoint", precision: 2 },
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Scheme<br/>Disc Amt.").css('text-align', 'center').appendTo(header);
+                    }  },
+                {
+                    dataField: "Discount2", caption: "Disc2 Amt", format: { type: "fixedPoint", precision: 2 },
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Margin<br>Amt").css('text-align', 'center').appendTo(header);
+                    } },
+                {
+                    dataField: "Discount3", caption: "Disc3 Amt", format: { type: "fixedPoint", precision: 2 },
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Spl Disc<br>Amt").css('text-align', 'center').appendTo(header);
+                    } },
+                {
+                    dataField: "Discount4", caption: "Disc4 Amt", format: { type: "fixedPoint", precision: 2 },
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Addl Disc<br>Amt").css('text-align', 'center').appendTo(header);
+                    } },
+                {
+                    dataField: "NETAMOUNT", caption: "NETAMOUNT", format: { type: "fixedPoint", precision: 2 },
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Net<br/>Amount").css('text-align', 'center').appendTo(header);
+                    }
+                },
+                { dataField: "CGST", caption: "CGST", format: { type: "fixedPoint", precision: 2 } },
+                { dataField: "SGST", caption: "SGST", format: { type: "fixedPoint", precision: 2 } },
+                { dataField: "IGST", caption: "IGST", format: { type: "fixedPoint", precision: 2 } },
+                {
+                    dataField: "CessAmount", caption: "CessAmount", format: { type: "fixedPoint", precision: 2 },
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Cess<br/>Amt").css('text-align', 'center').appendTo(header);
+                    }
+                },
+                {
+                    dataField: "CashDiscountAmount", caption: "CashDiscountAmount", format: { type: "fixedPoint", precision: 2 },
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Cash Disc<br/>Amt.").css('text-align', 'center').appendTo(header);
+                    }
+                },
+                { dataField: "LessOther", caption: "LessOther", format: { type: "fixedPoint", precision: 2 } },
+                { dataField: "RoundOff", caption: "RoundOff", format: { type: "fixedPoint", precision: 2 } },
+                {
+                    dataField: "RoundedTotalAmount", caption: "RoundedTotalAmount", format: { type: "fixedPoint", precision: 2 },
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Rounded<br/>Tot Amt.").css('text-align', 'center').appendTo(header);
+                    }
+                },
+                { dataField: "billtype", caption: "Bill Type" },
+                { dataField: "NARRATION", caption: "Narration" },
+                //{ dataField: "Dis2Rate", width: "10%", caption: "Dis2Rate", format: { type: "fixedPoint", precision: 2 } }
+                //{ dataField: "Dis3rate", width: "10%", caption: "Dis3rate", format: { type: "fixedPoint", precision: 2 } }
+                //{ dataField: "Dis4rate", width: "10%", caption: "Dis4rate", format: { type: "fixedPoint", precision: 2 } }
+                //{ dataField: "SchemePercentage", width: "10%", caption: "SchemePercentage", format: { type: "fixedPoint", precision: 2 } }
+                //{ dataField: "SchemeDiscount", width: "10%", caption: "SchemeDiscount", format: { type: "fixedPoint", precision: 2 } }
+                //{ dataField: "CGSTRate", width: "10%", caption: "CGSTRate", format: { type: "fixedPoint", precision: 2 } }
+                //{ dataField: "SGSTRate", width: "10%", caption: "SGSTRate", format: { type: "fixedPoint", precision: 2 } }
+                //{ dataField: "Discount4", width: "10%", caption: "Discount4", format: { type: "fixedPoint", precision: 2 } }
+                //{ dataField: "Discount4", width: "10%", caption: "Discount4", format: { type: "fixedPoint", precision: 2 } }
+                //{ dataField: "Discount4", width: "10%", caption: "Discount4", format: { type: "fixedPoint", precision: 2 } }
+            ],
+            //export: {
+            //    fileName: "SKU Master Report"
+            //},
+            export: {
+                fileName: "Primary Sales Report"
+            },
+            showRowLines: true,
+            showBorders: true
+        });
+    }
+
+    function BindReportdata3() {
+        if ($("#HdnDownloadType").val() == "T") {
+            $("#tblitem").dxDataGrid({
+                dataSource: InventoryReportList,
+                loadPanel: {
+                    enabled: true
+                },
+                height: 500,
+                allowSorting: true,
+                columnAutoWidth: true,
+                allowColumnResizing: true,
+                filterRow: { visible: true },
+                headerFilter: {
+                    visible: true,
+                    allowSearch: true
+                },
+                paging: {
+                    pageSize: 20,
+                    enabled: false
+                },
+                columnFixing: {
+                    enabled: true
+                },
+                groupPanel: {
+                    visible: true,
+                    allowColumnDragging: false
+                },
+                columns: [
+                    //{
+                    //dataField: "ItemCode", width: '10%', caption: "Item Code", cellTemplate: function (container, options) {
+                    //    $('<a style="color:#333; text-decoration: underline;" />').addClass('dx-link')
+                    //        .text(options.value)
+                    //        .on('dxclick', function (e) {
+                    //            PopShowitemDetails(options.data.ItemCode, options.data.ItemName, options.data.OpeningBalanceQty, options.data.ClosingBalanceQty)
+                    //            ItemLedgerDetailGetByItemIdFromDateToDate(options.data.ItemId)
+                    //        })
+                    //        .appendTo(container);
+                    //}
+                    //},
+                    { dataField: "InvoiceDate", caption: "Inv Date" },
+                    {
+                        dataField: "TRANTYPE", caption: "Tran Type",
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Tran<br/>Type").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    { dataField: "Customer", caption: "Customer" },
+                    { dataField: "CustomerGST", caption: "Customer GST" },
+                    { dataField: "InvoiceNo", caption: "Inv No" },
+                    { dataField: "PREFIX", caption: "Prefix" },
+                    {
+                        dataField: "PartyCode", caption: "Party Code",
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Party<br/>Code").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    {
+                        dataField: "OurCode", caption: "Our Code",
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Our<br/>Code").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    {
+                        dataField: "BasicRate", caption: "Basic Rate", format: { type: "fixedPoint", precision: 2 }
+                    },
+                    {
+                        dataField: "Quantity", caption: "Quantity", format: { type: "fixedPoint", precision: 2 }
+                    },
+                    {
+                        dataField: "HSNCode", caption: "HSN Code",
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("HSN<br/>Code").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    {
+                        dataField: "Dis1Rate", caption: "Dis1Rate", format: { type: "fixedPoint", precision: 2 },
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Scheme<br/>Disc (%).").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    {
+                        dataField: "Dis2Rate", caption: "Dis2Rate", format: { type: "fixedPoint", precision: 2 },
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Margin(%)").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    {
+                        dataField: "Dis3Rate", caption: "Dis3Rate", format: { type: "fixedPoint", precision: 2 },
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Spl Disc(%)").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    {
+                        dataField: "Dis4Rate", caption: "Dis4Rate", format: { type: "fixedPoint", precision: 2 },
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Addl Disc(%)").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    {
+                        dataField: "NETAMOUNT", caption: "Taxable Amount", format: { type: "fixedPoint", precision: 2 },
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Taxable<br/>Amount").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    { dataField: "GSTRateVal", caption: "GST Rate", format: { type: "fixedPoint", precision: 2 } },
+                    { dataField: "CGSTRate", caption: "CGST Rate", format: { type: "fixedPoint", precision: 2 } },
+                    { dataField: "CGST", caption: "CGST", format: { type: "fixedPoint", precision: 2 } },
+                    { dataField: "SGSTRate", caption: "SGST Rate", format: { type: "fixedPoint", precision: 2 } },
+                    {
+                        dataField: "SGSTORUTGST", caption: "SGSTORUTGST", format: { type: "fixedPoint", precision: 2 } },
+                    { dataField: "igstRate", caption: "IGST Rate", format: { type: "fixedPoint", precision: 2 } },
+                    { dataField: "IGST", caption: "IGST", format: { type: "fixedPoint", precision: 2 } },
+                    {
+                        dataField: "NetValue", caption: "NetValue", format: { type: "fixedPoint", precision: 2 },
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Net<br/>Value.").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    {
+                        dataField: "OurName", caption: "Our Name",
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Our Name").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    {
+                        dataField: "PlaceofSupply", caption: "Place of Supply", headerCellTemplate: function (header, info) {
+                            $('<div>').html("Place Of<br/>Supply").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    {
+                        dataField: "TCSAmountVal", caption: "TCS Amount", format: { type: "fixedPoint", precision: 2 },
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("TCS<br/>Amt.").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    {
+                        dataField: "RoundOff", caption: "RoundOff", format: { type: "fixedPoint", precision: 2 },
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("RoundOff").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    {
+                        dataField: "RoundedTotalAmount", caption: "Rounded Total Amount", format: { type: "fixedPoint", precision: 2 },
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Rounded Total<br>Amt.").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    //{
+                    //    dataField: "GrossItemAmount", caption: "GrossAmount", format: { type: "fixedPoint", precision: 2 },
+                    //    headerCellTemplate: function (header, info) {
+                    //        $('<div>').html("Gross<br/>Amt.").css('text-align', 'center').appendTo(header);
+                    //    }
+                    //},
+                    //{
+                    //    dataField: "Discount1", caption: "Discount1", format: { type: "fixedPoint", precision: 2 },
+                    //    headerCellTemplate: function (header, info) {
+                    //        $('<div>').html("Scheme<br/>Disc Amt.").css('text-align', 'center').appendTo(header);
+                    //    }
+                    //},
+                    //{
+                    //    dataField: "Discount2", caption: "Discount2", format: { type: "fixedPoint", precision: 2 },
+                    //    headerCellTemplate: function (header, info) {
+                    //        $('<div>').html("Margin<br>Amt").css('text-align', 'center').appendTo(header);
+                    //    }
+                    //},
+                    //{
+                    //    dataField: "Discount3", caption: "Discount3", format: { type: "fixedPoint", precision: 2 },
+                    //    headerCellTemplate: function (header, info) {
+                    //        $('<div>').html("Spl Disc<br>Amt").css('text-align', 'center').appendTo(header);
+                    //    }
+                    //},
+                    //{
+                    //    dataField: "Discount4", caption: "Discount4", format: { type: "fixedPoint", precision: 2 },
+                    //    headerCellTemplate: function (header, info) {
+                    //        $('<div>').html("Addl Disc<br>Amt").css('text-align', 'center').appendTo(header);
+                    //    }
+                    //},
+                    //{ dataField: "Rate", caption: "Rate", format: { type: "fixedPoint", precision: 2 } },
+                    //{
+                    //    dataField: "SchemePercentage", caption: "SchemePercentage", format: { type: "fixedPoint", precision: 2 },
+                    //    headerCellTemplate: function (header, info) {
+                    //        $('<div>').html("Scheme<br/>(%).").css('text-align', 'center').appendTo(header);
+                    //    }
+                    //},
+                    //{
+                    //    dataField: "SchemeDiscount",caption: "Scheme Discount", format: { type: "fixedPoint", precision: 2 },
+                    //    headerCellTemplate: function (header, info) {
+                    //        $('<div>').html("Scheme<br/>Disc.").css('text-align', 'center').appendTo(header);
+                    //    } },
+                    //{
+                    //    dataField: "CashDiscountAmount", caption: "CashDiscountAmount", format: { type: "fixedPoint", precision: 2 },
+                    //    headerCellTemplate: function (header, info) {
+                    //        $('<div>').html("Cash Disc<br/>Amt.").css('text-align', 'center').appendTo(header);
+                    //    }
+                    //},
+                    //{ dataField: "LessOther", caption: "LessOther", format: { type: "fixedPoint", precision: 2 } },
+                    //{
+                    //    dataField: "CashDiscountAmount", caption: "CashDiscountAmount", format: { type: "fixedPoint", precision: 2 },
+                    //    headerCellTemplate: function (header, info) {
+                    //        $('<div>').html("Cash Disc<br/>Amt.").css('text-align', 'center').appendTo(header);
+                    //    }
+                    //},
+                ],
+                //export: {
+                //    fileName: "SKU Master Report"
+                //},
+                export: {
+                    fileName: "Primary Sales Details Report"
+                },
+                showRowLines: true,
+                showBorders: true
+            });
+        }
+        else {
+            $("#tblitem").dxDataGrid({
+                dataSource: InventoryReportList,
+                loadPanel: {
+                    enabled: true
+                },
+                height: 500,
+                allowSorting: true,
+                columnAutoWidth: true,
+                allowColumnResizing: true,
+                filterRow: { visible: true },
+                headerFilter: {
+                    visible: true,
+                    allowSearch: true
+                },
+                paging: {
+                    pageSize: 20,
+                    enabled: false
+                },
+                columnFixing: {
+                    enabled: true
+                },
+                groupPanel: {
+                    visible: true,
+                    allowColumnDragging: false
+                },
+                columns: [
+                    //{
+                    //dataField: "ItemCode", width: '10%', caption: "Item Code", cellTemplate: function (container, options) {
+                    //    $('<a style="color:#333; text-decoration: underline;" />').addClass('dx-link')
+                    //        .text(options.value)
+                    //        .on('dxclick', function (e) {
+                    //            PopShowitemDetails(options.data.ItemCode, options.data.ItemName, options.data.OpeningBalanceQty, options.data.ClosingBalanceQty)
+                    //            ItemLedgerDetailGetByItemIdFromDateToDate(options.data.ItemId)
+                    //        })
+                    //        .appendTo(container);
+                    //}
+                    //},
+                    {
+                        dataField: "TRANTYPE", caption: "Tran Type",
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Tran<br/>Type").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    { dataField: "InvoiceNo", caption: "Inv No" },
+                    { dataField: "InvoiceDate", caption: "Inv Date" },
+                    { dataField: "PREFIX", caption: "Prefix" },
+                    { dataField: "Customer", caption: "Customer" },
+                    {
+                        dataField: "PartyCode", caption: "OUTLET CODE",
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Outlet<br/>Code").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    {
+                        dataField: "OurCode", caption: "SKU CODE",
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Sku<br/>Code").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    {
+                        dataField: "OurName", caption: "SKU Name",
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Sku Name").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    {
+                        dataField: "BasicRate", caption: "DP", format: { type: "fixedPoint", precision: 2 }
+                    },
+                    {
+                        dataField: "Quantity", caption: "Quantity", format: { type: "fixedPoint", precision: 2 }
+                    },
+                    {
+                        dataField: "HSNCode",
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("HSN<br/>Code").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    {
+                        dataField: "GrossItemAmount", caption: "GrossAmount", format: { type: "fixedPoint", precision: 2 },
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Gross<br/>Amt.").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    {
+                        dataField: "Dis1Rate", caption: "Dis1Rate", format: { type: "fixedPoint", precision: 2 },
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Scheme<br/>Disc (%).").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    {
+                        dataField: "Discount1", caption: "Discount1", format: { type: "fixedPoint", precision: 2 },
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Scheme<br/>Disc Amt.").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    {
+                        dataField: "Dis2Rate", caption: "Dis2Rate", format: { type: "fixedPoint", precision: 2 },
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Margin(%)").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    {
+                        dataField: "Discount2", caption: "Discount2", format: { type: "fixedPoint", precision: 2 },
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Margin<br>Amt").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    {
+                        dataField: "Dis3Rate", caption: "Dis3Rate", format: { type: "fixedPoint", precision: 2 },
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Spl Disc(%)").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    {
+                        dataField: "Discount3", caption: "Discount3", format: { type: "fixedPoint", precision: 2 },
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Spl Disc<br>Amt").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    {
+                        dataField: "Dis4Rate", caption: "Dis4Rate", format: { type: "fixedPoint", precision: 2 },
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Addl Disc(%)").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    {
+                        dataField: "Discount4", caption: "Discount4", format: { type: "fixedPoint", precision: 2 },
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Addl Disc<br>Amt").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    //{
+                    //    dataField: "SchemePercentage", caption: "SchemePercentage", format: { type: "fixedPoint", precision: 2 },
+                    //    headerCellTemplate: function (header, info) {
+                    //        $('<div>').html("Scheme<br/>(%).").css('text-align', 'center').appendTo(header);
+                    //    }
+                    //},
+                    //{
+                    //    dataField: "SchemeDiscount",caption: "Scheme Discount", format: { type: "fixedPoint", precision: 2 },
+                    //    headerCellTemplate: function (header, info) {
+                    //        $('<div>').html("Scheme<br/>Disc.").css('text-align', 'center').appendTo(header);
+                    //    } },
+                    {
+                        dataField: "NETAMOUNT", caption: "NETAMOUNT", format: { type: "fixedPoint", precision: 2 },
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Taxable<br/>Amount").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    { dataField: "CGSTRate", caption: "CGST (%)", format: { type: "fixedPoint", precision: 2 } },
+                    { dataField: "CGST", caption: "CGST", format: { type: "fixedPoint", precision: 2 } },
+                    { dataField: "SGSTRate", caption: "SGST (%)", format: { type: "fixedPoint", precision: 2 } },
+                    { dataField: "SGSTORUTGST", caption: "SGST", format: { type: "fixedPoint", precision: 2 } },
+                    { dataField: "igstRate", caption: "IGST (%)", format: { type: "fixedPoint", precision: 2 } },
+                    { dataField: "IGST", caption: "IGST", format: { type: "fixedPoint", precision: 2 } },
+                    {
+                        dataField: "NetValue", caption: "NetValue", format: { type: "fixedPoint", precision: 2 },
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Net<br/>Amt.").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    {
+                        dataField: "CashDiscountAmount", caption: "CashDiscountAmount", format: { type: "fixedPoint", precision: 2 },
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Cash Disc<br/>Amt.").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                    { dataField: "LessOther", caption: "LessOther", format: { type: "fixedPoint", precision: 2 } },
+                    {
+                        dataField: "CashDiscountAmount", caption: "CashDiscountAmount", format: { type: "fixedPoint", precision: 2 },
+                        headerCellTemplate: function (header, info) {
+                            $('<div>').html("Cash Disc<br/>Amt.").css('text-align', 'center').appendTo(header);
+                        }
+                    },
+                ],
+                //export: {
+                //    fileName: "SKU Master Report"
+                //},
+                export: {
+                    fileName: "Primary Sales Details Report"
+                },
+                showRowLines: true,
+                showBorders: true
+            });
+        }
+    }
+
+    function Excel() {
+        $("#tblitem").dxDataGrid("instance").exportToExcel(false);
+    }
+</script>

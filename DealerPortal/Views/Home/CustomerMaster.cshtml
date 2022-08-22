@@ -1,0 +1,1490 @@
+﻿
+@{
+    ViewBag.Title = "Customer Master";
+}
+@Html.AntiForgeryToken()
+
+
+<div class="box box-warning">
+    <div class="box-header with-border">
+        <div class="box-header-left" style="width: 100%;">
+            <h3 class="box-title">Customer Master</h3>
+
+            <button ID="btnSubmit" class=" btn btn-primary btn-flat" style="background: #257142; border-color:#257142; float: right; padding: 5px 5px 5px 5px; margin-left:0.5em;"><i class="dx-icon-save" style="font-size: 18px;margin:0px 5px" data-toggle="tooltip" title="Save Record"></i>Save</button>
+            <a href='javascript:void(0)' id="btnCancelRecord" data-toggle='modal' class='btn btn-danger btn-flat' style='background: #e32228; float: right; margin-left: 10px;' onclick='ClearData()'>Cancel</a>
+            @*<button id="btnList2" type="button" class="btn btn-warning trigger_popup_fricc btn-flat" style="background: #e32228; border-color:#e32228; float: right; padding: 5px 5px 5px 5px; margin-left:0.5em;color:white;" data-toggle="modal" data-target="#myModal">Address List</button>*@
+            <a id="disableanchor1" href="javascript:void(0)" data-toggle="modal" data-target="#ViewListModal" class="btn btn-danger btn-flat" style="background: #e32228;  float: right;" onclick="ViewList()">View List</a>
+        </div>
+    </div>
+    <div class="box-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <div id="tblItemMaster">
+                        <div class="col-md-12">
+                            <div class="h-title">
+                                <h1>Customer Details</h1>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="floating-label">
+                                <select class="floating-select" id="ddlPartyType" onclick="this.setAttribute('value', this.value);" value="">
+                                </select>
+                                @*<div id="ddlPartyType" class="floating-label">*@
+                                <span class="highlight"></span>
+                                <label></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="floating-label">
+                            <input id="txtPartyName" class="floating-input" type="text" placeholder=" " value="">
+                            <span class="highlight"></span>
+                            <label>Party Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="floating-label">
+                            <input id="textPartyCode" class="floating-input" type="text" placeholder=" " value="">
+                            <span class="highlight"></span>
+                            <label>Party Code</label>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="floating-label">
+                            <input id="txtSalesPerson" class="floating-input" type="text" placeholder=" " value="">
+                            <span class="highlight"></span>
+                            <label>Sales Person</label>
+                        </div>
+                    </div>
+                    <div class="col-md-3" style="display:none;">
+                        <div class="floating-label" style="width:85%; float:left;">
+                            <select style="display:none;" class="floating-select" id="" onclick="this.setAttribute('value', this.value);" value="">
+                                <option value=""> </option>
+                                <option value="1" selected="selected">0</option>
+                                @*<option value="2"></option>
+                    <option value="3"></option>
+                    <option value="4"> </option>
+                    <option value="5"></option>*@
+                            </select>
+                            <span class="highlight"></span>
+                            <label>Price Group</label>
+                        </div>
+                        <button class="add"><i class="fa fa-plus"></i></button>
+                    </div>
+
+
+
+                    <div class="col-md-12">
+                        <div class="h-title">
+                            <h1>Tax Details</h1>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="floating-label">
+                            <input id="txtPanNo" class="floating-input  disablecutcopypaste" type="text" style="text-transform:uppercase;" placeholder=" " onkeypress="return ValidatePAN(this.id);" value="">
+
+                            <span class="highlight"></span>
+                            <label>Pan No</label>
+                        </div>
+                        <span id="lblPANCard" class="error">Invalid PAN Number</span>
+                    </div>
+                    <div class="col-md-2">
+
+                        <div class="floating-label">
+                            <input id="txtPanEftDt" class="floating-input txtDate" type="text" placeholder=" " value="">
+                            <span class="highlight"></span>
+                            <label></label>
+                        </div>
+                        <span style="color:black;font-weight:bold;">Effective Date</span>
+                    </div>
+                    <div id="divGst" class="col-md-3">
+                        <div class="floating-label">
+                            <input id="txtGST" class="floating-input gst disablecutcopypaste" type="text" style="text-transform:uppercase;" onkeypress="return ValidateGST(this.id);" placeholder=" " value="">
+
+                            <span class="highlight"></span>
+                            <label>GST</label>
+                        </div>
+                        <span id="lblGst" class="error">Invalid GST Number</span>
+                    </div>
+                    <div id="divGstDt" class="col-md-2">
+                        <div class="floating-label">
+                            <input id="txtGSTEftDt" class="floating-input txtDate" type="text" placeholder=" " value="">
+                            <span class="highlight"></span>
+                            <label></label>
+
+                        </div>
+                        <span style="color:black;font-weight:bold;">Effective Date</span>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label style="margin-top:25px; line-height:40px;"><input type="checkbox" id="chkGst" /> Unregister For GST</label>
+                    </div>
+                    @*added by Kamini on 22 July 2022*@
+                    <div class="col-md-4">
+                        <div class="floating-label">
+                            <input class="floating-input" type="text" placeholder=" " id="txtTransporter">
+                            <span class="highlight"></span>
+                            <label>Transporter</label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="floating-label">
+                            <input class="floating-input gst disablecutcopypaste" type="text" placeholder=" " id="txtTransporterGST" maxlength="15" style="text-transform:uppercase;" onkeypress="return ValidateTransGST(this.id);" value="">
+                            <span class="highlight"></span>
+                            <label>Transporter GST</label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="floating-label">
+                            <span class="floating-input" id="txtFreight">
+                                <span class="highlight"></span>
+                                <label>Freight</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="floating-label">
+                            <input class="floating-input" type="number" placeholder=" " id="txtCreditDays" onkeypress="return event.charCode >= 48 && event.charCode <= 57" />
+                            <span class="highlight"></span>
+                            <label>Credit Days</label>
+                        </div>
+                        <div><span id="lblCreditDate"></span></div>
+                    </div>
+                    <div class="col-md-12" style="display:none;">
+
+                        <input type="text" id="txtId" readonly name="ID" value="" />
+                        <input type="text" id="ddlAddrsTypeID" readonly name="ID" value="" />
+                        <input type="hidden" id="hddPartyAddressID" value="0" />
+                        <input type="hidden" id="HdnUserNameVal" value="@(Session["PartyName"])" />
+                    </div>
+
+                    @* style="display: none" *@
+
+                    <div class="col-md-12">
+                        <div class="h-title">
+                            <h1>Address </h1>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="floating-label">
+                            <select id="ddlAddrsType" class="floating-select" onclick="this.setAttribute('value', this.value);" value="">
+                            </select>
+                            <span class="highlight"></span>
+                            <label></label>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label style="margin-top:25px; line-height:24px;display:flex;" for="chkCopyAdd">Same as Invoice <input style="height:20px;width:18px;margin-left:10px;" type="checkbox" id="chkCopyAdd" /></label>
+                    </div>
+                </div>
+               
+
+                <div class="col-md-12">
+                    <div class="floating-label">
+                        <textarea id="txtAddress" class="floating-input floating-textarea" rows="4" placeholder=" " height="120px" value="TEST"></textarea>
+                        <span class="highlight"></span>
+                        <label>Address</label>
+                    </div>
+                </div>
+
+
+                <div class="col-md-3">
+
+                    <div class="floating-label">
+                        <select class="floating-select" id="ddlCountry">
+                        </select>
+                        @*<input id="txtCountry" class="floating-input" type="text" placeholder=" ">*@
+                        <span class="highlight"></span>
+                        <label></label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+
+                    <div class="floating-label">
+                        <select class="floating-select" id="ddlState">
+                        </select>
+                        <input id="txtState" class="floating-input" style="display:none;" type="text" placeholder="State ">
+                        <span class="highlight"></span>
+                        <label></label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="floating-label">
+                        <input id="txtCity" class="floating-input" type="text" placeholder=" ">
+                        <input type="hidden" id="hddCityId" value="0" />
+                        <span class="highlight"></span>
+                        <label>City</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="floating-label">
+                        <input id="txtPinCode" class="floating-input" type="text" placeholder=" ">
+                        <span class="highlight"></span>
+                        <label>Pin Code</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="floating-label">
+                        <input id="txtEmail" class="floating-input mail" type="text" placeholder=" ">
+                        <span class="highlight"></span>
+                        <label>Email Id</label>
+                    </div>
+                    <span id="lblmail" class="error">Please type correct EmailI</span>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="floating-label">
+                        <input id="txtMobile" class="floating-input" type="text" placeholder=" ">
+                        <span class="highlight"></span>
+                        <label>Phone No.</label>
+                    </div>
+                </div>
+
+                <div class="col-md-12 text-center" style="margin-top:15px;">
+
+                    <button class=" btn btn-primary" id="btnAdd">Save</button>
+                    <button class=" btn btn-danger" id="btnCancel">Cancel</button>
+                </div>
+
+
+                <br />
+                <div class="box-header-left" style="width: 100%;">
+
+                    <a href="#" class="btn btn-danger btn-flat" style="background: #e70c0e;border-color: #e70c0e;float: right;margin-left: 10px;padding: 0px 5px 0px 15px;" data-toggle="tooltip" title="Export to PDF"><i class="flaticon-pdf-file" style="font-size: 18px;"></i></a>
+                    <a href="#" class="btn btn-danger btn-flat" style="background: #257142; border-color:#257142; float: right; padding: 0px 5px 0px 5px;" onclick="ExportToExcel();"><i class="flaticon-excel-file" style="font-size: 18px;" data-toggle="tooltip" title="Export to Excel"></i></a>
+                </div>
+                @*<style>
+                        body {
+                            counter-reset: Serial; /* Set the Serial counter to 0 */
+                        }
+
+                        tr td:first-child:before {
+                            counter-increment: Serial; /* Increment the Serial counter */
+                            content: counter(Serial); /* Display the counter */
+                        }
+                    </style>*@
+                <div class="table-responsive">
+                    <table id="tblOne" class="table table-responsive table-bordered" style="margin-top:30px; float:left;display:inline-table">
+                        <thead>
+                            <tr>
+
+
+                                <th style="display:none;">PartyId</th>
+                                <th style="display:none;">AddressTypeId</th>
+                                <th>Address Type</th>
+                                <th>Address</th>
+                                <th>Country</th>
+                                <th style="display:none;">CountryID</th>
+                                <th>State</th>
+                                <th style="display:none;">StateID</th>
+                                <th>City</th>
+                                <th style="display:none;">CityId</th>
+                                <th>Pin Code</th>
+                                <th>Email Id</th>
+                                <th>Phone No.</th>
+                                <th style="display:none;">PartyAddressID</th>
+                                <th>Edit </th>
+                                @*<th>Delete</th>*@
+                            </tr>
+                        </thead>
+                        <tbody id="table_td">
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="ViewList"></div>
+
+<div id="ViewList"></div>
+<input type="hidden" id="hddPartyId" value="0" />
+<style type="text/css">
+    .pan {
+        text-transform: uppercase;
+    }
+
+    .error {
+        color: Red;
+        visibility: hidden;
+    }
+</style>
+
+<script src="~/Scripts/zebra_datepicker.js"></script>
+<link href="~/Scripts/zebra_datepicker.css" rel="stylesheet" />
+<link href="~/Scripts/calenderstyle.css" rel="stylesheet" />
+<script src="~/Scripts/NewJS/assets/js/jquery-ui-1.8.24.custom.min.js"></script>
+<script src="~/Scripts/NewJS/assets/js/jquery.ui.core.js"></script>
+<script src="~/Scripts/NewJS/assets/js/jquery-ui.min.js"></script>
+<script src="~/Scripts/NewJS/assets/js/jquery.ui.autocomplete.js"></script>
+<link href="~/Scripts/NewJS/assets/css/jquery-ui.css" rel="stylesheet" />
+
+
+<!-- Placed at the end of the document so the pages load faster -->
+
+<input type="hidden" id="HiddenUserId" />
+<script type="text/javascript">
+    var ViewCustomerList = [];
+    var CustomerList = [];
+    var CustomerAddressList = [];
+    var CheckCustomerPartyCodeExists = [];
+    //added by Kamini on 22 July 2022
+    var FreightTypeList = [];
+
+    function ViewList() {
+
+        var html = ""
+        html += '<div class="">';
+        html += '<a href="javascript: void (0)" title="Excel" class="cart" onclick="Excel()"><i class="fa fa-file-excel-o" style="font-size:30px; margin-left:                      1120px;margin-bottom:5px" > </i></a>';
+        html += '</div>';
+        html += "<div class='row' style='height:550px;overflow: scroll;'><div class='col-md-12' id='tblViewList' ></div></div>";
+        html += "<div class='row' style='margin-top: 10px;'>";
+        html += "<div class='col-md-6' style='padding-left: 0px !important;'>";
+        html += "</div>";
+        html += "<div class='col-md-6' style='padding-right: 0px !important;'>";
+        html += "<a href='javascript:void(0)' data-toggle='modal' class='btn btn-danger btn-flat' style='background: #e32228; float: right; margin-left: 10px;' onclick='PopuClose()'>Cancel</a>";
+
+        html += "</div>";
+        $("#ViewList").dxPopup({
+            showTitle: true,
+            title: 'View Customer List',
+            height: 600,
+            width: 1200,
+
+            contentTemplate: function (contentElement) {
+                contentElement.append(html)
+                $("#tblViewList").dxDataGrid({
+                    dataSource: ViewCustomerList,
+                    height: 450,
+                    paging: { enabled: true },
+                    paging: {
+                        pageSize: 10
+                    },
+                    onExporting: function (e) {
+                        e.component.columnOption('Edit', 'visible', false);
+                        e.component.columnOption('Delete', 'visible', false);
+                    },
+                    pager: {
+                        showPageSizeSelector: true,
+                        allowedPageSizes: [5, 10, 15],
+                        showInfo: true
+                    },
+                    allowColumnResizing: true,
+                    columnResizingMode: "widget",
+                    columnAutoWidth: true,
+                    wordWrapEnabled: false,
+
+                    columns: [
+                        {
+                            dataField: "", alignment: "center", caption: "Edit", cellTemplate: function (container, options) {
+                                $("<div id='Edit'>").dxButton({
+                                    class: "button-has-icon",
+                                    icon: "fa fa-pencil",
+                                    onClick: function () {
+                                        PartyEdit(options.data.PartyID)
+                                    }
+                                }).append(options.value).appendTo(container);
+
+                            }
+                        },
+                        {
+                            dataField: "", alignment: "center", caption: "Delete", cellTemplate: function (container, options) {
+                                $("<div id='Delete'>").dxButton({
+                                    class: "btn btn-danger",
+                                    icon: "fa fa-trash-o",
+                                    onClick: function () {
+                                        PartyDelete(options.data.PartyID)
+                                    }
+                                }).append(options.value).appendTo(container);
+
+                            }
+                        },
+                        { dataField: "PartyCode", caption: "Party Code" },
+                        { dataField: "Party", caption: "Party" },
+                        { dataField: "PartyType", caption: "Party Type" },
+                        { dataField: "GSTNo", caption: "GST No" },
+                        { dataField: "PANNO", caption: "Pan No" },
+                        { dataField: "State", caption: "State" },
+                        { dataField: "City", caption: "City" },
+                        { dataField: "ContactPersons", caption: "Contact Persons" },
+                        { dataField: "EmailAddress", caption: "Email Address" },
+                        { dataField: "MobileNo", caption: "Mobile No" },
+                        { dataField: "InvoiceAddress", caption: "Invoice Address" },
+                        { dataField: "ShippingAddress", caption: "Shipping Address" },
+                        { dataField: "State", caption: "State" },
+                        { dataField: "SalesPerson", caption: "Sales Person" },
+                        { dataField: "Transporter", caption: "Transporter" },
+                        { dataField: "TransporterGST", caption: "Transporter GST" },
+                        { dataField: "FreightType", caption: "Freight Type" },
+                        { dataField: "CreditDays", caption: "Credit Days" },
+                    ],
+
+                    export: {
+                        fileName: $("#HdnUserNameVal").val()
+                    },
+
+                    filterRow: { visible: true },
+                    showRowLines: true,
+                    showBorders: true,
+
+
+
+                });
+            }
+
+        });
+        $("#ViewList").dxPopup("instance").show();
+        GetCustmerByUserId();
+    }
+    function GetCustmerByUserId() {
+        try {
+            loadPanel.show();
+            var dataWithAntiforgeryToken = ({ '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Home/GetCustmerByUserId",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: dataWithAntiforgeryToken,
+                success: function (Response) {
+                    loadPanel.hide();
+                    if (Response.StatusId != "99") {
+                        ViewCustomerList = Response.Result;
+                        CustomerList = Response.Result;
+                        $("#tblViewList").dxDataGrid('instance').option("dataSource", ViewCustomerList);
+                    }
+                    else {
+                        ViewCustomerList = [];
+                        CustomerList = [];
+                        $("#tblViewList").dxDataGrid('instance').option("dataSource", ViewCustomerList);
+                        loadPanel.hide();
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+    function PopuClose() {
+        $("#ViewList").dxPopup("instance").hide();
+        ClearData();
+    }
+    function Excel() {
+        $("#tblViewList").dxDataGrid("instance").exportToExcel(false);
+    }
+
+    function PartyEdit(UserPartyID) {
+        $("#textPartyCode").prop('readOnly', true);
+        //$("#ddlUserType").dxSelectBox('instance').option('readOnly', true);
+        // $("#myModalLabel").text("Edit User");
+        // $("#PopUpAdd").modal("show");
+        var obj = $.grep(CustomerList, function (obj) {
+            return obj.PartyID == UserPartyID;
+        });
+        $("#txtId").val(UserPartyID);
+        $('#hddPartyId').val(UserPartyID);
+        // $("#ddlPartyType").find(obj[0].PartyType).attr("selected", "selected");;
+        //$("#ddlPartyType option:contains(" + obj[0].PartyType + ")").attr('selected', 'selected');
+
+
+
+        $("#ddlPartyType option").each(function () {
+            if ($.trim($(this).text()).toUpperCase() == $.trim(obj[0].PartyType).toUpperCase()) {
+                $(this).attr('selected', 'selected');
+            }
+        });
+
+        $("#txtPartyName").val(obj[0].Party);
+        $("#textPartyCode").val(obj[0].PartyCode);
+        $("#txtPanNo").val(obj[0].PANNO);
+        $("#txtPanEftDt").val(obj[0].ZZPANNoEffectiveDate);
+        $("#txtGST").val(obj[0].GSTNo);
+        $("#txtGSTEftDt").val(obj[0].ZZGSTEffectiveDate);
+        $("#txtSalesPerson").val(obj[0].SalesPerson);
+        //added by Kamini on 22 July 2022
+        $("#txtTransporter").val(obj[0].Transporter);
+        $("#txtTransporterGST").val(obj[0].TransporterGST);
+        $("#txtFreight").dxSelectBox('instance').option('value', obj[0].FreightId);
+        //$("#txtFreight option").each(function () {
+        //    if ($.trim($(this).text()).toUpperCase() == $.trim(obj[0].FreightId).toUpperCase()) {
+        //        $(this).attr('selected', 'selected');
+        //    }
+        //});
+        $("#txtCreditDays").val(obj[0].CreditDays);
+
+
+        if (Boolean(obj[0].IsUnregisteredforGST) == true) {
+            $("#txtGSTEftDt").attr("disabled", "disabled");
+            $("#txtGST").attr("disabled", "disabled");
+            $("#divGstDt").hide();
+            $("#divGst").hide();
+            $("#txtGSTEftDt").val("");
+            $("#txtGST").val("");
+            $("#chkGst").prop("checked", true);
+        } else {
+            $("#txtGSTEftDt").removeAttr("disabled");
+            $("#txtGSTEftDt").focus();
+            $("#txtGST").removeAttr("disabled");
+            $("#txtGST").focus();
+            $("#divGstDt").show();
+            $("#divGst").show();
+            $("#chkGst").prop("checked", false);
+            //$("#txtGSTEftDt").val("");
+            //$("#txtGST").val("");
+        }
+        GetCustmerAddress(UserPartyID);
+        $("#ViewList").dxPopup("instance").hide();
+        SetAutoComplete();
+        return false;
+
+
+    }
+    function GetCustmerAddress(PartyId) {
+        try {
+            loadPanel.show();
+            var data = { 'intPartyId': PartyId };
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Home/GetCustmerAddress",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: dataWithAntiforgeryToken,
+                success: function (Response) {
+                    loadPanel.hide();
+                    if (Response.StatusId != "99") {
+                        CustomerAddressList = Response.Result;
+                        BindAddress(PartyId);
+
+                    }
+                    else {
+                        CustomerAddressList = [];
+                        $("#table_td").empty();
+                        loadPanel.hide();
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+    function BindAddress(UserPartyID) {
+        var obj = $.grep(CustomerAddressList, function (obj) {
+            return obj.PartyID == UserPartyID;
+        });
+        var jj = 0;
+        $("#table_td").empty();
+        for (var i = 0; i < obj.length; i++) {
+            jj = jj + 1;
+            let newHtml = GetHtml()
+                //.replace("$[Id]", $("#txtId").val())
+                //replace("$[Id]", $("#txtId").val())
+
+                .replace("$[Id]", UserPartyID)
+                .replace("$[RowID]", 'ERowID_' + jj)
+                //.replace("$[ddlAddrsId]", $(ddlAddrsId).val())
+                .replace("$[ddlAddrsTypeID]", obj[i].AddressTypeID)
+                .replace("$[ddlAddrsType]", obj[i].AddressType)
+                .replace("$[txtAddress]", obj[i].Address)
+                .replace("$[txtCountry]", obj[i].Country)
+                .replace("$[ddlCountryID]", obj[i].CountryID)
+                .replace("$[txtState]", obj[i].State)
+                .replace("$[ddlStateID]", obj[i].StateID)
+                .replace("$[txtCity]", obj[i].City)
+                .replace("$[hddCityId]", obj[i].Cityid)
+                .replace("$[txtPinCode]", obj[i].Pin)
+                .replace("$[txtEmail]", obj[i].Email)
+                .replace("$[txtMobile]", obj[i].Mobile)
+                .replace("$[PartyAddressID]", obj[i].PartyAddressID)
+                .replace("$[action]", "Edit")
+               // .replace("$[Delete]", "Delete");
+            $("#table_td").append(newHtml);
+        }
+
+        Cleartext();
+    }
+    function PartyDelete(intPartyId) {
+        try {
+            loadPanel.show();
+            var result = DevExpress.ui.dialog.confirm("Do you want to delete ...?", "Confirm changes");
+            result.done(function (dialogResult) {
+                if (dialogResult) {
+                    var data = { 'intPartyId': intPartyId };
+                    var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+                    $.ajax({
+                        url: "../Home/DeleteCustomerMaster",
+                        type: 'POST',
+                        dataType: 'json',
+                        async: true,
+                        data: dataWithAntiforgeryToken,
+                        success: function (Response) {
+                            if (Response.StatusId != "99") {
+                                ViewList();
+                                loadPanel.hide();
+                            }
+                            else {
+                                ViewList();
+                                loadPanel.hide();
+                                alert(Response.Status);
+                            }
+                        },
+                        error: function (xhr) {
+                            loadPanel.hide();
+                            alert("Data size is too large!");
+                        }
+                    });
+
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+    function GetCustomerForCheck() {
+        try {
+            loadPanel.show();
+            var dataWithAntiforgeryToken = ({ '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Home/GetCustomerForCheck",
+                type: 'POST',
+                dataType: 'json',
+                async: false,
+                data: dataWithAntiforgeryToken,
+                success: function (Response) {
+                    loadPanel.hide();
+                    if (Response.StatusId != "99") {
+                        CheckCustomerPartyCodeExists = Response.Result;
+
+                    }
+                    else {
+                        CheckCustomerPartyCodeExists = [];
+
+                        loadPanel.hide();
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large!");
+
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+
+        }
+    }
+    function checkPartyName() {
+
+        GetCustomerForCheck();
+        var Party = $("#txtPartyName").val();
+        if (CheckCustomerPartyCodeExists.length > 0) {
+            var obj = $.grep(CheckCustomerPartyCodeExists, function (obj) {
+                return (obj.Party).toUpperCase() == Party.toUpperCase();
+            });
+            if (obj.length > 0) {
+
+                return true;
+            }
+            else {
+
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+    }
+    function checkPartyCode() {
+        GetCustomerForCheck();
+        var PartyCode = $("#textPartyCode").val();
+
+        if (CheckCustomerPartyCodeExists.length > 0) {
+            var obj = $.grep(CheckCustomerPartyCodeExists, function (obj) {
+                return (obj.PartyCode).toUpperCase() == PartyCode.toUpperCase();
+            });
+            if (obj.length > 0) {
+
+                return true;
+            }
+            else {
+
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+    }
+
+
+</script>
+
+@*<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>*@
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        SetAutoComplete();
+        //added by Kamini on 22 July 2022
+        GetFreightTypeMaster();
+        FillPartyType();
+        FillAddressType();
+        FillCountry();
+        FillState(0);
+        ClearData();
+        $("#ddlCountry").val(98);
+        $("#ddlCountry").change(function () {
+
+
+            if (Number($("#ddlCountry").val()) == 98 || Number($("#ddlCountry").val()) == 0) {
+                $('#txtState').val('');
+                $('#txtState').hide();
+                $('#ddlState').show();
+                FillState($("#ddlCountry").val());
+                SetAutoComplete();
+                $("#txtCity").val("");
+                $("#hddCityId").val("0");
+            }
+            else {
+                $('#txtState').val('');
+                $('#txtState').show();
+                $('#ddlState').hide();
+                $("#ddlState").html('');
+                $("#ddlState").html('<option value="0" selected="selected">-- Select State --</option>');
+                $("#txtCity").val(""); 
+                $("#hddCityId").val("0");
+                if ($("#txtCity").data('autocomplete')) {
+                    $("#txtCity").autocomplete("destroy");
+                    $("#txtCity").removeData('autocomplete');
+                }
+            }
+        });
+        $("#ddlState").change(function () {
+
+
+            if (Number($("#ddlState").val()) == 0) {
+                $('#txtState').val('');
+            }
+            else {
+                $('#txtState').val($("#ddlState option:selected").text());
+            }
+        });
+        $('.disablecutcopypaste').bind('copy paste cut', function (e) {
+            e.preventDefault();
+            //alert('cut,copy & paste options are disabled !!');
+        });
+        $("#chkGst").click(function () {
+            if ($(this).is(":checked")) {
+                $("#txtGSTEftDt").attr("disabled", "disabled");
+                $("#txtGST").attr("disabled", "disabled");
+                $("#divGstDt").hide();
+                $("#divGst").hide();
+                $("#txtGSTEftDt").val("");
+                $("#txtGST").val("");
+            } else {
+                $("#txtGSTEftDt").removeAttr("disabled");
+                $("#txtGSTEftDt").focus();
+                $("#txtGST").removeAttr("disabled");
+                $("#txtGST").focus();
+                $("#divGstDt").show();
+                $("#divGst").show();
+                $("#txtGSTEftDt").val("");
+                $("#txtGST").val("");
+            }
+        });
+        $("#btnSubmit").click(function (e) {
+            if (ValidateData()) {
+                var addressArrIn = [];
+                addressArrIn.length = 0;
+                $.each($("#tblOne tbody tr"), function () {
+                    addressArrIn.push({
+                        //PartyID: $(this).find("td").eq(0).html(),
+                        //RowID: $(this).find("td").eq(1).html(),
+                        AddressTypeID: $(this).find("td").eq(1).html(),
+                        AddrsType: $(this).find("td").eq(2).html(),
+                        Address: $(this).find("td").eq(3).html(),
+                        Country: $(this).find("td").eq(4).html(),
+                        CountryID: $(this).find("td").eq(5).html(),
+                        State: $(this).find("td").eq(6).html(),
+                        StateID: $(this).find("td").eq(7).html(),
+                        City: $(this).find("td").eq(8).html(),
+                        Cityid: $(this).find("td").eq(9).html(),
+                        Pin: $(this).find("td").eq(10).html(),
+                        Email: $(this).find("td").eq(11).html(),
+                        Mobile: $(this).find("td").eq(12).html(),
+                        PartyAddressID: $(this).find("td").eq(13).html(),
+                    });
+                });
+
+
+                var data = JSON.stringify({
+                    PartyID: $("#hddPartyId").val(),
+                    PartyTypeID: $("#ddlPartyType option:selected").val(),
+                    PartyTypeName: $("#ddlPartyType option:selected").text(),
+                    PartyName: $("#txtPartyName").val(),
+                    PartyCode: $("#textPartyCode").val(),
+                    PriceGroup: 0,
+                    PanNumber: $("#txtPanNo").val(),
+                    PanEftDt: $("#txtPanEftDt").val(),
+                    GstNo: $("#txtGST").val(),
+                    GSTEftDt: $("#txtGSTEftDt").val(),
+
+                    SalesPerson: $("#txtSalesPerson").val(),
+                    isRegstrGST: $('#chkGst:checkbox:checked').length > 0,
+                    addressArr: addressArrIn,
+
+                    //added by Kamini on 22 July 2022
+                    TransName: $("#txtTransporter").val(),
+                    TransGST: $("#txtTransporterGST").val(),
+                    Freight: $("#txtFreight").dxSelectBox('instance').option('value'),
+                    CreditDays: $("#txtCreditDays").val()
+
+                });
+
+                $.when(saveOrder(data)).then(function (response) {
+                    console.log(response);
+                }).fail(function (err) {
+                    console.log(err);
+                });
+            }
+        });
+        $('.txtDate').Zebra_DatePicker({
+
+            format: 'd/M/Y'
+
+            // format: 'd,M Y'
+        });
+        $("#txtPartyName").change(function () {
+            if (checkPartyName() == true) {
+                $("#txtPartyName").focus();
+                alert("Party Already Exits");
+                return false
+            }
+
+        });
+        $("#textPartyCode").change(function () {
+            //alert(checkPartyCode());
+            if (checkPartyCode() == true) {
+                $("#textPartyCode").focus();
+                alert("Party Code Already Exits");
+                return false
+            }
+
+        });
+    });
+    function FillPartyType() {
+
+        $.ajax({
+            type: "GET",
+            url: "/Home/getPartyType",
+            data: "{}",
+            success: function (data) {
+                $("#ddlPartyType").html('');
+                //var s = '<option value="-1">Please Select a Party Type</option>';
+                var s = '<option value="0"> Select  Party Type</option>';
+                for (var i = 0; i < data.length; i++) {
+                    s += '<option value="' + data[i].PartyTypeID + '">' + data[i].PartyTypeName + '</option>';
+                }
+                $("#ddlPartyType").html(s);
+                $("#ddlPartyType").val(0);
+            }
+        });
+    }
+    function ValidatePAN(ObjID) {
+        var PANNumber = document.getElementById(ObjID).value;
+        var count = PANNumber.length;
+        var keyCode = (window.event.which) ? parseInt(window.event.which) : parseInt(window.event.keyCode);
+
+        if (count <= 4) {
+            if ((keyCode <= 90 && keyCode >= 65) || (keyCode >= 97 && keyCode <= 122)) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        if (count <= 8 && count >= 5) {
+            if (keyCode <= 57 && keyCode >= 48) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        if (count == 9) {
+            if ((keyCode <= 90 && keyCode >= 65) || (keyCode >= 97 && keyCode <= 122)) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+
+        //if (PANNumber.length == 10) {
+        //    return true;
+        //}
+        //else {
+        //    alert("Pan No Should be 10 characters");
+        //    document.getElementById(ObjID).value = "";
+        //    return false;
+        //}
+    }
+    function ValidateGST(ObjID) {
+        debugger;
+        var GSTNumber = $('#txtGST').val();
+        var count = GSTNumber.length;
+        var keyCode = (window.event.which) ? parseInt(window.event.which) : parseInt(window.event.keyCode);
+        var Partypanno = $('#txtPanNo').val();
+        var defaultZvalue = GSTNumber.substring(13, 14);
+
+        //if (count < 2) {
+        //    alert('Please Enter  StateCode');
+        //    return false;
+        //}
+
+        //if (count == 2) {
+
+        //    if (/\D/.test(GSTNumber)) {
+        //        return true;
+        //    }
+        //    else {
+        //        alert('Please Enter Proper StateCode');
+        //        return false;
+        //    }
+        //}
+
+        if (Partypanno == "") {
+            $('#txtPanNo').focus();
+            alert('First Please Enter Pan no');
+            //$('#txtPanNo').focus();
+            return false;
+        }
+        if (Partypanno.length != 10) {
+            $('#txtPanNo').focus();
+            alert('Please Enter Proper Pan no');
+
+            return false;
+        }
+
+        if (count <= 1) {
+            if (keyCode <= 57 && keyCode >= 48) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        if (count <= 8 && count <= 6) {
+            if ((keyCode <= 90 && keyCode >= 65) || (keyCode >= 97 && keyCode <= 122)) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        if (count <= 10 && count >= 5) {
+            if (keyCode <= 57 && keyCode >= 48) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        if (count == 11 && count <= 12) {
+            if ((keyCode <= 90 && keyCode >= 65) || (keyCode >= 97 && keyCode <= 122)) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        var gstpanno = GSTNumber.substr(2, 10);
+        if (count == 12) {
+            if (gstpanno.toUpperCase() == Partypanno.toUpperCase()) {
+                return true;
+            }
+            else {
+                alert("Please enter correct pan no");
+                return false;
+            }
+        }
+
+        if (count == 13) {
+
+            if (keyCode == 122 || keyCode == 90) {
+                return true;
+            }
+            else {
+                alert('GST Number is invalid Z not in Entered Gst Number');
+                return false;
+            }
+        }
+
+
+        if (count < 15 && count >= 3) {
+            if ((keyCode <= 90 && keyCode >= 65) || (keyCode >= 48 && keyCode <= 57) || (keyCode >= 97 && keyCode <= 122)) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+
+
+
+    }
+
+    function FillCountry() {
+        loadPanel.show();
+        $.ajax({
+            type: "GET",
+            url: "/Home/GetCountry",
+            data: "{}",
+            async: false,
+            success: function (data) {
+                $("#ddlCountry").html('');
+                //var s = '<option value="-1">Please Select a Party Type</option>';
+                var s = '<option value="0">-- Select Country --</option>';
+                for (var i = 0; i < data.length; i++) {
+                    s += '<option value="' + data[i].CountryID + '">' + data[i].Country + '</option>';
+                }
+                $("#ddlCountry").html(s);
+                $("#ddlCountry").val(98);
+                loadPanel.hide();
+            }
+        });
+    }
+    function FillState(countryid) {
+        loadPanel.show();
+        $.ajax({
+            type: "GET",
+            url: "/Home/GetState",
+            data: "{}",
+            async: false,
+            success: function (data) {
+                $("#ddlState").html('');
+                if (Number(countryid) == 0) {
+                    //var s = '<option value="-1">Please Select a Party Type</option>';
+                    var s = '<option value="0">-- Select State --</option>';
+                    for (var i = 0; i < data.length; i++) {
+                        s += '<option value="' + data[i].StateID + '">' + data[i].State + '</option>';
+                    }
+                    $("#ddlState").html(s);
+                }
+                else {
+                    var obj = $.grep(data, function (obj) {
+                        return obj.CountryID == countryid;
+                    });
+                    var s = '<option value="0">-- Select State --</option>';
+                    for (var i = 0; i < obj.length; i++) {
+                        s += '<option value="' + obj[i].StateID + '">' + obj[i].State + '</option>';
+                    }
+                    $("#ddlState").html(s);
+
+                }
+                $("#ddlState").val(0);
+                loadPanel.hide();
+            }
+        });
+    }
+    function FillAddressType() {
+        $.ajax({
+            type: "GET",
+            url: "/Home/getAddressType",
+            data: "{}",
+            success: function (data) {
+                $("#ddlAddrsType").html('');
+                //var s = '<option value="-1">Please Select a Address Type</option>';
+                var s = '<option value="0"> Select Address Type</option>';
+                for (var i = 0; i < data.length; i++) {
+                    s += '<option value="' + data[i].AddressTypeID + '">' + data[i].AddressTypeName + '</option>';
+                }
+                $("#ddlAddrsType").html(s);
+                $("#ddlAddrsType").val(0);
+            }
+        });
+    }
+
+
+    //After Click Save Button Pass All Data View To Controller For Save Database
+    function saveOrder(data) {
+        debugger;
+        return $.ajax({
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            type: 'POST',
+            url: "/Home/CustomerMasterInsertUpdate",
+            data: data,
+            success: function (result) {
+
+                ClearData();
+                ViewList();
+                //location.reload();
+                alert(result.Status);
+            },
+            error: function () {
+                alert("Error!")
+            }
+        });
+    }
+    //Collect Multiple Order List For Pass To Controller
+    function ClearData() {
+        $('#hddPartyId').val(0);
+        $("#ddlPartyType").val('0')
+        $("#txtPartyName").val('')
+        $("#textPartyCode").prop('readOnly', false);
+        $("#textPartyCode").val('');
+        $("#txtPanNo").val('');
+        $("#txtPanEftDt").val('');
+        $("#txtGST").val('');
+        $("#txtGSTEftDt").val('');
+        $("#txtSalesPerson").val('');
+        //added by Kamini on 22 July 2022
+        $("#txtTransporter").val('');
+        $("#txtTransporterGST").val('');
+        $("#txtFreight").val(0);
+        $("#txtCreditDays").val('')
+
+        $("#ddlAddrsType").val('0');
+        $("#txtAddress").val("");
+        $("#ddlCountry").val("0");
+        $("#ddlState").val("0");
+        $("#txtCity").val("");
+        $("#hddCityId").val("0");
+        $("#txtState").val("");
+        $("#ddlCountry").val("98");
+        $("#txtPinCode").val("");
+        $("#txtEmail").val("");
+        $("#txtMobile").val("");
+        $("#ddlAddrsType").prop('disabled', false);
+        $("#btnAdd").html('Save');
+        $("#table_td").empty();
+        $('#chkCopyAdd').prop('checked', false);
+    }
+    function ValidateData() {
+        if ($("#ddlPartyType").val() == 0) {
+            $("#ddlPartyType").focus();
+            alert("Please Select Party Type")
+            return false;
+        }
+        if ($("#txtPartyName").val() == "") {
+            $("#txtPartyName").focus();
+            alert("Please Enter Party Name")
+            return false;
+        }
+        if ($("#txtPartyName").val() != "" && $('#hddPartyId').val() == 0) {
+            if (checkPartyName()) {
+                $("#txtPartyName").focus();
+                alert("Party Already Exits");
+                return false
+            }
+        }
+        if ($("#textPartyCode").val() != "" && $('#hddPartyId').val() == 0) {
+            if (checkPartyCode()) {
+                $("#textPartyCode").focus();
+                alert("Party Code Already Exits");
+                return false
+            }
+        }
+        if ($("#chkGst").is(':checked') == false) {
+            if ($("#txtPanNo").val() == "") {
+                $("#txtPanNo").focus();
+                alert("Please Enter PAN No")
+                return false;
+            }
+
+            if ($("#txtPanNo").val() != "") {
+                if ($("#txtPanNo").val().length != 10) {
+                    $("#txtPanNo").focus();
+                    alert("Please Enter Proper Pan No")
+                    return false;
+                }
+            }
+        }
+        //if ($("#txtPanEftDt").val() == "") {
+        //    $("#txtPanEftDt").focus();
+        //    alert("Please Select Pan Effective Date")
+        //    return false;
+        //}
+
+
+        if ($("#chkGst").is(':checked') == false) {
+            if ($("#txtGST").val() == "") {
+                $("#txtGST").focus();
+                alert("Please Enter GST No")
+                return false;
+            }
+            if ($("#txtGST").val() != "") {
+                if ($("#txtGST").val().length != 15) {
+                    $("#txtGST").focus();
+                    alert("Please Enter Proper GST No")
+                    return false;
+                }
+            }
+            //if ($("#txtGSTEftDt").val() == "") {
+            //    $("#txtGSTEftDt").focus();
+            //    alert("Please Select GST Effective Date")
+            //    return false;
+            //}
+        }
+
+        return true;
+    }
+    $(document).ready(function () {
+        //    $(".pan").change(function () {
+        //        var inputvalues = $(this).val();
+        //        var regex = /([A-Z]){5}([0-9]){4}([A-Z]){1}$/;
+        //        var PANformat = new RegExp(regex);
+        //        if (PANformat.test(inputvalues)) {
+        //            $("#lblPANCard").css("visibility", "hidden");
+        //            return true;
+        //        } else {
+        //            $("#lblPANCard").css("visibility", "visible");
+        //            //$(".pan").val('');
+        //            $(".pan").focus();
+
+        //        }
+        //    });
+        //});
+        //lblGst
+        //    $(document).ready(function () {
+        //        $(".gst").change(function () {
+        //    var inputvaluesgst = $(this).val();
+        //    //var gstpattern = /^([\w-\.]+)@@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+        //    var gstpattern = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+        //    var gstinformat = new RegExp(gstpattern);
+        //    if (gstinformat.test(inputvaluesgst)) {
+        //        $("#lblGst").css("visibility", "hidden");
+        //        return true;
+        //    } else {
+        //        $("#lblGst").css("visibility", "visible");
+        //        //$(".gst").val('');
+        //        $(".gst").focus();
+
+        //    }
+        //});
+
+
+
+        //$(document).ready(function () {
+        //    $(".mail").blur(function () {
+        //        var inputvaluesmail = $(this).val();
+        //        var emailReg = /^([\w-\.]+@@([\w-]+\.)+[\w-]{2,4})?$/;
+        //        var mailformat = new RegExp(emailReg);
+        //        if (mailformat.test(inputvaluesmail)) {
+        //            $("#lblmail").css("visibility", "hidden");
+        //            return true;
+        //        } else {
+        //            $("#lblmail").css("visibility", "visible");
+        //            //$(".gst").val('');
+        //            $(".mail").focus();
+
+        //        }
+        //    });
+        //});
+    });
+
+
+
+</script>
+
+<script>
+
+    function SetAutoComplete() {
+        try {
+            /*City*/
+            $("#txtCity").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        url: "../Home/GetCity",
+                        dataType: "json",
+                        data: '{strSearch: "' + $("#txtCity").val() + '"}',
+                        success: function (data) {
+                            if (!data.length) {
+                                var result = [
+                                    {
+                                        label: 'No Record found',
+                                        value: "0"
+                                    }
+                                ];
+                                response(result);
+                            }
+                            else
+                                response(data);
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                    event.preventDefault();
+                    if (ui.item.ItemID != "0") {
+                        $("#txtCity").val(ui.item.CityName);
+                        $("#hddCityId").val(ui.item.CityId);
+                    }
+                    else {
+                        $("#txtCity").val('');
+                        $("#hddCityId").val('');
+                    }
+                },
+                minLength: 3,
+                focus: function (event, ui) {
+                    event.preventDefault();
+                    $("#txtCity").val(ui.item.CityName);
+                    $("#hddCityId").val(ui.item.CityId);
+
+                }
+            }).data("autocomplete")._renderItem = function (ul, item) {
+                var Header = "<div class='ui-widget-header' style='width:406px;background: #22a5e3;color: black;'><span style='padding:0 4px;float:left;width:100%;font-size: 12px;'>City</span>";
+
+                Header += "<div style='clear: both;'></div></div>"
+                var displayItemHTML = "<div style='width:400px;background: #229ce317;color: black;'><span style='padding:2px 4px;float:left;width:100%;font-size: 12px;'>" + item.CityName + "</span>";
+
+                displayItemHTML += "<div style='clear: both;'></div></div>";
+                if ((ul.find('li')).length == 0) {
+                    ul.append($("<a></a>").html(Header));
+                    ul.addClass("HodeOverFlow");
+                }
+                return $("<li style='background: #229ce317;border-bottom: 1px solid blajck;height: 18px;color: black;'></li>")
+                    .data("item.autocomplete", item)
+                    .append($("<a></a>").html(displayItemHTML))
+                    .appendTo(ul);
+            };
+        }
+        catch (err) { }
+    }
+
+    //added by Kamini on 22 July 2022
+    function GetFreightTypeMaster() {
+        debugger;
+        var arrayFreightTypeList = @Html.Raw(Json.Encode(@ViewData["FreightTypeList"]));
+        try {
+            if (arrayFreightTypeList.Data.StatusId != "99") {
+                if (arrayFreightTypeList.Data.Result.length > 0) {
+                    for (var i = 0; i < arrayFreightTypeList.Data.Result.length; i++) {
+                        FreightTypeList[i] = arrayFreightTypeList.Data.Result[i];
+                    }
+
+                    $("#txtFreight").dxSelectBox({
+                        dataSource: new DevExpress.data.ArrayStore({
+                            data: FreightTypeList,
+                            key: "FreightTypeID"
+                        }),
+                        displayExpr: "FreightType",
+                        valueExpr: "FreightTypeID",
+                        placeholder: "Freight",
+                        searchEnabled: true
+                    });
+                }
+            }
+            else {
+                alert(arrayFreightTypeList.Data.Status);
+            }
+        }
+        catch (e){
+            alert("Data size is too large!");
+        }
+        }
+
+
+    function ValidateTransGST(ObjID) {
+        debugger;
+        var GSTNumber = $('#txtTransporterGST').val();
+        var count = GSTNumber.length;
+        var keyCode = (window.event.which) ? parseInt(window.event.which) : parseInt(window.event.keyCode);
+        var defaultZvalue = GSTNumber.substring(13, 14);
+
+        if (count <= 1) {
+            if (keyCode <= 57 && keyCode >= 48) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        if (count <= 8 && count <= 6) {
+            if ((keyCode <= 90 && keyCode >= 65) || (keyCode >= 97 && keyCode <= 122)) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        if (count <= 10 && count >= 5) {
+            if (keyCode <= 57 && keyCode >= 48) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        if (count == 11 && count <= 12) {
+            if ((keyCode <= 90 && keyCode >= 65) || (keyCode >= 97 && keyCode <= 122)) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        
+        if (count == 13) {
+
+            if (keyCode == 122 || keyCode == 90) {
+                return true;
+            }
+            else {
+                alert('GST Number is invalid Z not in Entered Gst Number');
+                return false;
+            }
+        }
+
+
+        if (count < 15 && count >= 3) {
+            if ((keyCode <= 90 && keyCode >= 65) || (keyCode >= 48 && keyCode <= 57) || (keyCode >= 97 && keyCode <= 122)) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+
+       
+    }
+
+</script>
+<script src="~/Scripts/Js/customerMaster.js"></script>

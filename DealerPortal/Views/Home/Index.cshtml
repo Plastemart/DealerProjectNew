@@ -1,0 +1,639 @@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+@Html.AntiForgeryToken()
+<html>
+<head>
+    <title>ERP Pens : Dealer Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--  css-->
+    <link rel="stylesheet" type="text/css" href="~/Template/css/StyleSheet.css" />
+    <link href="~/Template/css/open-sans.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="~/Template/css/bootstrap.min.css" />
+    @*<link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet" />*@
+    <link href="~/Template/Alert/jquery-confirm.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/Template/css/font-awesome.min.css" />
+    <!--<link href="css/open-sans.css" rel="stylesheet" />-->
+    <style>
+        .preloading {
+            /*display: block;*/
+            width: 180px;
+            height: 120px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            text-align: center;
+            padding: 10px;
+            font: normal 16px Tahoma, Geneva, sans-serif;
+            margin-left: -50px;
+            margin-top: -50px;
+            z-index: 99999;
+            overflow: auto;
+        }
+
+        #overlay {
+            /*display: block;*/
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 88888;
+        }
+
+        .modal-sm > .modal-content > .modal-header {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="Loader" id="divLoading" style="display: none;">
+        <div id="preloading" class="preloading">
+            <img src="~/Template/images/load.gif" style="width:100px;">
+        </div>
+        <div id="overlay"></div>
+    </div>
+    <header>
+        <div class="">
+            <!--container-->
+            <nav id='cssmenu'>
+                <div class="logo">
+                    <a href="Home/Index">
+                        <img src="~/Template/images/logo.png" />
+                    </a>
+                </div>
+                <div id="head-mobile"></div>
+                <div class="button"></div>
+                <ul class="menu">
+                    <li><a href='Home/Index'>Home</a></li>
+                    <li><a href='#'>About Us</a></li>
+                    <li><a href='#'>Products</a></li>
+                    <li><a href='#'>Contact us</a></li>
+                </ul>
+            </nav>
+            <!--<div class="logout">
+            <span><i class="fa fa-user"></i> Plastemart User</span>
+            <a href="#"><i class="fa fa-power-off"></i></a>
+            </div>-->
+            <a href="#myModal3" class="login" data-toggle="modal">Login</a>
+            <div id="myModal3" class="modal" data-easein="flipYIn" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+                <div class="modal-dialog modaldialog ">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            <h4 class="modal-title" id="TextLogin">Login</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="log">
+                                <div class="floating-label">
+                                    <input class="floating-input" type="text" placeholder=" " id="txtemailid" />
+                                    <span class="highlight"></span>
+                                    <label>Email ID</label>
+                                </div>
+                                <div class="floating-label">
+                                    <input class="floating-input" type="password" placeholder=" " id="txtpassword" />
+                                    <span class="highlight"></span>
+                                    <label>Password</label>
+                                </div>
+                                <br />
+                                <a href="#" id="change" class="change">Change Password</a>
+                                <a href="#" id="forgot" class="forgot">Forgot Password</a>
+                                <br /><br />
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <a type="button" href="javascript:void(0)" id="btnLogin" onclick="Login()" class="submit">Submit</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="change-password" style=" display none">
+                                <div class="floating-label">
+                                    <input class="floating-input" type="text" placeholder=" " id="txtEmailId" />
+                                    <span class="highlight"></span>
+                                    <label>Email ID</label>
+                                </div>
+                                <div class="floating-label">
+                                    <input class="floating-input" type="password" placeholder=" " id="txtOldPassword" style=" width 70%;" />
+                                    <input type="button" id="btnVerify" class="submit" value="Verify" style=" float right;
+                                           margin-top -40px;" onclick="UserLoginPwdVerification();" />
+                                    <span class="highlight"></span>
+                                    <label>Old Password</label>
+                                </div>
+
+                                <div class="floating-label">
+                                    <input class="floating-input" type="password" placeholder=" " id="txtNewPassword" />
+                                    <span class="highlight"></span>
+                                    <label>New Password</label>
+                                </div>
+                                <div class="floating-label">
+                                    <input class="floating-input" type="password" placeholder=" " id="txtConfirmPassword" onblur="CheckPassword();" />
+                                    <span class="highlight"></span>
+                                    <label>Confirm Password</label>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <input type="button" id="change_password" class="submit" value="Change Password" onclick="UserMasterChangePassword();" />
+                                        <input type="button" id="" class="submit Cancel" value="Cancel" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="forgot-password" style=" display none">
+                                <div class="floating-label">
+                                    <input class="floating-input" type="text" placeholder=" " id="txtforgetemailid" />
+                                    <span class="highlight"></span>
+                                    <label>Email ID</label>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <input type="button" id="forgot-password" class="submit" value="Submit" onclick="ForgotPasswordSubmit()" />
+                                        <input type="button" id="" class="submit Cancel" value="Cancel" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="banner">
+        <img src="~/Template/images/banner.jpg" />
+    </div>
+    <div class="main-content">
+        <section class="orders">
+            <div class="container">
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a href="Home/PlaceOrder" class="order-details red">
+                                <div class="icon ">
+                                    <img src="~/Template/images/po.png" />
+                                </div>
+                                <div class="o-details">
+                                    <h4>Place Order</h4>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" class="order-details blue">
+                                <div class="icon ">
+                                    <img src="~/Template/images/po.png" />
+                                </div>
+                                <div class="o-details">
+                                    <h4>Seasonal Order</h4>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" class="order-details light-green">
+                                <div class="icon ">
+                                    <img src="~/Template/images/oh.png" />
+                                </div>
+                                <div class="o-details">
+                                    <h4>Order History</h4>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" class="order-details yellow">
+                                <div class="icon ">
+                                    <img src="~/Template/images/cart.png" />
+                                </div>
+                                <div class="o-details">
+                                    <h4>View Cart</h4>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" class="order-details green">
+                                <div class="icon ">
+                                    <img src="~/Template/images/ct.png" />
+                                </div>
+                                <div class="o-details">
+                                    <h4>Catalogue</h4>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" class="order-details purple">
+                                <div class="icon ">
+                                    <img src="~/Template/images/dashboard.png" />
+                                </div>
+                                <div class="o-details ">
+                                    <h4>Dashboard</h4>
+                                </div>
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+                @*@{ Html.RenderAction("ViewNewsMaster", "Home");}*@
+            </div>
+
+        </section>
+    </div>
+    <footer>
+        <p>Design & Developed by <a href="http://plastemart.com" target="_blank">Plastemart.com</a></p>
+    </footer>
+    <!--js-->
+    <script src="~/Template/js/jquery.min.js" type="text/javascript"></script>
+    <script src="~/Template/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="~/Template/js/velocity.min.js"></script>
+    <script src="~/Template/js/velocity.ui.min.js"></script>
+    <script src="~/Template/Alert/jquery-confirm.min.js"></script>
+    <script src="~/Template/js/Load.js"></script>
+    <script>
+        var VarStatus = "";
+        function LoaderShow() {
+            waitingDialog.show('', {
+                dialogSize: 'sm', progressType: 'warning'
+            });
+        }
+
+        function LoaderHide() {
+            waitingDialog.hide();
+        }
+        function alert(msg) {
+            $.confirm({
+                title: 'Alert!',
+                content: msg,
+                icon: 'fa fa-warning',
+                closeIcon: false,
+                animation: 'scale',
+                type: 'red',
+                buttons: {
+                    deleteUser: {
+                        text: 'Ok',
+                        action: function () {
+                            //$.alert('Deleted the user!');
+                        }
+                    }
+                }
+            });
+        }
+
+        $("#txtemailid, #txtpassword").keypress(function (e) {
+            if (e.which == 13) {
+                $("#btnLogin").click();
+            }
+        });
+
+        $(document).ready(function () {
+            $("#change").click(function () {
+                $("#TextLogin").text("Change Password");
+                $(".log").hide(1000);
+                $(".change-password").show(1000);
+                $("#txtEmailId").prop("disabled", false);
+                $("#txtOldPassword").prop("disabled", false);
+                $("#txtNewPassword").prop("disabled", true);
+                $("#txtConfirmPassword").prop("disabled", true);
+                $("#btnVerify").prop("disabled", false);
+                //$("#btnVerify").css('color','red');
+                $("#btnVerify").css('border', '2px solid #e32228');
+                $("#btnVerify").attr('value', 'Verify');
+
+
+            });
+            //$("#change_password").click(function () {
+            //    $(".log").show(1000);
+            //    $(".change-password").hide(1000);
+            //});
+            $("#forgot").click(function () {
+                $("#TextLogin").text("Forgot Password");
+                $(".log").hide(1000);
+                $(".forgot-password").show(1000);
+
+            });
+            //$("#forgot-password").click(function () {
+            //    $(".log").show(1000);
+            //    $(".forgot-password").hide(1000);
+            //});
+            $(".Cancel").click(function () {
+                $("#TextLogin").text("Login");
+                $(".forgot-password").hide(1000);
+                $(".change-password").hide(1000);
+                $(".log").show(1000);
+                $("#txtforgetemailid").val("");
+            });
+
+            $(".close").click(function () {
+                $("#TextLogin").text("Login");
+                $(".forgot-password").hide(1000);
+                $(".change-password").hide(1000);
+                $(".log").show(1000);
+            });
+        });
+        (function ($) {
+            $.fn.menumaker = function (options) {
+                var cssmenu = $(this), settings = $.extend({
+                    format: "dropdown",
+                    sticky: false
+                }, options);
+                return this.each(function () {
+                    $(this).find(".button").on('click', function () {
+                        $(this).toggleClass('menu-opened');
+                        var mainmenu = $(this).next('ul');
+                        if (mainmenu.hasClass('open')) {
+                            mainmenu.slideToggle().removeClass('open');
+                        }
+                        else {
+                            mainmenu.slideToggle().addClass('open');
+                            if (settings.format === "dropdown") {
+                                mainmenu.find('ul').show();
+                            }
+                        }
+                    });
+                    cssmenu.find('li ul').parent().addClass('has-sub');
+                    multiTg = function () {
+                        cssmenu.find(".has-sub").prepend('<span class="submenu-button"></span>');
+                        cssmenu.find('.submenu-button').on('click', function () {
+                            $(this).toggleClass('submenu-opened');
+                            if ($(this).siblings('ul').hasClass('open')) {
+                                $(this).siblings('ul').removeClass('open').slideToggle();
+                            }
+                            else {
+                                $(this).siblings('ul').addClass('open').slideToggle();
+                            }
+                        });
+                    };
+                    if (settings.format === 'multitoggle') multiTg();
+                    else cssmenu.addClass('dropdown');
+                    if (settings.sticky === true) cssmenu.css('position', 'fixed');
+                    resizeFix = function () {
+                        var mediasize = 1000;
+                        if ($(window).width() > mediasize) {
+                            cssmenu.find('ul').show();
+                        }
+                        if ($(window).width() <= mediasize) {
+                            cssmenu.find('ul').hide().removeClass('open');
+                        }
+                    };
+                    resizeFix();
+                    return $(window).on('resize', resizeFix);
+                });
+            };
+        })(jQuery);
+
+        (function ($) {
+            $(document).ready(function () {
+                $("#cssmenu").menumaker({
+                    format: "multitoggle"
+                });
+            });
+        })(jQuery);
+
+        // add the animation to the popover
+        $('a[rel=popover]').popover().click(function (e) {
+            e.preventDefault();
+            var open = $(this).attr('data-easein');
+            if (open == 'shake') {
+                $(this).next().velocity('callout.' + open);
+            } else if (open == 'pulse') {
+                $(this).next().velocity('callout.' + open);
+            } else if (open == 'tada') {
+                $(this).next().velocity('callout.' + open);
+            } else if (open == 'flash') {
+                $(this).next().velocity('callout.' + open);
+            } else if (open == 'bounce') {
+                $(this).next().velocity('callout.' + open);
+            } else if (open == 'swing') {
+                $(this).next().velocity('callout.' + open);
+            } else {
+                $(this).next().velocity('transition.' + open);
+            }
+
+        });
+
+        // add the animation to the modal
+        $(".modal").each(function (index) {
+            $(this).on('show.bs.modal', function (e) {
+                var open = $(this).attr('data-easein');
+                if (open == 'shake') {
+                    $('.modal-dialog').velocity('callout.' + open);
+                } else if (open == 'pulse') {
+                    $('.modal-dialog').velocity('callout.' + open);
+                } else if (open == 'tada') {
+                    $('.modal-dialog').velocity('callout.' + open);
+                } else if (open == 'flash') {
+                    $('.modal-dialog').velocity('callout.' + open);
+                } else if (open == 'bounce') {
+                    $('.modal-dialog').velocity('callout.' + open);
+                } else if (open == 'swing') {
+                    $('.modal-dialog').velocity('callout.' + open);
+                } else {
+                    $('.modal-dialog').velocity('transition.' + open);
+                }
+
+            });
+        });
+
+        function Login() {
+            try {
+                debugger
+                if ($("#txtemailid").val() == "") {
+                    alert("EmailId Required !! ")
+                    return
+                }
+                if ($("#txtpassword").val() == "") {
+                    alert("Password Required !! ")
+                    return
+                }
+                var data = { 'EmailId': $("#txtemailid").val(), 'Password': $("#txtpassword").val() };
+                var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+                LoaderShow();
+                $.ajax({
+                    url: '@Url.Action("UserLoginPwdVerification", "Home")',
+                    type: 'POST',
+                    dataType: 'json',
+                    async: true,
+                    data: dataWithAntiforgeryToken,
+                    success: function (Response) {
+                        if (Response.StatusId == "1") {
+                            debugger
+                            var url = '@Url.Action("Dashboard", "Home")';
+                            window.location.href = url;
+                            debugger
+                        }
+                        else {
+                            LoaderHide();
+                            alert(Response.Status);
+                        }
+                    },
+                    error: function (xhr) {
+                        LoaderHide();
+                        alert("Data size is too large!");
+                    }
+                });
+            }
+            catch (e) {
+                LoaderHide();
+                alert("Data size is too large!");
+            }
+
+        }
+
+        function CheckPassword() {
+            if ($("#txtNewPassword").val() === $("#txtConfirmPassword").val()) {
+            }
+            else {
+                $("#txtNewPassword").focus();
+                alert("Password doesn't match.");
+            }
+        }
+
+        function UserMasterChangePassword() {
+            try {
+                if ($("#txtEmailId").val() == "") {
+                    alert("EmailId Required !! ")
+                    return
+                }
+                if ($("#txtNewPassword").val() == "") {
+                    alert("Password Required !! ")
+                    return
+                }
+                var data = { 'EmailId': $("#txtEmailId").val(), 'NewPassword': $("#txtNewPassword").val() };
+                var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+                LoaderShow();
+                $.ajax({
+                    url: '@Url.Action("UserMasterChangePassword", "Home")',
+                    type: 'POST',
+                    dataType: 'json',
+                    async: true,
+                    data: dataWithAntiforgeryToken,
+                    success: function (Response) {
+                        LoaderHide();
+                        if (Response.StatusId != "99") {
+                            VarStatus = Response.Status;
+                            alert(Response.Status);
+                            $("#txtemailid").val($("#txtEmailId").val());
+                            $("#txtEmailId").val('');
+                            $("#txtEmailId").val('');
+                            $("#txtOldPassword").val('');
+                            $("#txtNewPassword").val('');
+                            $("#txtConfirmPassword").val('');
+                            $("#txtNewPassword").prop("disabled", true);
+                            $("#txtConfirmPassword").prop("disabled", true);
+                            $("#btnVerify").prop("disabled", false);
+                            //$("#btnVerify").css('color','red');
+                            $("#btnVerify").css('border', '2px solid #e32228');
+                            $("#btnVerify").attr('value', 'Verify');
+                            $("#txtpassword").focus();
+                            $("#TextLogin").text("Login");
+                            $(".forgot-password").hide();
+                            $(".change-password").hide();
+                            $(".log").show();
+
+                        }
+                        else {
+                            alert(Response.Status);
+                        }
+                    },
+                    error: function (xhr) {
+                        alert("Data size is too large!");
+                    }
+                });
+            }
+            catch (e) {
+                alert("Data size is too large!");
+            }
+        }
+
+        function UserLoginPwdVerification() {
+            try {
+                if ($("#txtEmailId").val() == "") {
+                    alert("EmailId Required !! ")
+                    return
+                }
+                if ($("#txtOldPassword").val() == "") {
+                    alert("Password Required !! ")
+                    return
+                }
+                var data = { 'EmailId': $("#txtEmailId").val(), 'Password': $("#txtOldPassword").val() };
+                var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+                LoaderShow();
+                $.ajax({
+                    url: '@Url.Action("UserLoginPwdVerification", "Home")',
+                    type: 'POST',
+                    dataType: 'json',
+                    async: true,
+                    data: dataWithAntiforgeryToken,
+                    success: function (Response) {
+                        LoaderHide();
+                        if (Response.StatusId == "1") {
+                            VarStatus = Response.Status;
+                            $("#txtEmailId").prop("disabled", true);
+                            $("#txtOldPassword").prop("disabled", true);
+                            $("#btnVerify").prop("disabled", true);
+                            //$("#btnVerify").css('color','green');
+                            $("#btnVerify").css('border', '2px solid green');
+                            $("#btnVerify").attr('value', 'Verified');
+                            $("#txtEmailId").css('background-color', 'lightgray');
+                            $("#txtOldPassword").css('background-color', 'lightgray');
+                            $("#txtNewPassword").focus();
+                            $("#txtNewPassword").prop("disabled", false);
+                            $("#txtConfirmPassword").prop("disabled", false);
+                        }
+                        else {
+                            alert(Response.Status);
+                            $("#txtNewPassword").prop("disabled", true);
+                            $("#txtConfirmPassword").prop("disabled", true);
+                        }
+                    },
+                    error: function (xhr) {
+                        alert("Data size is too large!");
+                    }
+                });
+            }
+            catch (e) {
+                alert("Data size is too large!");
+            }
+        }
+
+        function ForgotPasswordSubmit() {
+            try {
+                if ($("#txtforgetemailid").val() == "") {
+                    alert("EmailId Required !! ")
+                    return
+                }
+                var data = { 'EmailId': $("#txtforgetemailid").val() };
+                var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+                LoaderShow();
+                $.ajax({
+                    url: '@Url.Action("ForgotPasswordSubmit", "Home")',
+                    type: 'POST',
+                    dataType: 'json',
+                    async: true,
+                    data: dataWithAntiforgeryToken,
+                    success: function (Response) {
+                        LoaderHide();
+                        if (Response.StatusId == "1") {
+                            $("#myModal3").modal("hide");
+                            $("#TextLogin").text("Login");
+                            $(".forgot-password").hide();
+                            $(".change-password").hide();
+                            $(".log").show();
+                            $("#txtforgetemailid").val("");
+                            alert("Password link send please check email");
+                        }
+                        else {
+                            alert(Response.Status);
+
+                        }
+                    },
+                    error: function (xhr) {
+                        alert("Data size is too large!");
+                    }
+                });
+            }
+            catch (e) {
+                alert("Data size is too large!");
+            }
+        }
+    </script>
+</body>
+</html>

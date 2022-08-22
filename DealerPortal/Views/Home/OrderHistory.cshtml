@@ -1,0 +1,418 @@
+﻿﻿
+@{
+    ViewBag.Title = "OrderHistory";
+}
+<div class="box box-warning">
+    <div class="box-header with-border">
+        <div class="box-header-left">
+            <div class="row">
+                <div class="col-md-3">
+                    <h3 class="box-title">Order History</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box-body">
+        @*<form class="form-horizontal">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="">From Date</label>
+                            <div class="col-sm-8 MY8">
+                                <div id="txtFromDate"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="">To Date</label>
+                            <div class="col-sm-8 MY8">
+                                <div id="txtToDate"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <a href="#" class="btn btn-danger btn-flat" style="background: #e70c0e; border-color:#e70c0e; float: right; margin-left: 10px; padding: 0px 5px 0px 15px;" data-toggle="tooltip" title="Export to PDF"><i class="flaticon-pdf-file" style="font-size: 18px;"></i></a>
+                            <a href="#" class="btn btn-danger btn-flat" style="background: #257142; border-color:#257142; float: right; padding: 0px 5px 0px 5px;" onclick="ExportToExcel();"><i class="flaticon-excel-file" style="font-size: 18px;" data-toggle="tooltip" title="Export to Excel"></i></a>
+                            <a href="#" class="btn btn-danger btn-flat" style="background: #e32228; float: right; padding: 0px 15px 0px 15px;" onclick="OrderHistoryGetData()">Get Data</a>
+                        </div>
+                    </div>
+                </div>
+            </form>*@
+        <form class="form-horizontal">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label col-sm-4" for="">From Date</label>
+                        <div class="col-sm-8 MY8">
+                            <div id="txtFromDate"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label col-sm-4" for="">To Date</label>
+                        <div class="col-sm-8 MY8">
+                            <div id="txtToDate"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <a href="#" class="btn btn-danger btn-flat" style="background: #e32228;" onclick="OrderHistoryGetData()">Get Data</a>
+                    <a href="#" class="btn btn-danger btn-flat" style="background: #e70c0e; border-color:#e70c0e; float: right; margin-left: 5px; padding: 0px 5px 0px 5px;" data-toggle="tooltip" title="Export to PDF"><i class="flaticon-pdf-file" style="font-size: 18px;"></i></a>
+                    <a href="#" class="btn btn-danger btn-flat" style="background: #257142; border-color:#257142; float: right; padding: 0px 5px 0px 5px;" onclick="ExportToExcel();"><i class="flaticon-excel-file" style="font-size: 18px;" data-toggle="tooltip" title="Export to Excel"></i></a>
+                </div>
+            </div>
+        </form>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <div id="tblOrderHistoryHeader"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="Details" tabindex="-1" role="dialog" aria-labelledby="logoutLabel" aria-hidden="true" style="align:center">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Order No : <span id="SpanorderNo"></span>&nbsp;&nbsp;&nbsp;&nbsp; Date : <span id="SpanorderDate"></span> </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <div id="tblOrderHistoryDetail"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="dvTable" style="display: none;"></div>
+
+<script>
+    var OrderHistoryHeader = [];
+    var OrderHistoryDetail = [];
+    var OrderHistoryList = [];
+
+    var FDate =  (@Html.Raw(Json.Encode(@ViewBag.ZZFromDate))).split("/");
+    var Now = (@Html.Raw(Json.Encode(@ViewBag.ZZNowDate))).split("/");
+
+    var FFDate = new Date(FDate[2],(FDate[1]-1),FDate[0]);
+    var NNow = new Date(Now[2],(Now[1]-1),Now[0]);
+
+
+    $(document).ready(function () {
+        BindOrderHistoryHeaderList();
+        $("#txtFromDate").dxDateBox({
+            applyValueMode: "useButtons",
+            height: 30,
+            type: "date",
+            value: FFDate,
+            max: [2025, 01, 01],
+            min: FFDate,
+             displayFormat: "dd/MM/yyyy"
+
+        });
+        $("#txtToDate").dxDateBox({
+            applyValueMode: "useButtons",
+            height: 30,
+            type: "date",
+            value: NNow,
+            max: [2025, 01, 01],
+            min: FFDate,
+            displayFormat: "dd/MM/yyyy"
+        });
+    });
+
+    function BindOrderHistoryHeaderList() {
+        $("#tblOrderHistoryHeader").dxDataGrid({
+            dataSource: OrderHistoryHeader,
+            height: 420,
+            paging: { enabled: true },
+            allowColumnResizing: true,
+            columnResizingMode: "widget",
+            columnAutoWidth: true,
+            wordWrapEnabled: false,
+            columns: [
+                {
+                    dataField: "OrderNo", width: '9%', caption: "Order No.", cellTemplate: function (container, options) {
+                        $("<div>")
+                            .append(options.value)
+                            .appendTo(container);
+                    }
+                },
+                {
+                    dataField: "OrderDate", width: '9%',
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Order <br/> Date").appendTo(header);
+                    }
+                },
+                { dataField: "InvoiceNo", width: '21%', caption: "Invoice No." },
+                { dataField: "ZZUserName", width: '21%', caption: "User" },
+                { dataField: "NoOfItems", width: '5%', caption: "Items" },
+                { dataField: "TotalValue", width: '20%', caption: "Values", alignment: "right", valueFormat: "##,###.##", format: { type: "fixedPoint", precision: "2" } },
+                { dataField: "Status", width: '15%', caption: "Status" },
+            ],
+            filterRow: { visible: false },
+            showRowLines: true,
+            showBorders: true,
+            summary: {
+                totalItems: [
+                    { name: "Values", column: "TotalValue", summaryType: "sum", displayFormat: "Total: {0}", valueFormat: "#,###.##", valueFormat: { type: "fixedPoint", precision: 2 } }
+                ]
+                //calculateCustomSummary: function (options) {
+                //    if (options.name === "Values")
+                //        if (options.summaryProcess === "start") {
+                //            options.totalValue = 0;
+                //        }
+                //    if (options.summaryProcess === "calculate") {
+                //        if (options.value > 0) {
+                //            options.totalValue = options.totalValue + options.value;
+                //        }
+                //    }
+                //}
+            }
+        });
+    }
+
+    function BindOrderHistoryDetailList() {
+        $("#tblOrderHistoryDetail").dxDataGrid({
+            dataSource: OrderHistoryDetail,
+            height: 420,
+            paging: { enabled: true },
+            allowColumnResizing: true,
+            columnResizingMode: "widget",
+            columnAutoWidth: true,
+            wordWrapEnabled: false,
+            loadPanel: {
+                enabled: true
+            },
+            scrolling: {
+                mode: "virtual"
+            },
+            onContentReady: function (e) {
+                e.component.option("loadPanel.enabled", false);
+            },
+            columns: [
+                {
+                    dataField: "ItemCode", width: '7%', caption: "Code"
+                },
+                {
+                    dataField: "ItemName", width: '25%',
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Product <br/> Name").appendTo(header);
+                    }
+                },
+                {
+                    dataField: "PackSize", width: '6%',
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Pack <br/> Size").appendTo(header);
+                    }
+                },
+                {
+                    dataField: "OrderCarton", width: '6%',
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Order <br/> Carton").appendTo(header);
+                    }
+                },
+                {
+                    dataField: "OrderUnits", width: '6%',
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Order <br/> Units").appendTo(header);
+                    }
+                },
+                { dataField: "MRP", width: '7%', caption: "MRP" },
+                { dataField: "DealerPrice", width: '7%', caption: "DP" },
+                 {
+                    dataField: "DiscountPercentage2", width: '8%',
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Trade <br/> Disc").appendTo(header);
+                    }
+                },
+                {
+                    dataField: "DiscountPercentage1", width: '8%',
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Scheme <br/> Disc").appendTo(header);
+                    }
+                },
+               
+                {
+                    dataField: "DiscountPercentage3", width: '8%',
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("special<br/> Disc").appendTo(header);
+                    }
+                },
+                { dataField: "GSTRate", width: '7%', caption: "GST%" },
+                { dataField: "Tax", width: '13%', caption: "Tax", format: { type: "fixedPoint", precision: "2" } },
+                { dataField: "TotalAmount", width: '15%', caption: "Value", format: { type: "fixedPoint", precision: "2" } },
+            ],
+            filterRow: { visible: false },
+            showRowLines: true,
+            showBorders: true,
+            summary: {
+                totalItems: [
+                    { name: "Tax", column: "Tax", summaryType: "sum", displayFormat: "Total: {0}", valueFormat: "#,###.##", valueFormat: { type: "fixedPoint", precision: 2 } },
+                    { name: "Total", column: "TotalAmount", summaryType: "sum", displayFormat: "Total: {0}", valueFormat: "#,###.##", valueFormat: { type: "fixedPoint", precision: 2 } }
+                ]
+                //calculateCustomSummary: function (options) {
+                //    if (options.name === "Tax" || options.name === "Total")
+                //        if (options.summaryProcess === "start") {
+                //            options.totalValue = 0;
+                //        }
+                //    if (options.summaryProcess === "calculate") {
+                //        if (options.value > 0) {
+                //            options.totalValue = options.totalValue + options.value;
+                //        }
+                //    }
+                //}
+            }
+        });
+    }
+
+    function SetDate(dateStr) {
+        var strDate
+        var now = new Date(dateStr);
+        var Day = now.getDate()
+        var Month = (now.getMonth() + 1)
+        var Year = now.getFullYear()
+        if (Day < 10) {
+            Day = "0" + Day;
+        }
+        if (Month < 10) {
+            Month = "0" + Month;
+        }
+        strDate = Day + "/" + Month + "/" + Year
+        return strDate;
+    }
+
+    function OrderHistoryGetData() {
+        try {
+            if (txtFromDate == null || txtFromDate == "" || txtFromDate == undefined || txtToDate == null || txtToDate == "" || txtToDate == undefined) {
+                return true
+            }
+            loadPanel.show();
+            var FromDate = SetDate($('#txtFromDate').dxDateBox('instance').option('value'));
+            var ToDate = SetDate($('#txtToDate').dxDateBox('instance').option('value'));
+
+            var data = { 'FromDate': FromDate, 'ToDate': ToDate };
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Home/OrderHistoryGetByFromDateToDatePartyId",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: dataWithAntiforgeryToken,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        OrderHistoryHeader = Response.Result;
+                        $.each(OrderHistoryHeader, function (index, object) {
+                            var html = "";
+                            html += "<a href='#' style='color:#02167A !important; text-decoration: underline;' data-toggle='modal' data-target='#Details' onclick='OrderDetailGetByOrderId(" + object.RowNumber + ",\"" + object.OrderNo + "\",\"" + object.OrderDate + "\")'>" + object.OrderNo + "</a>";
+                            OrderHistoryHeader[index].OrderNo = html
+                        });
+                        $("#tblOrderHistoryHeader").dxDataGrid('instance').option("dataSource", OrderHistoryHeader);
+                        loadPanel.hide();
+
+                    }
+                    else {
+                        loadPanel.hide();
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+    function OrderDetailGetByOrderId(OrderId, OrderNo, OrderDate) {
+        try {
+            var data = { 'OrderId': OrderId };
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            loadPanel.show();
+            $.ajax({
+                url: "../Home/OrderDetailGetByOrderId",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: dataWithAntiforgeryToken,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        OrderHistoryDetail = Response.Result;
+                        $("#SpanorderNo").html(OrderNo);
+                        $("#SpanorderDate").html(OrderDate);
+                        loadPanel.hide();
+                        BindOrderHistoryDetailList();
+                    }
+                    else {
+                        loadPanel.hide();
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+    function ExportToExcel() {
+        try {
+            loadPanel.show();
+            var col = [];
+            for (var i = 0; i < OrderHistoryHeader.length; i++) {
+                for (var key in OrderHistoryHeader[i]) {
+                    if (col.indexOf(key) === -1) {
+                        if (key == 'RowNumber' || key == 'UserId') {
+                        } else {
+                            col.push(key);
+                        }
+                    }
+                }
+            }
+
+            var table = document.createElement("table");
+            var tr = table.insertRow(-1);
+            for (var i = 0; i < col.length; i++) {
+                var th = document.createElement("th");
+                th.innerHTML = col[i];
+                tr.appendChild(th);
+            }
+            for (var i = 0; i < OrderHistoryHeader.length; i++) {
+                tr = table.insertRow(-1);
+                for (var j = 0; j < col.length; j++) {
+                    var tabCell = tr.insertCell(-1);
+                    tabCell.innerHTML = OrderHistoryHeader[i][col[j]];
+                }
+            }
+            var dvTable = document.getElementById("dvTable");
+            dvTable.innerHTML = "";
+            dvTable.appendChild(table);
+            $("#dvTable").table2excel({
+                filename: "OrderHistory.xls"
+            });
+            loadPanel.hide();
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert(e.message);
+        }
+    }
+</script>

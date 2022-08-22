@@ -1,0 +1,1285 @@
+﻿@{
+    ViewBag.Title = "StockAdjustment";
+}
+
+<div class="box box-warning">
+    <div class="box-header with-border">
+        <div class="box-header-left">
+            <h3 class="box-title">@ViewBag.FormDisplayTitle</h3>
+            <!-- <p><strong>Date :</strong> 14-09-2019 </p> -->
+        </div>
+        <div class="box-header-right">
+            <a href=""></a>
+        </div>
+
+    </div>
+
+    <div class="box-body">
+
+        <div class="row">
+            <div class="col-md-12 heads-button">
+                <br>
+                <button class="btn btn-sm btn-primary" id="btnAdd" title="Add" onclick="Add()"> Add </button>
+                <button class="btn btn-sm btn-success" id="btnEdit" title="Edit" onclick="Edit()"> Edit </button>
+                <button class="btn btn-sm btn-danger" id="btnDelete" title="Delete"> Delete </button>
+                <button class="btn btn-sm btn-primary" id="btnSubmit" title="Save" onclick="Save()"> Save </button>
+                <button class="btn btn-sm btn-danger" id="btnCancel" title="Cancel" onclick="Cancel()"> Cancel </button>
+                <button class="btn btn-sm btn-success" id="btnSearch" title="Search" onclick="Search()"> Search </button>
+
+                <input type="hidden" id="hdnSuperStockistId" value='@Session["PartyId"]' />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-3">
+                    <div class="floating-label">
+                        <input class="floating-input" id="txtVoucherNo" type="text" placeholder=" ">
+                        <span class="highlight"></span>
+                        <label>Voucher No</label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="floating-label">
+                        @*<input class="floating-input" type="text" id="dtVoucher" onclick="(this.type='date')" placeholder=" ">*@
+                        <div class="floating-input" id="dtVoucher"></div>
+                        <span class="highlight"></span>
+                        <label>Voucher Date</label>
+                    </div>
+
+                </div>
+                <div class="col-md-2">
+                    <div class="floating-label">
+                        <div id="ddlAdjustmentTypeHeader"> </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="floating-label">
+                        <div id="ddlCustomer" style="display:none"> </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <br />
+        <div class="row">
+            <div class="col-md-12 table-responsive ">
+                <table class="tablesoter tablesorter tablesorter-blue hasFilters hasStickyHeaders">
+                    <thead>
+                        <tr>
+                            <th style="width:20px;">#</th>
+                            <th style="width:570px;">Item</th>
+                            <th style="width:150px;">Code</th>
+                            <th style="width: 100px">DPRate</th>@*Added on 08 March 2022 for multiple DP rate selection*@
+                            <th style="width:250px;display:none">Item Category</th>
+                            @*<th>SubCategory</th>*@
+                            <th style="width:180px;display:none">Adjustment</th>
+                            <th style="width:100px;">Qty</th>
+                            <th style="width:100px;">Rate</th>
+                            <th style="width:100px;">Action</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>#</td>
+                            <td>
+                                @*<select class="form-control" style="width: 100%" id="ddlItem"></select>*@
+                                <div id="ddlItem"> </div>
+                            </td>
+                            <td><span id="ItemCode"></span></td>
+                            <td>
+                                <span class="form-control" id="ddlDPRate"></span>@*Added on 08 March 2022 for multiple DP rate selection*@
+                            </td>
+                            <td style="display:none"> <span id="ItemCategory"></span></td>
+                            @*<td> <span id="ItemSubCategory"></span></td>*@
+                            <td style="display:none">
+                                @*<select class="form-control" style="width: 100%" id="ddlAdjustmentType"></select>*@
+                                <div id="ddlAdjustmentType"> </div>
+                            </td>
+                            <td style="text-align:center;"><input type="text" id="txtQty" class="form-control" /></td>
+                            <td style="text-align:center;"><input type="text" id="txtRate" class="form-control" /></td>
+                            <td class="text-center">
+                                @*<i class="fa fa-save"></i>*@
+                                <i class="fa fa-save" data-toggle="tooltip" data-placement="top" title="Save" id="btnAddNewRow" onclick="AddNewRow();"></i>
+                                @*<button type="button" class="fa fa-save" data-target="#UserModal" data-toggle="modal" id="btnAddNewRow" onclick="AddNewRow();"><i class="fa fa-save" data-toggle="tooltip" data-placement="top" title="Save"></i></button>*@
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+                    <tbody id="tbody"></tbody>
+                </table>
+
+            </div>
+
+        </div>
+        <div class="col-md-12">
+            <div class="floating-label">
+                <textarea class="floating-input floating-textarea" id="txtRemark" rows="4" placeholder=" " style=" height:80px; margin-bottom:15px;"></textarea>
+                <span class="highlight"></span>
+                <label>Remark</label>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<!-- Modal -->
+@*<div class="modal fade" id="search" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        ×
+                    </button>
+                    <h4 class="modal-title text-center">
+                        Search Stock Adjustment
+                    </h4>
+                </div>
+                <div class="modal-body sa-body">
+                    <form class="form-horizontal">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="floating-label">
+                                    <input class="floating-input" type="text" id="txtFromDate" onclick="(this.type='date')" placeholder=" ">
+                                    <span class="highlight"></span>
+                                    <label>From Date</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="floating-label">
+                                    <input class="floating-input" type="text" id="txtToDate" onclick="(this.type='date')" placeholder=" ">
+                                    <span class="highlight"></span>
+                                    <label>To Date</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <button class="btn btn-success" type="button" style="margin-top: 25px;" onclick="ItemAdjustmentGetByFromDateToDate()"> <i class="fa fa-search"></i></button>
+                            </div>
+
+                            <div class="table-responsive ">
+                                <table class="tablesoter tablesorter tablesorter-blue hasFilters hasStickyHeaders">
+
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Voucher No.</th>
+                                            <th width="100px">Voucher Date</th>
+                                            <th width="100px">Action</th>
+
+
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodySearchData">
+
+                                        <tr>
+                                                <td>1</td>
+                                                <td>Test</td>
+                                                <td>06-04-2020</td>
+                                                <td align="center"><i class="fa fa-info-circle" aria-hidden="true"></i></td>
+
+
+
+                                            </tr>
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div>
+                    <div class="modal-footer">
+                        <!-- <button class="button btn-sm"> -->
+                        <!-- Save</button> -->
+                        <!-- <button class="button btn-sm" data-dismiss="modal"> -->
+                        <!-- Cancel</button> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+
+
+
+<div id="PopupSearch"></div>
+<script>
+    var ItemList = [];
+    var OpList = [];
+    var varddlItem = "";
+    var varItem = "";
+    var varddlAdjustType = "";
+    var varItemCategory = "";
+    var varItemSubCat = "";
+    var varItemCode = "";
+    var HeaderList = [];
+    var DetailList = [];
+    var DataList = [];
+    var PkHid = 0;
+    var PkDid = 0;
+    var TotalQty = 0.00;
+    var StockArray = new Array();
+    //var varBDetailId = 0;
+    //var blnEdit = false;
+    var blnEditValue = false;
+    var hiddenTempRow = 0;
+    var hiddeenDetailId = 0;
+    var blnAddRow = false;
+    var HoldIAIdId = "";
+    var FDate = new Date()
+    var varddlAdjustTypeHeader = "";
+    var varddlCustomer = "";
+    var CustList = [];
+    var ItemDPRateList = [];
+    var AdjustTypeList = "0";
+
+
+    arrayItem = @Html.Raw(Json.Encode(@ViewBag.ItemListSA));
+    if (arrayItem != null) {
+        for (var i = 0; i < arrayItem.length; i++) {
+            ItemList[i] = arrayItem[i];
+        }
+    }
+    arrayOL = @Html.Raw(Json.Encode(@ViewBag.OptionListSA));
+    if (arrayOL != null) {
+        for (var i = 0; i < arrayOL.length; i++) {
+            OpList[i] = arrayOL[i];
+        }
+    }
+
+
+    CustArray = @Html.Raw(Json.Encode(@ViewBag.CustomerList));
+    if (CustArray != null) {
+        for (var i = 0; i < CustArray.length; i++) {
+            CustList[i] = CustArray[i];
+        }
+    }
+
+    var DtNow = new Date();
+
+    function PopupSearch() {
+
+        var html = ""
+        html += "<div class='row'>";
+        html += "<div class='col-md-2'>From Date</div>";
+        html += "<div class='col-md-3' id='dtFrom'></div>";
+        html += "<div class='col-md-2'>To Date</div>";
+        html += "<div class='col-md-3' id='dtTo'></div>";
+        html += "<div class='col-md-2'><button class='btn btn-success' type='button' onclick='ItemAdjustmentGetByFromDateToDate()'> <i class='fa fa-search'></i></button></div>";
+        html += "</div >";
+        html += "<br/>";
+        html += "<div class='row'>";
+        html += "<div class='table - responsive'>";
+        html += "<table width='100%' class='tablesoter tablesorter tablesorter - blue hasFilters hasStickyHeaders'>";
+        html += "<thead><tr>";
+        html += "<th>#</th>";
+        html += "<th>Voucher No.</th>";
+        html += "<th>Voucher Date</th>";
+        html += "<th>Remark</th>";
+        html += "</tr></thead>";
+        html += "<tbody id='tbodySearchData'></tbody>";
+        html += "</table>";
+        html += "</div></div>";
+
+        $("#PopupSearch").dxPopup({
+            title: 'Stock Search',
+            height: 600,
+            width: 590,
+            contentTemplate: function (contentElement) {
+                contentElement.append(html)
+                showTitle: true,
+
+                $("#dtFrom").dxDateBox({
+                    applyValueMode: "useButtons",
+                    height: 30,
+                    type: "date",
+                    value:  FDate.setDate(FDate.getDate()-7),
+                    displayFormat: "dd/MM/yyyy"
+
+                });
+                $("#dtTo").dxDateBox({
+                    applyValueMode: "useButtons",
+                    height: 30,
+                    type: "date",
+                    value: DtNow,
+                    displayFormat: "dd/MM/yyyy"
+
+                });
+            }
+
+        });
+        $("#PopupSearch").dxPopup("instance").show();
+
+    }
+    $(document).ready(function () {
+        //  TableSorter();
+        Clear();
+        ClearDetail();
+        EnDisable(true);
+        $("#txtQty").val("0.00");
+         $("#txtRate").val("0.00");
+        $("#dtVoucher").dxDateBox({
+            applyValueMode: "useButtons",
+            height: 30,
+            type: "date",
+            value: DtNow,
+             displayFormat: "dd/MM/yyyy"
+
+        });
+
+        $("#ddlAdjustmentTypeHeader").dxSelectBox({
+            height: 30,
+            dataSource: new DevExpress.data.ArrayStore({
+                data: OpList,
+                key: "OptionListId"
+            }),
+            displayExpr: "OptionListDesc",
+            valueExpr: "OptionListId",
+            placeholder: "Select Adjustment",
+            onValueChanged: function (data) {
+                varddlAdjustTypeHeader = data.value
+                varddlAdjustType = data.value 
+                if (varddlAdjustTypeHeader == "15")
+                    $("#ddlCustomer").prop('style', "display:block");
+                else
+                    $("#ddlCustomer").prop('style', "display:none");
+
+                $("#ddlAdjustmentTypeHeader").dxSelectBox('instance').option('value', data.value);
+                if (varddlAdjustTypeHeader == "14" || varddlAdjustTypeHeader == "17") {
+                    $("#txtRate").prop('disabled', "disabled");
+                }
+                else {
+                    $("#txtRate").prop('disabled', "");
+                }
+                debugger;
+                // SetItemDetail();
+            }
+
+
+        });
+        
+        if (OpList.length == 1) {
+            //var selectBox = $("#ddlAdjustmentTypeHeader").dxSelectBox("instance");
+            //selectBox.option('value', '15'); 
+            //            $("#ddlAdjustmentTypeHeader").dxSelectBox('instance').option('value') = "15";
+
+            AdjustTypeList = AdjustTypeList + ",15";
+            $('#ddlAdjustmentTypeHeader').dxSelectBox('instance').option('value', 15);
+        }
+        else {
+            AdjustTypeList = AdjustTypeList + ",16,17";
+        }
+
+        $("#ddlCustomer").dxSelectBox({
+            height: 30,
+            dataSource: new DevExpress.data.ArrayStore({
+                data: CustList,
+                key: "PartyID"
+            }),
+            displayExpr: "Party",
+            valueExpr: "PartyID",
+            placeholder: "Select Customer",
+            onValueChanged: function (data) {
+                varddlCustomer = data.value
+                debugger;
+                // SetItemDetail();
+            }
+
+
+        });
+
+    });
+
+    function EnDisable(Status) {
+        debugger
+        $("#txtVoucherNo").prop('disabled', Status);
+         $("#dtVoucher").prop('disabled', Status);
+        $("#ddlItem").prop('disabled', Status);
+        $("#ddlAdjustmentType").prop('disabled', Status);
+        $("#txtQty").prop('disabled', Status);
+        $("#txtRate").prop('disabled', Status);
+        $("#txtRemark").prop('disabled', Status);
+        $("#ddlAdjustmentTypeHeader").prop('disabled', Status);
+        $("#ddlCustomer").prop('disabled', Status);
+    }
+
+    function EnDisableDetail(Status) {
+        debugger
+        $("#ddlItem").prop('disabled', Status);
+        $("#ddlAdjustmentType").prop('disabled', Status);
+        $("#txtQty").prop('disabled', Status);
+        $("#txtRate").prop('disabled', Status);
+        //Added on 08 March 2022 for multiple DP rate selection
+        $("#ddlDPRate").prop('disabled', Status);
+    }
+
+    function Clear() {
+        PkHid = 0;
+        PkDid = 0;
+        HoldIAIdId = 0;
+        $("#txtVoucherNo").val('');
+        $("#txtRemark").val('');
+        $("#dtVoucher").val('');
+        $("#txtVoucherNo").focus();
+}
+
+    function ClearDetail() {
+         varddlItem = "";
+         varItem = "";
+         //varddlAdjustType = "";
+         varItemCategory = "";
+         varItemSubCat = "";
+         varItemCode = "";
+        $("#ItemCode").html('');
+        $("#ItemCategory").html('');
+        $("#txtQty").val("0.00");
+        $("#txtRate").val("0.00");
+        //$("#ddlAdjustmentType").dxSelectBox('instance').option('value', varddlAdjustType);
+    }
+
+    function SetDdlValue() {
+     $("#ddlItem").dxSelectBox({
+                height: 30,
+                dataSource: new DevExpress.data.ArrayStore({
+                    data: ItemList,
+                    key: "ItemId"
+                }),
+                displayExpr: "ItemName",
+                valueExpr: "ItemId",
+         placeholder: "Select Item",
+                searchEnabled: true,
+                onValueChanged: function (data) {
+                    varddlItem = data.value;
+                    //alert(varddlItem);
+
+                    GetAllItemsDPRate(varddlItem);
+                    SetItemDetail(varddlItem);
+                }
+            });
+
+            $("#ddlAdjustmentType").dxSelectBox({
+                height: 30,
+                dataSource: new DevExpress.data.ArrayStore({
+                    data: OpList,
+                    key: "OptionListId"
+                }),
+                displayExpr: "OptionListDesc",
+                valueExpr: "OptionListId",
+                placeholder: "Select Adjustment",
+                onValueChanged: function (data) {
+                    varddlAdjustType = data.value
+                    debugger;
+                    // SetItemDetail();
+                }
+
+
+            });
+    }
+
+    function Add() {
+
+        EnDisable(false);
+        Clear();
+        ClearDetail();
+         debugger
+        SetDdlValue();
+    }
+
+    function Cancel() {
+        Clear();
+        ClearDetail();
+        StockArray = [];
+        $('#tbody').html('');
+        var varddlAdjustType = "";
+        $("#ddlAdjustmentType").dxSelectBox('instance').option('value', varddlAdjustType);
+        varddlItem = '';
+        $("#ddlItem").dxSelectBox('instance').option('value', varddlItem);
+    }
+
+    function Search() {
+        debugger
+        PopupSearch();
+      //  $('#search').modal('show');
+    }
+
+    function Edit() {
+        debugger
+        EnDisable(false);
+        SetDdlValue();
+        EnDisableDetail(false);
+        varddlItem = '';
+        $("#ddlItem").dxSelectBox('instance').option('value', varddlItem);
+        blnEditValue = true;
+    }
+    function Delete() {
+        ItemAdjustmentDelete(HoldIAIdId);
+    }
+
+    function SetItemDetail(data) {
+        debugger;
+
+        if (varddlItem != '') {
+            var obj = $.grep(ItemList, function (object) {
+                return object.ItemId == data;
+            });
+            if (obj != null) {
+                varItemCode = obj[0].ItemCode;
+                $("#ItemCode").html(varItemCode);
+                varItemCategory = obj[0].ZZRetailCategory;
+                varItem = obj[0].ItemName;
+                //varItemSubCategory = obj[0].ZZRetailCategory;
+                $("#ItemCategory").html(varItemCategory);
+                //$("#ItemSubCategory").html(varItemSubCategory);
+            }
+        }
+    }
+
+    function ValidateAddNewRow() {
+
+        if (varddlItem == undefined || varddlItem == null || varddlItem == "") {
+            alert("select Item ");
+            return false;
+        }
+        //if (varddlAdjustType == undefined || varddlAdjustType == null || varddlAdjustType == "") {
+        //    alert("Select Adjustment .. ");
+        //    return false;
+        //}
+
+        if ($('#txtQty').val() == "0" || $('#txtQty').val() == "0.00" || $('#txtQty').val() == "") {
+            alert("Quantity Required ");
+            return false;
+        }
+         if ($('#txtRate').val() == "0" || $('#txtRate').val() == "0.00" || $('#txtRate').val() == "") {
+            alert("Rate Required ");
+            return false;
+        }
+        return true;
+    }
+
+    function AddNewRow() {
+        try {
+            debugger
+            if (ValidateAddNewRow()) {
+                blncheck = false;
+                PkHid = 0;
+                debugger
+                // var ddlItem = $('#ddlItem :selected').text();
+                varItem = $("#ddlItem").dxSelectBox('instance').option('text');
+                var varADType = $("#ddlAdjustmentType").dxSelectBox('instance').option('text')//$('#ddlAdjustmentType').val(); //$('#txtUnit').val();
+                var varQty = $('#txtQty').val();
+                  var varRate = $('#txtRate').val();
+                if (blnEditValue == true) {
+                    StockArray = $.grep(StockArray, function (obj) {
+                        return obj.TempRow != hiddenTempRow;
+
+                    })
+
+                }
+                else {
+                    hiddeenDetailId = 0;
+                }
+                var TempDetailId = hiddeenDetailId;
+                hiddenTempRow = 0;
+                var model = {};
+                model.ItemAdjustmentDetailId = hiddeenDetailId;
+                model.ItemAdjustmentId = HoldIAIdId;
+                model.ItemId = varddlItem;
+                model.ItemCategory = varItemCategory;
+                model.ItemSubCategory = varItemSubCat;
+                model.AdjustmentTypeId = varddlAdjustType;
+                model.ItemCode = varItemCode;
+                model.ItemName = varItem;
+                model.AdjustmentType = varADType;
+                model.Quantity = varQty;
+                model.Rate = varRate;
+                //Added on 23 feb 2022 for multiple DP rate selection
+                model.DPRate = $("#ddlDPRate").dxSelectBox('instance').option('value');
+                StockArray.push(model);
+                BindStock();
+                ClearDetail();
+                varddlItem = '';
+                $("#ddlItem").dxSelectBox('instance').option('value', varddlItem);
+                // varddlItem = '';
+        //$("#ddlItem").dxSelectBox('instance').option('value', varddlItem);
+        //        varddlAdjustType = '';
+        //$("#ddlAdjustmentType").dxSelectBox('instance').option('value', varddlAdjustType);
+                SetDdlValue();
+                EnDisableDetail(false);
+            }
+        }
+        catch (e) {
+            alert(e.message);
+        }
+
+    }
+
+    function BindStock() {
+        try {
+            debugger
+            var html = '';
+            $('#tbody').html('');
+            // TotalQty = 0.00;
+            $.each(StockArray, function (Index, Object) {
+
+                // TotalQty += parseFloat(Object.Qty);
+                StockArray[Index].TempRow = Index + 1;
+                var varIndex = 0;
+                varIndex = Index + 1;
+                html += "<tr id='trSDetail_'" + Object.ItemAdjustmentDetailId + "')'>";
+                html +=  '<td> # </td>';
+                html += '<td>' + Nullhandler(Object.ItemName) + ' </td>';
+                html += '<td>' + Nullhandler(Object.ItemCode) + ' </td>';
+                //Added on 08 March 2022 for multiple DP rate selection
+                html += '<td>' + Nullhandler(Object.DPRate) + '</td>';
+                html += '<td style="display:none">' + Nullhandler(Object.ItemCategory) + ' </td>';
+                //html += '<td>' + Nullhandler(Object.ItemSubCategory) + ' </td>';
+                //commented on 24 nov 2021 since adjustment dropdown is moved to header table
+                //html += '<td>' + Nullhandler(Object.AdjustmentType) + '</td>';
+                html += '<td>' + Nullhandler(Object.Quantity) + ' </td>';
+                 html += '<td>' + Nullhandler(Object.Rate) + ' </td>';
+                //html += '<td> </td>';
+                if (Object.ItemAdjustmentDetailId == 0) {
+                    html += "<td style='text-align: center;width:30px;'><button class='label label-info smallBtn' id='btnEdit1' placeholder='Edit' style='padding:0 3px;'><i class='fa fa-edit'></i></button><button class='label label-danger smallBtn' id='btndelete1' placeholder='Delete' style='padding:0 3px;'><i class='fa fa-trash'></i></button></td>"
+                }
+                else if (Object.ItemAdjustmentDetailId > 0) {
+                    html += "<td style='text-align: center;width:30px;'><button class='label label-info smallBtn' id='btnEdit1' placeholder='Edit' style='padding:0 3px;'  onclick='EditStockDetail(" + Object.ItemAdjustmentDetailId + "," + Index + "," + 1 + ");' ><i class='fa fa-edit'></i></button><button class='label label-danger smallBtn' id='btndelete1' placeholder='Delete' onclick='DeleteStockDetails(" + Object.ItemAdjustmentDetailId + "," + Index + ");'  style='padding:0 3px;'><i class='fa fa-trash'></i></button></td>"
+                }
+                else {  html +=  '<td>  </td>';}
+                html += '</tr>';
+            });
+
+            $("#tbody").html(html);
+
+
+        }
+        catch (e) {
+            alert(e.message);
+        }
+    }
+
+    //function DeleteStockDetails(RowIndex) {
+    //    debugger
+    //    StockArray.splice(RowIndex, 1);
+    //    BindStock();
+    //}
+    function DeleteStockDetails(IADtlId, RowIndex) {
+        debugger
+        var result = DevExpress.ui.dialog.confirm("Do you want to delete ...?", "Confirm changes");
+        result.done(function (dialogResult) {
+            if (dialogResult) {
+                StockArray.splice(RowIndex, 1);
+                ItemAdjustmentDetailDelete(IADtlId);
+                BindStock();
+            }
+        });
+    }
+
+    function EditStockDetail(IADetailId, RowNo, ChkIsEdit) {
+        debugger
+
+        SetDdlValue();
+        EnDisableDetail(false);
+        varRowNo = RowNo;
+        try {
+            debugger
+            IsEdit = ChkIsEdit;
+            if (blnAddRow) {
+                var ModelTemp = $.grep(StockArray, function (obj) {
+                    return obj.TempRow == RowNo + 1;
+                });
+                SetValue(ModelTemp[0]);
+                $("#HiddenItemAdjustmentDetailId").val(BDetailId);
+            }
+
+            else {
+                if (IADetailId != 0) {
+                    var ModelTemp = $.grep(StockArray, function (obj) {
+                        return obj.ItemAdjustmentDetailId == IADetailId;
+                    });
+                    SetValue(ModelTemp[0]);
+                    $("#HiddenItemAdjustmentDetailId").val(IADetailId);
+                }
+                else {
+                    var ModelTemp = $.grep(StockArray, function (obj) {
+                        return obj.TempRow == RowNo + 1;
+                    });
+                    SetValue(ModelTemp[0]);
+                    $("#HiddenItemAdjustmentDetailId").val(IADetailId);
+                }
+            }
+        } catch (e) {
+            alert(e.message);
+
+
+        }
+    }
+
+    function SetValue(data) {
+        debugger;
+        try {
+
+            ClearDetail();
+            var objItm = $.grep(ItemList, function (object) {
+                return object.ItemId == data.ItemId;
+            })
+            var objBrand = $.grep(OpList, function (object) {
+                return object.OptionListId == data.AdjustmentTypeId;
+            })
+            $("#ddlItem").dxSelectBox('instance').option('value', objItm[0].ItemId);
+            $("#ddlAdjustmentType").dxSelectBox('instance').option('value', objBrand[0].OptionListId);
+            hiddeenDetailId = data.ItemAdjustmentDetailId;
+             $("#ItemCode").html(data.ItemCode);
+            $("#ItemCategory").html(data.ItemCategory);
+            $('#txtQty').val(data.Quantity);
+            $('#txtRate').val(data.Rate);
+            //Added on 08 March 2022 for multiple DP rate selection
+            if (objBrand[0].OptionListId == "14" || objBrand[0].OptionListId == "17") {
+                $("#txtRate").prop('disabled', "disabled");
+            }
+            else {
+                $("#txtRate").prop('disabled', "");
+            }
+            GetAllItemsDPRate(objItm[0].ItemId);
+            
+            $("#ddlDPRate").dxSelectBox('instance').option('value', data.DPRate);
+            hiddenTempRow = data.TempRow;
+            blnEditValue = true;
+
+        } catch (e) {
+            alert(e.message);
+        }
+
+    }
+
+    function HeaderModel() {
+        debugger
+        var List = [];
+        var model = {};
+        //alert(HoldIAIdId);
+        model.ItemAdjustmentId = HoldIAIdId;//PkHid;
+        model.PartyId = document.getElementById("hdnSuperStockistId").value; //$("#hdnSuperStockistId").val();//0;
+        model.VoucherNo = $("#txtVoucherNo").val();
+        model.VoucherDate = $("#dtVoucher").dxDateBox('instance').option('value');
+        model.StatusPropId = 0;
+        model.Remark = $("#txtRemark").val();
+        model.HdrAdjustmentTypeID = varddlAdjustTypeHeader;
+        if (varddlAdjustTypeHeader == "15")
+            model.CustomerID = varddlCustomer;
+        else
+            model.CustomerID = '';
+        List.push(model);
+        return List;
+    }
+
+    function DetailModel() {
+        var DList = [];
+        $.each(StockArray, function (Index, Object) {
+            var model = {};
+            debugger
+            model.ItemAdjustmentDetailId = Object.ItemAdjustmentDetailId;
+            model.ItemAdjustmentId = HoldIAIdId;
+            model.ItemId = Object.ItemId;
+            model.AdjustmentTypeId = varddlAdjustTypeHeader;//Object.AdjustmentTypeId;
+            if (varddlAdjustTypeHeader == 15 || varddlAdjustTypeHeader == 16) {
+                model.QuantityIn = Object.Quantity;
+                model.QuantityOut = 0.00;
+            }
+            else {
+                model.QuantityOut = Object.Quantity;
+                model.QuantityIn = 0.00;
+            }
+            model.Rate = Object.Rate;
+            //Added on 23 feb 2022 for multiple DP rate selection
+            model.DPRate = $("#ddlDPRate").dxSelectBox('instance').option('value');
+            DList.push(model);
+            //}
+        });
+
+        return DList;
+    }
+
+    function validation() {
+
+        if ($("#txtVoucherNo").val() == "") {
+            alert("Voucher No. Required");
+            $("#txtVoucherNo").focus();
+            return false;
+        }
+        if ($("#txtRemark").val() == "") {
+            alert("Remark Required");
+            $("#txtRemark").focus();
+            return false;
+        }
+
+        if ($("#dtVoucher").dxDateBox('instance').option('value') == "") {
+            alert("Voucher date Required");
+            $("#dtVoucher").focus();
+            return false;
+        }
+
+        if (varddlAdjustTypeHeader == "15" && varddlCustomer == "")
+        {
+            alert("Please select Customer");
+            $("#ddlCustomer").focus();
+            return false;
+        }
+
+        return true;
+    }
+
+    function Save() {
+        try {
+            debugger;
+            if (validation()) {
+                debugger
+                //  $('#spinner').show();
+                var objHeader = HeaderModel();
+
+                var objDetail = DetailModel();
+
+                if (objHeader.length > 0 && objDetail.length > 0) {
+                    $.ajax({
+                        url: '../Home/ItemAdjustmentUpsert',
+                        type: 'POST',
+
+                        datatype: 'json',
+                        async: false,
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify({ objdbmlHeader: objHeader, objdbmlDetail: objDetail }),
+                        success: function (Response) {
+                            if (Response.StatusId === 1) {
+                                // $('#spinner').hide();
+                                debugger;
+                                alert(Response.Status);
+                                Clear();
+                                ClearDetail();
+                                HeaderList = [];
+                                DetailList = [];
+                                StockArray = [];
+                                $('#tbody').html('');
+                                hiddenTempRow = 0;
+                                $("#HiddenItemAdjustmentDetailId").val(0);
+
+                                $("#ddlAdjustmentTypeHeader").dxSelectBox('instance').option('value', '');
+                                $("#ddlCustomer").dxSelectBox('instance').option('value', '');
+                                // ClearForm();
+                                TempRow = 0;
+                                //varddlAdjustType = '';
+                                //$("#ddlAdjustmentType").dxSelectBox('instance').option('value', varddlAdjustType);
+                                //varddlAdjustTypeHeader = '';
+                                //$("#ddlAdjustmentTypeHeader").dxSelectBox('instance').option('value', varddlAdjustTypeHeader);
+                                //varddlCustomer = '';
+                                //$("#ddlCustomer").dxSelectBox('instance').option('value', varddlCustomer);
+                            }
+                            else {
+                                //  $('#spinner').hide();
+                                // $('#tbody').html('');
+                                alert(Response.Status);
+
+                            }
+                        }
+                    });
+                }
+                else {
+                    // $('#spinner').hide();
+                    alert("Item Details are required.");
+                }
+            }
+        } catch (e) {
+            //  $('#spinner').hide();
+            alert(e.message);
+        }
+    }
+
+    function SetDate(dateStr) {
+        var strDate
+        var now = new Date(dateStr);
+        var Day = now.getDate()
+        var Month = (now.getMonth() + 1)
+        var Year = now.getFullYear()
+        if (Day < 10) {
+            Day = "0" + Day;
+        }
+        if (Month < 10) {
+            Month = "0" + Month;
+        }
+        strDate = Month + "/" + Day + "/" + Year
+        return strDate;
+    }
+
+    function ItemAdjustmentGetByFromDateToDate() {
+        debugger
+             try {
+                 if ($("#dtFrom").dxDateBox('instance').option('value') == null || $("#dtFrom").dxDateBox('instance').option('value') == "" || $("#dtFrom").dxDateBox('instance').option('value') == undefined ||
+                     $("#dtTo").dxDateBox('instance').option('value') == null || $("#dtTo").dxDateBox('instance').option('value') == "" || $("#dtTo").dxDateBox('instance').option('value') == undefined) {
+                     return false
+                 }
+
+            var FromDate = SetDate($("#dtFrom").dxDateBox('instance').option('value'));
+            var ToDate = SetDate($("#dtTo").dxDateBox('instance').option('value'));
+                 var data = { 'FromDate': FromDate, 'ToDate': ToDate, 'AdjustTypeList': AdjustTypeList };
+
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Home/ItemAdjustmentGetByFromDateToDate",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: dataWithAntiforgeryToken,
+                success: function (Response) {
+                   debugger
+                    if (Response.StatusId != "99") {
+                        DataList = Response.Result;
+                        debugger
+                     //   $("#tbody").html(DataList);
+                      //  $("#tblitem").dxDataGrid('instance').option("dataSource", ItemList);
+                        BindSearchData();
+                    }
+                    else {
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            alert("Data size is too large!");
+        }
+    }
+
+    function BindSearchData() {
+        debugger
+        var varHTML = '';
+        try {
+            $.each(DataList, function (Index, Object) {
+                varHTML += "<tr id='trSearch_" + Object.ItemAdjustmentId + "' >"; //onclick='changeColorSearch(" + Object.ItemAdjustmentId + ")' onmouseover='DisplayButtonSearch(" + Object.ItemAdjustmentId + ")'>";
+                varHTML += '<td> # </td>';
+                //varHTML += '<td>' + (Object.VoucherNo) + '</td>';
+                 varHTML += "<td style='color:#333; text-decoration: underline;'><a href ='#'  onclick ='ItemAdjustmentGetById(" + Object.ItemAdjustmentId + ")'>" + (Object.VoucherNo) + "</a></td>";
+                varHTML += '<td>' + (Object.VoucherDate) + '</td>';
+                varHTML += '<td>' + (Object.Remark) + '</td>';
+                //varHTML += "<td style='text-align: center;'><span style='display:none'  id='spSearch_" + Object.BatchId + "'><a type='button' href='#' class='label label-info smallBtn' data-target='#CountryModal' data-toggle='modal' data-target='#myModal' onclick='BatchGetByBatchId(" + Object.BatchId + ")'><i class='fa fa-eye' data-toggle='tooltip' data-placement='top' title='Show'></i></a>&nbsp;</span></td>";
+                //varHTML += "<td align='center'><i class='fa fa - info - circle' onclick='ItemAdjustmentGetById(" + Object.ItemAdjustmentId + ")'></i></td>";
+                varHTML += '</tr>';
+            });
+            $('#tbodySearchData').html(varHTML);
+
+        } catch (e) {
+            alert(e.message);
+        }
+    }
+
+    function ItemAdjustmentGetById(IAId) {
+        try {
+
+            debugger
+            var data = { 'ItemAdjustmentId': IAId };
+
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Home/ItemAdjustmentGetById",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: dataWithAntiforgeryToken,
+                success: function (Response) {
+                    debugger
+
+                    if (Response.StatusId != "99") {
+                        HeaderList = Response.ResultHeader;
+                        DetailList = Response.ResultDetail;
+                        BindStockHeader(HeaderList);
+                        BindStockDetail(DetailList);
+                    }
+                    else {
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            alert("Data size is too large!");
+        }
+    }
+
+    function BindStockHeader(data) {
+
+       // ObjHeaderList = [];
+        $('#dtVoucher').val(data[0].VoucherDate);
+        $('#txtVoucherNo').val(data[0].VoucherNo);
+        $('#txtRemark').val(data[0].Remark);
+        HoldIAIdId = data[0].ItemAdjustmentId;
+        $("#ddlAdjustmentTypeHeader").dxSelectBox('instance').option('value', data[0].HdrAdjustmentTypeID);
+        $("#ddlCustomer").dxSelectBox('instance').option('value', data[0].CustomerID);
+        varddlAdjustTypeHeader = data[0].HdrAdjustmentTypeID;
+
+        EnDisable(true);
+    }
+
+    function BindStockDetail(data) {
+        StockArray = [];
+
+        $.each(data, function (Index, Object) {
+            debugger
+            //varddlItem = "";
+            varddlItem = Object.ItemId;
+            PkHid = Object.ItemAdjustmentId;
+
+            SetItemDetail(varddlItem);
+            var model = {};
+            model.ItemAdjustmentDetailId = Object.ItemAdjustmentDetailId;
+            model.ItemAdjustmentId = Object.ItemAdjustmentId;
+            model.ItemId = varddlItem;
+
+            model.ItemCategory = varItemCategory;
+            model.AdjustmentTypeId = Object.AdjustmentTypeId;
+            model.ItemCode = varItemCode;
+            model.ItemName = varItem;
+
+            if (Object.QuantityIn != null && Object.QuantityIn != 0){
+                model.Quantity = Object.QuantityIn;
+            }
+            else {
+                model.Quantity = Object.QuantityOut;
+            }
+            var varADType = $.grep(OpList, function (obj) {
+                return obj.OptionListId == Object.AdjustmentTypeId;
+            });
+            model.AdjustmentType = varADType[0].OptionListDesc;
+            model.Rate = Object.Rate;
+            //Added on 08 March 2022 for multiple DP rate selection
+            model.DPRate = Object.DPRate;
+            StockArray.push(model);
+           // ClearDetail();
+        });
+        BindStock();
+
+        ClearSearchDetail();
+        //$('#search').modal('hide');
+        $("#PopupSearch").dxPopup("instance").hide();
+        EnDisable(true);
+        $("#ItemCode").html('');
+        $("#ItemCategory").html('');
+        }
+
+   function ClearSearchDetail() {
+
+       $("#txtFromDate").val('');
+       $("#txtToDate").val('');
+      // StockArray = [];
+       DataList = [];
+
+        }
+
+    function ItemAdjustmentDelete(intItemAdjustId) {
+        try {
+
+            var result = DevExpress.ui.dialog.confirm("Do you want to delete ...?", "Confirm changes");
+            result.done(function (dialogResult) {
+                if (dialogResult) {
+                    debugger
+                    //loadPanel.show();
+                    var data = { 'intItemAdjustmentId': intItemAdjustId };
+                    var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+                    $.ajax({
+                        url: "../Home/ItemAdjustmentDelete",
+                        type: 'POST',
+                        dataType: 'json',
+                        async: true,
+                        data: dataWithAntiforgeryToken,
+                        success: function (Response) {
+                            //loadPanel.hide();
+                            debugger
+                            if (Response.StatusId != "99") {
+                                alert(Response.Status);
+                                Clear();
+                                ClearDetail();
+                                var HeaderList = [];
+                                var DetailList = [];
+                                StockArray = [];
+                                $('#tbody').html('');
+                                hiddenTempRow = 0;
+                                $("#HiddenItemAdjustmentDetailId").val(0);
+                                // ClearForm();
+                                TempRow = 0;
+                            }
+                            else {
+                                //  loadPanel.hide();
+                                alert(Response.Status);
+                            }
+                        },
+                        error: function (xhr) {
+                            //loadPanel.hide();
+                            alert("Data size is too large!");
+                        }
+                    });
+
+                }
+            });
+        }
+        catch (e) {
+            //loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+    function TableSorter() {
+                $('#TblDistributor').trigger("destroy");
+                $('#TblDistributor').tablesorter({
+                    theme: 'blue',
+                    widthFixed: true,
+                    headerTemplate: '{content} {icon}',
+                    widgets: ['zebra', 'stickyHeaders', 'filter'],
+                    widgetOptions: {
+                        stickyHeaders_attachTo: '.WrapperDistributor'
+                    }
+                });
+            }
+
+        var Holdid = '';
+        var spanPrv = '';
+        function changeColor(id) {
+            if (id != Holdid || Holdid == "") {
+                $("#tr_" + Holdid + "").removeClass('highlighted');
+                $("#sp_" + Holdid).css("visibility", "hidden");
+                $("#tr_" + id + "").addClass('highlighted');
+                Holdid = id;
+            }
+            else {
+                if ($("#tr_" + id + "").hasClass('highlighted')) {
+                    $("#tr_" + id + "").removeClass('highlighted');
+                    Holdid = 0;
+                }
+                else {
+                    $("#tr_" + id + "").addClass('highlighted');
+                    Holdid = id;
+                }
+            }
+        }
+
+        function DisplayButton(id) {
+            $("#sp_" + id).css("visibility", "visible");
+            if (spanPrv != id) {
+                if ($("#tr_" + spanPrv + "").hasClass('highlighted'))
+                    $("#sp_" + spanPrv).css("visibility", "visible");
+                else
+                   // $("#sp_" + spanPrv).css("visibility", "hidden");
+                 $("#sp_" + spanPrv).css("visibility", "visible");
+                spanPrv = id;
+            }
+        }
+
+        $("#tbody").mouseleave(function () {
+            if ($("#tr_" + spanPrv + "").hasClass('highlighted'))
+                $("#sp_" + spanPrv).css("visibility", "visible");
+            else
+                $("#sp_" + spanPrv).css("visibility", "hidden");
+        });
+
+
+    function ItemAdjustmentDetailDelete(intItemAdjustmentDetailId) {
+        try {
+            debugger
+            //loadPanel.show();
+            var data = { 'intItemAdjustmentDetailId': intItemAdjustmentDetailId };
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Home/ItemAdjustmentDetailDelete",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: dataWithAntiforgeryToken,
+                success: function (Response) {
+                    //loadPanel.hide();
+                    debugger
+                    alert(Response.Status);
+                },
+                error: function (xhr) {
+                    //loadPanel.hide();
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            //loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+    function GetAllItemsDPRate(itemId) {
+        try {
+            debugger;
+            //$("#dtVoucher").dxDateBox('instance').option('value')
+            var event = new Date($("#dtVoucher").dxDateBox('instance').option('value'));
+
+            let date = JSON.stringify(event)
+            date = date.slice(1, 11)
+
+            var data = { 'VoucherDate': date, 'ItemId': itemId };
+            //var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            //alert(date);
+            
+            $.ajax({
+                url: "../Home/GetAllItemsDPRate",
+                type: 'POST',
+                dataType: 'json',
+                data: data,
+                async: true,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        ItemDPRateList = Response.ResultDP;
+                        //Added on 08 March 2022 for multiple DP rate selection   ---- start
+                        $("#ddlDPRate").dxSelectBox({
+                            dataSource: new DevExpress.data.ArrayStore({
+                                data: ItemDPRateList,
+                                key: "ItemId"
+                            }),
+                            displayExpr: "DPRate",
+                            valueExpr: "DPRate",
+                            searchEnabled: true,
+                            onValueChanged: function (data) {
+                                if (data.value != undefined && data.value != "") {
+                                    $("#txtRate").val(data.value);
+                                    
+                                    //var selectedItem = $("#ddlDPRate").dxSelectBox('instance').option('selectedItem');
+                                    //const myJSON = JSON.stringify(selectedItem);
+                                    //localStorage.setItem("testJSON", myJSON);
+
+                                    //// Retrieving data:
+                                    //let text = localStorage.getItem("testJSON");
+                                    //let obj = JSON.parse(text);
+
+                                    //$("#hiddenStock").val(obj.QtyBal);
+                                    //$("#txtStockValue").val(obj.QtyBal);
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            alert("Data size is too large!");
+        }
+    }
+</script>
+@*</div>*@

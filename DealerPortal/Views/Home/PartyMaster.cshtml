@@ -1,0 +1,265 @@
+﻿
+@{
+    ViewBag.Title = "Party Master";
+}
+
+@Html.AntiForgeryToken()
+
+<div class="box box-warning">
+    <div class="box-header with-border">
+        <div class="box-header-left" style="width: 100%;">
+            <h3 class="box-title">Party Master</h3>
+            <a href="#" class="btn btn-danger btn-flat" style="background: #e70c0e; border-color:#e70c0e; float: right; margin-left: 10px; padding: 0px 5px 0px 15px;" data-toggle="tooltip" title="Export to PDF"><i class="flaticon-pdf-file" style="font-size: 18px;"></i></a>
+            <a href="#" class="btn btn-danger btn-flat" style="background: #257142; border-color:#257142; float: right; padding: 0px 5px 0px 5px;" onclick="ExportToExcel();"><i class="flaticon-excel-file" style="font-size: 18px;" data-toggle="tooltip" title="Export to Excel"></i></a>
+        </div>
+    </div>
+    <div class="box-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <div id="tblPartyMaster"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="dvTable" style="display: none;"></div>
+
+<script>
+
+    var PartyMasterList = [];
+
+    $(document).ready(function () {
+        PartyMasterGetData();
+    });
+
+    function BindPartyMasterList() {
+        debugger
+        var html = "";
+        $("#tblPartyMaster").dxDataGrid({
+            dataSource: PartyMasterList,
+            allowColumnResizing: true,
+            columnResizingMode: "widget",
+            columnAutoWidth: true,
+            wordWrapEnabled: false,
+            height: 485,
+            paging: { enabled: true },
+            export: {
+                enabled: false,
+                allowExportSelectedData: true,
+                fileName: "PartyMaster"
+            },
+            paging: {
+                pageSize: 10
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [5, 10, 15],
+                showInfo: true
+            },
+            columns: [
+                {
+                    dataField: "Party", width: '25%',
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Party <br/> Name").appendTo(header);
+                    }
+                },
+                {
+                    dataField: "PartyCode", width: '10%',
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Party <br/> Code").appendTo(header);
+                    }
+                },
+                //{
+                //    dataField: "PartyGroupID", width: '9%',
+                //    headerCellTemplate: function (header, info) {
+                //        $('<div>').html("Party <br/> Group").appendTo(header);
+                //    }
+                //},
+                { dataField: "ShortName", width: '10%', caption: "Short Name" },
+                //{ dataField: "PartyType", width: '9%', caption: "Party Type" },
+                //{
+                //    dataField: "VendorCode", width: '9%',
+                //    headerCellTemplate: function (header, info) {
+                //        $('<div>').html("Vendor <br/> Code").appendTo(header);
+                //    }
+                //},
+                { dataField: "RegionId", width: '10%', caption: "Region" },
+                //{
+                //    dataField: "PaymentTermID", width: '9%',
+                //    headerCellTemplate: function (header, info) {
+                //        $('<div>').html("Payment <br/> Term").appendTo(header);
+                //    }
+                //},
+                //{
+                //    dataField: "DeliveryTermID", width: '9%',
+                //    headerCellTemplate: function (header, info) {
+                //        $('<div>').html("Delivery <br/> Term").appendTo(header);
+                //    }
+                //},
+                { dataField: "Status", width: '15%', caption: "Status" },
+                {
+                    dataField: "SalesPersonId", width: '15%',
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Sales <br/> Person").appendTo(header);
+                    }
+                },
+                {
+                    dataField: "PriceGroupID", width: '15%',
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Price <br/> Group").appendTo(header);
+                    }
+                },
+                //{
+                //    dataField: "IsUnregisteredforGST", width: '9%',
+                //    headerCellTemplate: function (header, info) {
+                //        $('<div>').html("Unregistered <br/> for GST").appendTo(header);
+                //    }
+                //},
+                //{
+                //    dataField: "IsForeignParty", width: '9%',
+                //    headerCellTemplate: function (header, info) {
+                //        $('<div>').html("Foreign <br/> Party").appendTo(header);
+                //    }
+                //},
+                { dataField: "Active", width: '10%', caption: "Active" },
+            ],
+            filterRow: { visible: true },
+            showRowLines: true,
+            showBorders: true
+        });
+    }
+
+    function PartyMasterGetData() {
+        debugger
+        try {
+            var dataWithAntiforgeryToken = ({ '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            // var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            loadPanel.show();
+            $.ajax({
+                url: "../Home/PartyMasterGetAll",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: dataWithAntiforgeryToken,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        PartyMasterList = Response.Result;
+                        loadPanel.hide();
+                        BindPartyMasterList();
+                    }
+                    else {
+                        loadPanel.hide();
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large!");
+        }
+    }
+
+    function ExportToExcel() {
+        $("#tblPartyMaster").dxDataGrid("instance").exportToExcel(false);
+    }
+
+    //function ExportToExcel() {
+    //    try {
+    //        debugger
+    //        loadPanel.show();
+    //        var col = [];
+    //        for (var i = 0; i < PartyMasterList.length; i++) {
+    //            for (var key in PartyMasterList[i]) {
+    //                if (col.indexOf(key) === -1) {
+    //                    if (key == 'RowNumber' || key == 'UserId') {
+    //                    } else {
+    //                        col.push(key);
+    //                    }
+    //                }
+    //            }
+    //        }
+
+    //        var table = document.createElement("table");
+    //        var tr = table.insertRow(-1);
+    //        for (var i = 0; i < col.length; i++) {
+    //            var th = document.createElement("th");
+    //            th.innerHTML = col[i];
+    //            tr.appendChild(th);
+    //        }
+    //        for (var i = 0; i < PartyMasterList.length; i++) {
+    //            tr = table.insertRow(-1);
+    //            for (var j = 0; j < col.length; j++) {
+    //                debugger
+    //                var tabCell = tr.insertCell(-1);
+    //                if (col[j] == 'CreatedDateTime' || col[j] == 'EditedDateTime') {
+    //                    tabCell.innerHTML = DateReturn(PartyMasterList[i][col[j]]);
+    //                }
+    //                else {
+    //                    tabCell.innerHTML = PartyMasterList[i][col[j]];
+    //                }
+    //            }
+
+    //        }
+    //        var dvTable = document.getElementById("dvTable");
+    //        dvTable.innerHTML = "";
+    //        dvTable.appendChild(table);
+    //        $("#dvTable").table2excel({
+    //            filename: "PartyMaster.xls"
+    //        });
+    //        loadPanel.hide();
+    //    }
+    //    catch (e) {
+    //        loadPanel.hide();
+    //        alert(e.message);
+    //    }
+    //}
+
+    function DateReturn(GetDate) {
+        debugger
+        if (GetDate != null && GetDate != undefined && GetDate != "/Date(-62135596800000)/") {
+            var dt1 = new Date(parseInt((GetDate).substr(6)));
+            var data = DtDateReturn(dt1);
+            return data
+        }
+        else {
+            return "";
+        }
+    }
+
+    function DtDateReturn(dateObject) {
+        debugger
+        var d = new Date(dateObject);
+        var day = d.getDate();
+        var month = d.getMonth() + 1;
+        var year = d.getFullYear();
+        var Hour = d.getHours();
+        var Minute = d.getMinutes();
+
+        if (day < 10) {
+            day = "0" + day;
+        }
+
+        if (month < 10) {
+            month = "0" + month;
+        }
+
+        if (Hour < 10) {
+            Hour = "0" + Hour;
+        }
+
+        if (Minute < 10) {
+            Minute = "0" + Minute;
+        }
+        var date = day + "/" + month + "/" + year;
+        //var date = day + "/" + month + "/" + year + ":" + Hour + "." + Minute;
+
+        return date;
+    }
+</script>

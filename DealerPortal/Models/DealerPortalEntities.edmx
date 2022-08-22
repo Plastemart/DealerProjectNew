@@ -1,0 +1,587 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="DealerPortal_devModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AddressTypeMaster">
+          <Key>
+            <PropertyRef Name="AddressTypeID" />
+          </Key>
+          <Property Name="AddressTypeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AddressType" Type="varchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'DealerPortal.Master.CityMaster' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="CityMaster">
+          <Key>
+            <PropertyRef Name="CityId" />
+            
+          </Key>
+          <Property Name="CityId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CityName" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="StateId" Type="int" />
+          <Property Name="Status" Type="int" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="EditedBy" Type="int" />
+          <Property Name="EditedDate" Type="datetime" />
+          <Property Name="TRatePerCarton" Type="numeric" Precision="18" Scale="4" />
+        </EntityType>
+        <EntityType Name="CountryMaster">
+          <Key>
+            <PropertyRef Name="CountryID" />
+          </Key>
+          <Property Name="CountryID" Type="int" Nullable="false" />
+          <Property Name="Country" Type="varchar" MaxLength="100" />
+          <Property Name="RegionID" Type="int" />
+          <Property Name="CurrencyID" Type="int" />
+          <Property Name="CountryCode" Type="varchar" MaxLength="5" Nullable="false" />
+          <Property Name="Status" Type="int" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="EditedBy" Type="int" />
+          <Property Name="EditedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="CustomerAddressMaster">
+          <Key>
+            <PropertyRef Name="PartyAddressID" />
+          </Key>
+          <Property Name="PartyAddressID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ContactPersons" Type="varchar" MaxLength="500" />
+          <Property Name="Pin" Type="varchar" MaxLength="20" />
+          <Property Name="Email" Type="varchar" MaxLength="500" />
+          <Property Name="Tel" Type="varchar" MaxLength="500" />
+          <Property Name="Fax" Type="varchar" MaxLength="500" />
+          <Property Name="CountryID" Type="int" />
+          <Property Name="StateID" Type="int" />
+          <Property Name="State" Type="varchar" MaxLength="50" />
+          <Property Name="City" Type="varchar" MaxLength="50" />
+          <Property Name="IsMain" Type="bit" />
+          <Property Name="Mobile" Type="varchar" MaxLength="500" />
+          <Property Name="Address" Type="varchar" MaxLength="500" />
+          <Property Name="AddressTypeID" Type="int" />
+          <Property Name="PartyID" Type="int" />
+          <Property Name="Website" Type="varchar" MaxLength="250" />
+          <Property Name="Cityid" Type="int" />
+          <Property Name="RealAddress" Type="varchar(max)" />
+        </EntityType>
+        <EntityType Name="CustomerMaster">
+          <Key>
+            <PropertyRef Name="PartyID" />
+          </Key>
+          <Property Name="PartyID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PartyCode" Type="varchar" MaxLength="100" />
+          <Property Name="SuperStockistID" Type="int" Nullable="false" />
+          <Property Name="PartyGroupID" Type="int" />
+          <Property Name="Party" Type="varchar" MaxLength="250" />
+          <Property Name="ShortName" Type="varchar" MaxLength="8" />
+          <Property Name="PartyType" Type="varchar" MaxLength="250" />
+          <Property Name="PartyTypeId" Type="int" />
+          <Property Name="VendorCode" Type="varchar" MaxLength="50" />
+          <Property Name="Active" Type="bit" />
+          <Property Name="RegionId" Type="int" />
+          <Property Name="PaymentTermID" Type="int" />
+          <Property Name="DeliveryTermID" Type="int" />
+          <Property Name="Status" Type="numeric" Precision="1" Scale="0" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="DistributorID" Type="int" />
+          <Property Name="Createdby" Type="int" />
+          <Property Name="CreatedDateTime" Type="datetime" />
+          <Property Name="Editedby" Type="int" />
+          <Property Name="EditedDateTime" Type="datetime" />
+          <Property Name="SalesPersonId" Type="int" />
+          <Property Name="PriceGroupID" Type="int" />
+          <Property Name="IsUnregisteredforGST" Type="bit" />
+          <Property Name="IsForeignParty" Type="bit" />
+          <Property Name="GSTNo" Type="varchar" MaxLength="15" />
+          <Property Name="GSTEffectiveDate" Type="date" />
+          <Property Name="PANNO" Type="varchar" MaxLength="10" />
+          <Property Name="PANNoEffectiveDate" Type="date" />
+          <Property Name="IsDeleted" Type="bit" />
+          <Property Name="SalesPerson" Type="varchar" MaxLength="200" />
+          <Property Name="IsPurchaseReturnParty" Type="bit" />
+          <Property Name="Transporter" Type="varchar" MaxLength="500" />
+          <Property Name="TransporterGST" Type="varchar" MaxLength="50" />
+          <Property Name="FreightId" Type="int" />
+          <Property Name="CreditDays" Type="int" />
+        </EntityType>
+        <EntityType Name="News">
+          <Key>
+            <PropertyRef Name="NewsId" />
+          </Key>
+          <Property Name="NewsId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NewsTitle" Type="varchar" MaxLength="250" />
+          <Property Name="LinkPage" Type="varchar" MaxLength="500" />
+          <Property Name="News" Type="varchar(max)" />
+          <Property Name="NewsDate" Type="datetime" />
+          <Property Name="MetatagKeywords" Type="varchar" MaxLength="1000" />
+          <Property Name="MetatagDescription" Type="varchar" MaxLength="550" />
+          <Property Name="MetatagTitle" Type="varchar" MaxLength="300" />
+          <Property Name="OpenNewWindow" Type="bit" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="IPAddress" Type="varchar" MaxLength="50" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="DisplayUrl" Type="varchar" MaxLength="250" />
+          <Property Name="Active" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'DealerPortal.Master.PartyType' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="PartyType">
+          <Key>
+            <PropertyRef Name="PartyTypeID" />
+          </Key>
+          <Property Name="PartyTypeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PartyType" Type="varchar" MaxLength="500" />
+          <Property Name="IsActive" Type="bit" />
+        </EntityType>
+        <EntityType Name="StateMaster">
+          <Key>
+            <PropertyRef Name="StateID" />
+          </Key>
+          <Property Name="StateID" Type="int" Nullable="false" />
+          <Property Name="State" Type="varchar" MaxLength="150" />
+          <Property Name="CountryID" Type="int" />
+          <Property Name="Status" Type="int" />
+          <Property Name="RegionID" Type="int" />
+          <Property Name="IsUT" Type="bit" />
+          <Property Name="StateCode" Type="varchar" MaxLength="5" />
+          <Property Name="TRatePerCarton" Type="numeric" Precision="18" Scale="4" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="EditedBy" Type="int" />
+          <Property Name="EditedDate" Type="datetime" />
+        </EntityType>
+        <Function Name="spGetNews" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="Master" />
+        <EntityContainer Name="DealerPortal_devModelStoreContainer">
+          <EntitySet Name="AddressTypeMaster" EntityType="Self.AddressTypeMaster" Schema="Master" store:Type="Tables" />
+          <EntitySet Name="CountryMaster" EntityType="Self.CountryMaster" Schema="Master" store:Type="Tables" />
+          <EntitySet Name="CustomerAddressMaster" EntityType="Self.CustomerAddressMaster" Schema="Master" store:Type="Tables" />
+          <EntitySet Name="CustomerMaster" EntityType="Self.CustomerMaster" Schema="Master" store:Type="Tables" />
+          <EntitySet Name="News" EntityType="Self.News" Schema="Master" store:Type="Tables" />
+          <EntitySet Name="StateMaster" EntityType="Self.StateMaster" Schema="Master" store:Type="Tables" />
+          <EntitySet Name="CityMaster" EntityType="Self.CityMaster" store:Type="Tables" store:Schema="Master">
+            <DefiningQuery>SELECT 
+    [CityMaster].[CityId] AS [CityId], 
+    [CityMaster].[CityName] AS [CityName], 
+    [CityMaster].[StateId] AS [StateId], 
+    [CityMaster].[Status] AS [Status], 
+    [CityMaster].[CreatedBy] AS [CreatedBy], 
+    [CityMaster].[CreatedDate] AS [CreatedDate], 
+    [CityMaster].[EditedBy] AS [EditedBy], 
+    [CityMaster].[EditedDate] AS [EditedDate], 
+    [CityMaster].[TRatePerCarton] AS [TRatePerCarton]
+    FROM [Master].[CityMaster] AS [CityMaster]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="PartyType" EntityType="Self.PartyType" store:Type="Tables" store:Schema="Master">
+            <DefiningQuery>SELECT 
+    [PartyType].[PartyTypeID] AS [PartyTypeID], 
+    [PartyType].[PartyType] AS [PartyType], 
+    [PartyType].[IsActive] AS [IsActive]
+    FROM [Master].[PartyType] AS [PartyType]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DealerPortal_devModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="AddressTypeMaster">
+          <Key>
+            <PropertyRef Name="AddressTypeID" />
+          </Key>
+          <Property Name="AddressTypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AddressType" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="CustomerAddressMasters" Relationship="DealerPortal_devModel.FK__PartyAddr__Addre__0B91BA141" FromRole="AddressTypeMaster" ToRole="CustomerAddressMaster" />
+        </EntityType>
+        <EntityType Name="PartyType">
+          <Key>
+            <PropertyRef Name="PartyTypeID" />
+          </Key>
+          <Property Name="PartyTypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PartyType1" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="IsActive" Type="Boolean" />
+        </EntityType>
+        <EntityContainer Name="DealerPortal_devEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AddressTypeMasters" EntityType="Self.AddressTypeMaster" />
+          <EntitySet Name="PartyTypes" EntityType="Self.PartyType" />
+          <EntitySet Name="CustomerAddressMasters" EntityType="DealerPortal_devModel.CustomerAddressMaster" />
+          <AssociationSet Name="FK__PartyAddr__Addre__0B91BA141" Association="DealerPortal_devModel.FK__PartyAddr__Addre__0B91BA141">
+            <End Role="AddressTypeMaster" EntitySet="AddressTypeMasters" />
+            <End Role="CustomerAddressMaster" EntitySet="CustomerAddressMasters" />
+          </AssociationSet>
+          <EntitySet Name="CountryMasters" EntityType="DealerPortal_devModel.CountryMaster" />
+          <EntitySet Name="CityMasters" EntityType="DealerPortal_devModel.CityMaster" />
+          <EntitySet Name="StateMasters" EntityType="DealerPortal_devModel.StateMaster" />
+          <EntitySet Name="News" EntityType="DealerPortal_devModel.News" />
+          <FunctionImport Name="spGetNews" ReturnType="Collection(DealerPortal_devModel.spGetNews_Result)" />
+          <EntitySet Name="CustomerMaster" EntityType="DealerPortal_devModel.CustomerMaster" />
+        </EntityContainer>
+        <EntityType Name="CustomerAddressMaster">
+          <Key>
+            <PropertyRef Name="PartyAddressID" />
+          </Key>
+          <Property Name="PartyAddressID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ContactPersons" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Pin" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Tel" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Fax" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="CountryID" Type="Int32" />
+          <Property Name="StateID" Type="Int32" />
+          <Property Name="State" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IsMain" Type="Boolean" />
+          <Property Name="Mobile" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Address" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="AddressTypeID" Type="Int32" />
+          <Property Name="PartyID" Type="Int32" />
+          <Property Name="Website" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="Cityid" Type="Int32" />
+          <Property Name="RealAddress" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="AddressTypeMaster" Relationship="DealerPortal_devModel.FK__PartyAddr__Addre__0B91BA141" FromRole="CustomerAddressMaster" ToRole="AddressTypeMaster" />
+        </EntityType>
+        <Association Name="FK__PartyAddr__Addre__0B91BA141">
+          <End Type="DealerPortal_devModel.AddressTypeMaster" Role="AddressTypeMaster" Multiplicity="0..1" />
+          <End Type="DealerPortal_devModel.CustomerAddressMaster" Role="CustomerAddressMaster" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AddressTypeMaster">
+              <PropertyRef Name="AddressTypeID" />
+            </Principal>
+            <Dependent Role="CustomerAddressMaster">
+              <PropertyRef Name="AddressTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="CountryMaster">
+          <Key>
+            <PropertyRef Name="CountryID" />
+          </Key>
+          <Property Name="CountryID" Type="Int32" Nullable="false" />
+          <Property Name="Country" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="RegionID" Type="Int32" />
+          <Property Name="CurrencyID" Type="Int32" />
+          <Property Name="CountryCode" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="Int32" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="EditedBy" Type="Int32" />
+          <Property Name="EditedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="CityMaster">
+          <Key>
+            <PropertyRef Name="CityId" />
+          </Key>
+          <Property Name="CityId" Type="Int32" Nullable="false" />
+          <Property Name="CityName" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="StateId" Type="Int32" />
+          <Property Name="Status" Type="Int32" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="EditedBy" Type="Int32" />
+          <Property Name="EditedDate" Type="DateTime" Precision="3" />
+          <Property Name="TRatePerCarton" Type="Decimal" Precision="18" Scale="4" />
+        </EntityType>
+        <EntityType Name="StateMaster">
+          <Key>
+            <PropertyRef Name="StateID" />
+          </Key>
+          <Property Name="StateID" Type="Int32" Nullable="false" />
+          <Property Name="State" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="CountryID" Type="Int32" />
+          <Property Name="Status" Type="Int32" />
+          <Property Name="RegionID" Type="Int32" />
+          <Property Name="IsUT" Type="Boolean" />
+          <Property Name="StateCode" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="TRatePerCarton" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="EditedBy" Type="Int32" />
+          <Property Name="EditedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="News">
+          <Key>
+            <PropertyRef Name="NewsId" />
+          </Key>
+          <Property Name="NewsId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NewsTitle" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="LinkPage" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="News1" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="NewsDate" Type="DateTime" Precision="3" />
+          <Property Name="MetatagKeywords" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="MetatagDescription" Type="String" MaxLength="550" FixedLength="false" Unicode="false" />
+          <Property Name="MetatagTitle" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="OpenNewWindow" Type="Boolean" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="IPAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="DisplayUrl" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="Active" Type="Int32" />
+        </EntityType>
+        <ComplexType Name="spGetNews_Result">
+          <Property Type="Int32" Name="NewsId" Nullable="false" />
+          <Property Type="String" Name="NewsTitle" Nullable="true" MaxLength="250" />
+          <Property Type="String" Name="LinkPage" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="News" Nullable="true" />
+          <Property Type="DateTime" Name="NewsDate" Nullable="true" Precision="23" />
+          <Property Type="String" Name="MetatagKeywords" Nullable="true" MaxLength="1000" />
+          <Property Type="String" Name="MetatagDescription" Nullable="true" MaxLength="550" />
+          <Property Type="String" Name="MetatagTitle" Nullable="true" MaxLength="300" />
+          <Property Type="Boolean" Name="OpenNewWindow" Nullable="true" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="true" Precision="23" />
+          <Property Type="Int32" Name="CreatedBy" Nullable="true" />
+          <Property Type="DateTime" Name="ModifiedDate" Nullable="true" Precision="23" />
+          <Property Type="String" Name="IPAddress" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="ModifiedBy" Nullable="true" />
+          <Property Type="String" Name="DisplayUrl" Nullable="true" MaxLength="250" />
+          <Property Type="Int32" Name="Active" Nullable="true" />
+        </ComplexType>
+        <EntityType Name="CustomerMaster">
+          <Key>
+            <PropertyRef Name="PartyID" />
+          </Key>
+          <Property Name="PartyID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PartyCode" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="SuperStockistID" Type="Int32" Nullable="false" />
+          <Property Name="PartyGroupID" Type="Int32" />
+          <Property Name="Party" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="ShortName" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="PartyType" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="PartyTypeId" Type="Int32" />
+          <Property Name="VendorCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Active" Type="Boolean" />
+          <Property Name="RegionId" Type="Int32" />
+          <Property Name="PaymentTermID" Type="Int32" />
+          <Property Name="DeliveryTermID" Type="Int32" />
+          <Property Name="Status" Type="Decimal" Precision="1" Scale="0" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="DistributorID" Type="Int32" />
+          <Property Name="Createdby" Type="Int32" />
+          <Property Name="CreatedDateTime" Type="DateTime" Precision="3" />
+          <Property Name="Editedby" Type="Int32" />
+          <Property Name="EditedDateTime" Type="DateTime" Precision="3" />
+          <Property Name="SalesPersonId" Type="Int32" />
+          <Property Name="PriceGroupID" Type="Int32" />
+          <Property Name="IsUnregisteredforGST" Type="Boolean" />
+          <Property Name="IsForeignParty" Type="Boolean" />
+          <Property Name="GSTNo" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="GSTEffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="PANNO" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="PANNoEffectiveDate" Type="DateTime" Precision="0" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="SalesPerson" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="IsPurchaseReturnParty" Type="Boolean" />
+          <Property Name="Transporter" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="TransporterGST" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="FreightId" Type="Int32" />
+          <Property Name="CreditDays" Type="Int32" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DealerPortal_devModelStoreContainer" CdmEntityContainer="DealerPortal_devEntities">
+          <EntitySetMapping Name="AddressTypeMasters">
+            <EntityTypeMapping TypeName="DealerPortal_devModel.AddressTypeMaster">
+              <MappingFragment StoreEntitySet="AddressTypeMaster">
+                <ScalarProperty Name="AddressTypeID" ColumnName="AddressTypeID" />
+                <ScalarProperty Name="AddressType" ColumnName="AddressType" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PartyTypes">
+            <EntityTypeMapping TypeName="DealerPortal_devModel.PartyType">
+              <MappingFragment StoreEntitySet="PartyType">
+                <ScalarProperty Name="PartyTypeID" ColumnName="PartyTypeID" />
+                <ScalarProperty Name="PartyType1" ColumnName="PartyType" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CustomerAddressMasters">
+            <EntityTypeMapping TypeName="DealerPortal_devModel.CustomerAddressMaster">
+              <MappingFragment StoreEntitySet="CustomerAddressMaster">
+                <ScalarProperty Name="RealAddress" ColumnName="RealAddress" />
+                <ScalarProperty Name="Cityid" ColumnName="Cityid" />
+                <ScalarProperty Name="Website" ColumnName="Website" />
+                <ScalarProperty Name="PartyID" ColumnName="PartyID" />
+                <ScalarProperty Name="AddressTypeID" ColumnName="AddressTypeID" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+                <ScalarProperty Name="IsMain" ColumnName="IsMain" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="StateID" ColumnName="StateID" />
+                <ScalarProperty Name="CountryID" ColumnName="CountryID" />
+                <ScalarProperty Name="Fax" ColumnName="Fax" />
+                <ScalarProperty Name="Tel" ColumnName="Tel" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Pin" ColumnName="Pin" />
+                <ScalarProperty Name="ContactPersons" ColumnName="ContactPersons" />
+                <ScalarProperty Name="PartyAddressID" ColumnName="PartyAddressID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CountryMasters">
+            <EntityTypeMapping TypeName="DealerPortal_devModel.CountryMaster">
+              <MappingFragment StoreEntitySet="CountryMaster">
+                <ScalarProperty Name="EditedDate" ColumnName="EditedDate" />
+                <ScalarProperty Name="EditedBy" ColumnName="EditedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CountryCode" ColumnName="CountryCode" />
+                <ScalarProperty Name="CurrencyID" ColumnName="CurrencyID" />
+                <ScalarProperty Name="RegionID" ColumnName="RegionID" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="CountryID" ColumnName="CountryID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CityMasters">
+            <EntityTypeMapping TypeName="DealerPortal_devModel.CityMaster">
+              <MappingFragment StoreEntitySet="CityMaster">
+                <ScalarProperty Name="TRatePerCarton" ColumnName="TRatePerCarton" />
+                <ScalarProperty Name="EditedDate" ColumnName="EditedDate" />
+                <ScalarProperty Name="EditedBy" ColumnName="EditedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="StateId" ColumnName="StateId" />
+                <ScalarProperty Name="CityName" ColumnName="CityName" />
+                <ScalarProperty Name="CityId" ColumnName="CityId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StateMasters">
+            <EntityTypeMapping TypeName="DealerPortal_devModel.StateMaster">
+              <MappingFragment StoreEntitySet="StateMaster">
+                <ScalarProperty Name="EditedDate" ColumnName="EditedDate" />
+                <ScalarProperty Name="EditedBy" ColumnName="EditedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="TRatePerCarton" ColumnName="TRatePerCarton" />
+                <ScalarProperty Name="StateCode" ColumnName="StateCode" />
+                <ScalarProperty Name="IsUT" ColumnName="IsUT" />
+                <ScalarProperty Name="RegionID" ColumnName="RegionID" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CountryID" ColumnName="CountryID" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="StateID" ColumnName="StateID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="News">
+            <EntityTypeMapping TypeName="DealerPortal_devModel.News">
+              <MappingFragment StoreEntitySet="News">
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="DisplayUrl" ColumnName="DisplayUrl" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="IPAddress" ColumnName="IPAddress" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="OpenNewWindow" ColumnName="OpenNewWindow" />
+                <ScalarProperty Name="MetatagTitle" ColumnName="MetatagTitle" />
+                <ScalarProperty Name="MetatagDescription" ColumnName="MetatagDescription" />
+                <ScalarProperty Name="MetatagKeywords" ColumnName="MetatagKeywords" />
+                <ScalarProperty Name="NewsDate" ColumnName="NewsDate" />
+                <ScalarProperty Name="News1" ColumnName="News" />
+                <ScalarProperty Name="LinkPage" ColumnName="LinkPage" />
+                <ScalarProperty Name="NewsTitle" ColumnName="NewsTitle" />
+                <ScalarProperty Name="NewsId" ColumnName="NewsId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="spGetNews" FunctionName="DealerPortal_devModel.Store.spGetNews">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DealerPortal_devModel.spGetNews_Result">
+                <ScalarProperty Name="NewsId" ColumnName="NewsId" />
+                <ScalarProperty Name="NewsTitle" ColumnName="NewsTitle" />
+                <ScalarProperty Name="LinkPage" ColumnName="LinkPage" />
+                <ScalarProperty Name="News" ColumnName="News" />
+                <ScalarProperty Name="NewsDate" ColumnName="NewsDate" />
+                <ScalarProperty Name="MetatagKeywords" ColumnName="MetatagKeywords" />
+                <ScalarProperty Name="MetatagDescription" ColumnName="MetatagDescription" />
+                <ScalarProperty Name="MetatagTitle" ColumnName="MetatagTitle" />
+                <ScalarProperty Name="OpenNewWindow" ColumnName="OpenNewWindow" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="IPAddress" ColumnName="IPAddress" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="DisplayUrl" ColumnName="DisplayUrl" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="CustomerMaster">
+            <EntityTypeMapping TypeName="DealerPortal_devModel.CustomerMaster">
+              <MappingFragment StoreEntitySet="CustomerMaster">
+                <ScalarProperty Name="CreditDays" ColumnName="CreditDays" />
+                <ScalarProperty Name="FreightId" ColumnName="FreightId" />
+                <ScalarProperty Name="TransporterGST" ColumnName="TransporterGST" />
+                <ScalarProperty Name="Transporter" ColumnName="Transporter" />
+                <ScalarProperty Name="IsPurchaseReturnParty" ColumnName="IsPurchaseReturnParty" />
+                <ScalarProperty Name="SalesPerson" ColumnName="SalesPerson" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="PANNoEffectiveDate" ColumnName="PANNoEffectiveDate" />
+                <ScalarProperty Name="PANNO" ColumnName="PANNO" />
+                <ScalarProperty Name="GSTEffectiveDate" ColumnName="GSTEffectiveDate" />
+                <ScalarProperty Name="GSTNo" ColumnName="GSTNo" />
+                <ScalarProperty Name="IsForeignParty" ColumnName="IsForeignParty" />
+                <ScalarProperty Name="IsUnregisteredforGST" ColumnName="IsUnregisteredforGST" />
+                <ScalarProperty Name="PriceGroupID" ColumnName="PriceGroupID" />
+                <ScalarProperty Name="SalesPersonId" ColumnName="SalesPersonId" />
+                <ScalarProperty Name="EditedDateTime" ColumnName="EditedDateTime" />
+                <ScalarProperty Name="Editedby" ColumnName="Editedby" />
+                <ScalarProperty Name="CreatedDateTime" ColumnName="CreatedDateTime" />
+                <ScalarProperty Name="Createdby" ColumnName="Createdby" />
+                <ScalarProperty Name="DistributorID" ColumnName="DistributorID" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="DeliveryTermID" ColumnName="DeliveryTermID" />
+                <ScalarProperty Name="PaymentTermID" ColumnName="PaymentTermID" />
+                <ScalarProperty Name="RegionId" ColumnName="RegionId" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="VendorCode" ColumnName="VendorCode" />
+                <ScalarProperty Name="PartyTypeId" ColumnName="PartyTypeId" />
+                <ScalarProperty Name="PartyType" ColumnName="PartyType" />
+                <ScalarProperty Name="ShortName" ColumnName="ShortName" />
+                <ScalarProperty Name="Party" ColumnName="Party" />
+                <ScalarProperty Name="PartyGroupID" ColumnName="PartyGroupID" />
+                <ScalarProperty Name="SuperStockistID" ColumnName="SuperStockistID" />
+                <ScalarProperty Name="PartyCode" ColumnName="PartyCode" />
+                <ScalarProperty Name="PartyID" ColumnName="PartyID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

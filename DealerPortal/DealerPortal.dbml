@@ -1,0 +1,1649 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="DealerPortal" Class="DealerPortalDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="WebSettings" ConnectionString="Data Source=103.138.188.159,1232;Initial Catalog=DealerPortal;Persist Security Info=True;User ID=sa;MultipleActiveResultSets=True;Application Name=EntityFramework" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="DealerPortalConnectionString2" Provider="System.Data.SqlClient" />
+  <Table Name="Security.UserMaster" Member="dbmlUserMasters">
+    <Type Name="dbmlUserMaster">
+      <Column Name="UserId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="SalutationParaId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="FirstName" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="MiddleName" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="LastName" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="EmailID" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Column Name="Mobile" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="Password" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Column Name="PasswordExpiryDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="IPAddress" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="UserTypeParaId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IdentityId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="bool (System.Boolean)" CanBeNull="false" />
+      <Column Name="PermittedSuperstockistIds" Type="System.String" DbType="varchar(max)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="" Member="dbmlStatus">
+    <Type Name="dbmlStatus">
+      <Column Name="StatusId" Type="System.Int32" DbType="int" CanBeNull="false" />
+      <Column Name="Status" Type="System.String" DbType="VarChar(100)" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="Master.RetailCategoryMaster" Member="dbmlRetailCategoryMasters">
+    <Type Name="dbmlRetailCategoryMaster">
+      <Column Name="RetailCategoryID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="RetailCategory" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="HasChild" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="ParentId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="status" Type="System.Decimal" DbType="Decimal(1,0)" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="MRPCategoryId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="LastEditedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="LastEditedDateTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="Master.MRPCategoryMaster" Member="dbmlMRPCategoryMasters">
+    <Type Name="dbmlMRPCategoryMaster">
+      <Column Name="MRPCategoryId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="MRPCategory" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="FromRange" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ToRange" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreateId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="UpdatedId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="UpdateDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="Trans.Cart" Member="dbmlCarts">
+    <Type Name="dbmlCart">
+      <Column Name="CartId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ItemId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PartyId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="QuantityAdded" Type="System.Decimal" DbType="Decimal(18,0)" CanBeNull="true" />
+      <Column Name="OrderUnits" Type="System.Decimal" DbType="Decimal(18,0)" CanBeNull="true" />
+      <Column Name="MRP" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="DP" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="SchemeDiscountPercentage" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="TradeDiscountPercentage" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="AddiDiscountPercentage" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="GSTPercentage" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="TaxAmount" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="TotalAmount" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="UserId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="UpdateDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="" Member="dbmlCommons">
+    <Type Name="dbmlCommon">
+      <Column Name="StringOne" Type="System.String" DbType="string (System.String)" CanBeNull="false" />
+      <Column Name="StringTwo" Type="System.String" DbType="string (System.String)" CanBeNull="false" />
+      <Column Name="StringThree" Type="System.String" DbType="string (System.String)" CanBeNull="false" />
+      <Column Name="StringFour" Type="System.String" DbType="string (System.String)" CanBeNull="false" />
+      <Column Name="StringFive" Type="System.String" DbType="string (System.String)" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="DBML.TempCartView" Member="dbmlTempCartViews">
+    <Type Name="dbmlTempCartView">
+      <Column Name="RowNumber" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CartId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ZZProduct" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="QuantityAdded" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="TotalAmount" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="ZZAction" Type="System.String" DbType="NVarChar(10)" CanBeNull="true" />
+      <Column Name="TradeDiscountPercentage" Type="System.Decimal" DbType="Decimal(18,5)" CanBeNull="false" />
+      <Column Name="SchemeDiscountPercentage" Type="System.Decimal" DbType="Decimal(18,5)" CanBeNull="false" />
+      <Column Name="AddiDiscountPercentage" Type="System.Decimal" DbType="Decimal(18,5)" CanBeNull="false" />
+      <Column Name="GSTPercentage" Type="System.Decimal" DbType="decimal(18,2)" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="DBML.TempCartMaster" Member="dbmlTempCartMasters">
+    <Type Name="dbmlTempCartMaster">
+      <Column Name="RowNumber" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CartId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ItemId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PartyId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ZZProduct" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="ZZItemCode" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="ZZITemPackSize" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="QuantityAdded" Type="System.Decimal" DbType="Decimal(18,0)" CanBeNull="true" />
+      <Column Name="OrderUnits" Type="System.Decimal" DbType="Decimal(18,0)" CanBeNull="true" />
+      <Column Name="MRP" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="DP" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="SchemeDiscountPercentage" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="TradeDiscountPercentage" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="AddiDiscountPercentage" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="GSTPercentage" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="TaxAmount" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="TotalAmount" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="ZZAction" Type="System.String" DbType="NVarChar(10)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="DBML.TempItemMaster" Member="dbmlTempItemMasters">
+    <Type Name="dbmlTempItemMaster">
+      <Column Name="RowNumber" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="ItemId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PartyId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ZZProduct" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Column Name="ZZItemCode" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="ZZItemPackSize" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="ZZOrderQty" Type="System.Decimal" DbType="Decimal(2,2) NOT NULL" CanBeNull="false" />
+      <Column Name="ZZOrderUnits" Type="System.Decimal" DbType="Decimal(2,2) NOT NULL" CanBeNull="false" />
+      <Column Name="ZZMRP" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="ZZDP" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="ZZSchemeDiscountPercentage" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="ZZTradeDiscountPercentage" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="ZZAddlDiscountPercentage" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="ZZGSTPercent" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="ZZTax" Type="System.Decimal" DbType="Decimal(2,2) NOT NULL" CanBeNull="false" />
+      <Column Name="ZZTotal" Type="System.Decimal" DbType="Decimal(2,2) NOT NULL" CanBeNull="false" />
+      <Column Name="ZZAction" Type="System.String" DbType="NVarChar(10)" CanBeNull="true" />
+      <Column Name="ZZQuantityBalance" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="false" />
+      <Column Name="RetailCategoryId" Type="System.Int32" DbType="int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="DBML.TempOrderHistory" Member="dbmlTempOrderHistories">
+    <Type Name="dbmlTempOrderHistory">
+      <Column Name="RowNumber" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="OrderNo" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="OrderDate" Type="System.String" DbType="string (System.String)" CanBeNull="false" />
+      <Column Name="InvoiceNo" Type="System.String" DbType="VarChar(1) NOT NULL" CanBeNull="false" />
+      <Column Name="ZZUserName" Type="System.String" DbType="NVarChar(503) NOT NULL" CanBeNull="false" />
+      <Column Name="UserId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="NoOfItems" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="TotalValue" Type="System.Decimal" DbType="Decimal(18,3)" CanBeNull="true" />
+      <Column Name="Status" Type="System.String" DbType="VarChar(1) NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="DBML.TempOrderDetail" Member="dbmlTempOrderDetails">
+    <Type Name="dbmlTempOrderDetail">
+      <Column Name="ItemCode" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="ItemName" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Column Name="PackSize" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="OrderCarton" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="OrderUnits" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="MRP" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="DealerPrice" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="DiscountPercentage1" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="DiscountPercentage2" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="DiscountPercentage3" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="DiscountPercentage4" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="DiscountPercentage5" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="GSTRate" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="Tax" Type="System.Decimal" DbType="Decimal(18,3)" CanBeNull="true" />
+      <Column Name="TotalAmount" Type="System.Decimal" DbType="Decimal(18,3) NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="DBML.TempLoginMaster" Member="dbmlTempLoginMasters">
+    <Type Name="dbmlTempLoginMaster">
+      <Column Name="UserId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ZZName" Type="System.String" DbType="NVarChar(503) NOT NULL" CanBeNull="false" />
+      <Column Name="EmailID" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Column Name="Mobile" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="Password" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="PasswordExpiryDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="IPAddress" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="UserTypeParaId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IdentityId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ZZPartyName" Type="System.String" CanBeNull="false" />
+      <Column Name="StateID" Type="System.Int32" DbType="INT" CanBeNull="true" />
+      <Column Name="ZZState" Type="System.String" DbType="Nvarchar(200)" CanBeNull="true" />
+      <Column Name="ZZIsUT" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="DownLoadType" Type="System.String" DbType="varchar(10)" CanBeNull="true" />
+      <Column Name="IsInvoiceAuto" Type="System.Boolean" DbType="bit" CanBeNull="true" />
+      <Column Name="isEInvoiceApplicable" Type="System.Boolean" DbType="bit" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="Security.UserMasterView" Member="dbmlUserMasterViews">
+    <Type Name="dbmlUserMasterView">
+      <Column Name="UserId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SalutationParaId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="FirstName" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="MiddleName" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="LastName" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="EmailID" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Column Name="Mobile" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="Password" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="PasswordExpiryDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="IPAddress" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="UserTypeParaId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IdentityId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ZZTitle" Type="System.String" DbType="NVarChar(502) NOT NULL" CanBeNull="false" />
+      <Column Name="ZZIdentity" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="ZZPasswordExpiryDate" Type="System.String" CanBeNull="false" />
+      <Column Name="ZZUserType" Type="System.String" CanBeNull="false" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="bool (System.Boolean)" CanBeNull="false" />
+      <Column Name="PermittedSuperstockistIds" Type="System.String" DbType="varchar(max)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="Master.Parameter" Member="dbmlParameters">
+    <Type Name="dbmlParameter">
+      <Column Name="ParameterKey" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ParameterTypeId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ParameterType" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="CreateId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="UpdateId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="UpdateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="Master.ItemMasterView" Member="dbmlItemMasterViews">
+    <Type Name="dbmlItemMasterView">
+      <Column Name="ItemId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ItemName" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Column Name="OurName" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Column Name="ItemCode" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="OurCode" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="UOMId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="UOMIdAlt" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ConvToAlt" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="ItemWeight" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="ItemWeightUOM" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="RetailCategoryId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Status" Type="System.Decimal" DbType="Decimal(1,0)" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="MOQ" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="PackingSize" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="PackingSizeUOMId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="HSNCodeId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Description1" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="Description2" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="PackedWeight" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="PackedWeightUOMId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ColourId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="MRPCategoryId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="EditedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="EditedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ZZUnitOfMeasure" Type="System.String" DbType="VarChar(150)" CanBeNull="true" />
+      <Column Name="ZZRetailCategory" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="ZZHSNDescription" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="ZZColour" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="ZZMRPCategory" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="SuperStockistID" Type="System.Int32" DbType="int" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="DBML.TempPartyMasterIdentity" Member="dbmlTempPartyMasterIdentities">
+    <Type Name="dbmlTempPartyMasterIdentity">
+      <Column Name="PartyID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PartyCode" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="Party" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="ShortName" Type="System.String" DbType="VarChar(8)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="DBML.TempSalesOrder" Member="dbmlTempSalesOrder11s">
+    <Type Name="dbmlTempSalesOrder11">
+      <Column Name="OrderNo" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="OrderDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="PartyId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="remark" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="CreateId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="UpdatedId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="UpdateDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="DBML.TempOrderHederId" Member="dbmlTempOrderHeaderIds">
+    <Type Name="dbmlTempOrderHeaderId">
+      <Column Name="OrderHeaderId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="OrderNo" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="OrderDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="PartyId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="remark" Type="System.String" CanBeNull="false" />
+      <Column Name="CreateId" Type="System.Int32" DbType="int (System.Int32)" CanBeNull="false" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime (System.DateTime)" CanBeNull="false" />
+      <Column Name="UpdatedId" Type="System.Int32" DbType="int (System.Int32)" CanBeNull="false" />
+      <Column Name="UpdateDate" Type="System.DateTime" DbType="DateTime (System.DateTime)" CanBeNull="false" />
+      <Column Name="ZZOrderDate" Type="System.String" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="DBML.TempOrderHederDetailId" Member="dbmlTempOrderHeaderDetailIds">
+    <Type Name="dbmlTempOrderHeaderDetailId">
+      <Column Name="ItemId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="OrderUnits" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="DealerPrice" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="PackSize" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="MRP" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="DiscountPercentage1" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="DiscountPercentage2" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="DiscountPercentage3" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="DiscountPercentage4" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="OrderQty" Type="System.Decimal" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="DBML.TempSalesOrderItem" Member="dbmlTempSalesOrderItems">
+    <Type Name="dbmlTempSalesOrderItem">
+      <Column Name="SalesOrderId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ItemId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="OrderUnits" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="DealerPrice" Type="System.Decimal" DbType="Decimal(18,5)" CanBeNull="true" />
+      <Column Name="PackSize" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="MRP" Type="System.Decimal" DbType="Decimal(18,6)" CanBeNull="true" />
+      <Column Name="DiscountPercentage1" Type="System.Decimal" DbType="Decimal(10,4)" CanBeNull="true" />
+      <Column Name="DiscountPercentage2" Type="System.Decimal" DbType="Decimal(10,4)" CanBeNull="true" />
+      <Column Name="DiscountPercentage3" Type="System.Decimal" DbType="Decimal(10,4)" CanBeNull="true" />
+      <Column Name="DiscountPercentage4" Type="System.Decimal" DbType="Decimal(10,4)" CanBeNull="true" />
+      <Column Name="OrderQty" Type="System.Decimal" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="Settings.MasterUpdate" Member="dbmlMasterUpdates">
+    <Type Name="dbmlMasterUpdate">
+      <Column Name="MasterUpdateId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="TableNameAtERPData" Type="System.String" DbType="NVarChar(500) NOT NULL" CanBeNull="false" />
+      <Column Name="LastUpdateDateTime" Type="System.String" CanBeNull="false" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="ZZChecked" Type="System.Boolean" DbType="bit" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="Trans.SalesChallan" Member="dbmlSalesChallans">
+    <Type Name="dbmlSalesChallan">
+      <Column Name="SalesChallanID" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="SalesChallanDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ClientID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Client" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="CreatedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="EditedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="EditedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Status" Type="System.Decimal" DbType="decimal (System.Decimal)" CanBeNull="true" />
+      <Column Name="YearId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="SrNo" Type="System.Int32" DbType="int (System.Int32)" CanBeNull="true" />
+      <Column Name="LRNo" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="TransporterName" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="VehicleNo" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="LRDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="SalesInvoiceNo" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="CurrencyID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="GrossWeight" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="NetWeight" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="ItemWeightUOMID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ConsigneeID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="DriverName" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="DriverContactNo" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="InvoiceRemarks" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="ClientAddress" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="ConsigneeAddress" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="ClientGST" Type="System.String" DbType="string (System.String)" CanBeNull="true" />
+      <Column Name="ConsigneeGST" Type="System.String" DbType="string (System.String)" CanBeNull="true" />
+      <Column Name="NetAmount" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="OtherCharges" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="TaxAmount" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="TotalAmount" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="RoundOff" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="RoundedTotalAmount" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="EWayBillNo" Type="System.String" DbType="string (System.String)" CanBeNull="true" />
+      <Column Name="EWayBillDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ClientCity" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="ConsigneeCity" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="ConsigneePin" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="ClientPin" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="Trans.SalesChallanDetail" Member="dbmlSalesChallanDetails">
+    <Type Name="dbmlSalesChallanDetail">
+      <Column Name="SalesChallanDetailID" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="SalesChallanID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="SalesOrderDeliveryID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ItemID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Rate" Type="System.Decimal" DbType="Decimal(18,5)" CanBeNull="true" />
+      <Column Name="UOMId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="DeliverDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="DispatchQuantity" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="SalesOrderID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Remarks" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="SOITEMID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="BasicRate" Type="System.Decimal" DbType="Decimal(18,5)" CanBeNull="true" />
+      <Column Name="Discount1" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="Discount2" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="Discount3" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="Discount4" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="SchemeDiscount" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="Dis1Rate" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="Dis2Rate" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="SchemePercentage" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="Dis3rate" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="Dis4rate" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="GrossValue" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="DBML.TempPartyMaster" Member="dbmlTempPartyMasters">
+    <Type Name="dbmlTempPartyMaster">
+      <Column Name="PartyID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PartyCode" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="PartyGroupID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Party" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="ShortName" Type="System.String" DbType="VarChar(8)" CanBeNull="true" />
+      <Column Name="PartyType" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="VendorCode" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Active" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="RegionId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PaymentTermID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="DeliveryTermID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Status" Type="System.Decimal" DbType="Decimal(1,0)" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="Createdby" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedDateTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Editedby" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="EditedDateTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="SalesPersonId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PriceGroupID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IsUnregisteredforGST" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsForeignParty" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="DistributorID" Type="System.Int32" DbType="int" CanBeNull="false" />
+      <Column Name="PAN" Type="System.String" CanBeNull="false" />
+      <Column Name="GST" Type="System.String" CanBeNull="false" />
+      <Column Name="UserID" Type="System.Int32" DbType="int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="DBML.TempItemInsertUpdate" Member="dbmlTempItemInsertUpdates">
+    <Type Name="dbmlTempItemInsertUpdate">
+      <Column Name="ItemId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ItemName" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Column Name="OurName" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Column Name="ItemCode" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="OurCode" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="UOMId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="UOMIdAlt" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ConvToAlt" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="ItemWeight" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="ItemWeightUOM" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="RetailCategoryId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Status" Type="System.Decimal" DbType="Decimal(1,0)" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="MOQ" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="PackingSize" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="PackingSizeUOMId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="HSNCodeId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Description1" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="Description2" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="PackedWeight" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="PackedWeightUOMId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ColourId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="MRPCategoryId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="EditedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="EditedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="DBML.TempCityMaster" Member="dbmlTempCityMasters">
+    <Type Name="dbmlTempCityMaster">
+      <Column Name="CityId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="CityName" Type="System.String" DbType="VarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="StateId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Status" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="EditedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="EditedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="TRatePerCarton" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="DBML.TempCountryMaster" Member="dbmlTempCountryMasters">
+    <Type Name="dbmlTempCountryMaster">
+      <Column Name="CountryID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Country" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="RegionID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CurrencyID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CountryCode" Type="System.String" DbType="VarChar(5) NOT NULL" CanBeNull="false" />
+      <Column Name="Status" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="EditedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="EditedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="DBML.TempStateMaster" Member="dbmlTempStateMasters">
+    <Type Name="dbmlTempStateMaster">
+      <Column Name="StateID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="State" Type="System.String" DbType="VarChar(150)" CanBeNull="true" />
+      <Column Name="CountryID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Status" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="RegionID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IsUT" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="StateCode" Type="System.String" DbType="VarChar(5)" CanBeNull="true" />
+      <Column Name="TRatePerCarton" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="CreatedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="EditedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="EditedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="Security.UserMaster" Member="dbmlUserMasterUpdateReqs">
+    <Type Name="dbmlUserMasterUpdateReq">
+      <Column Name="UserId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="SalutationParaId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="FirstName" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="MiddleName" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="LastName" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="Mobile" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="PasswordExpiryDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="IPAddress" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="UserTypeParaId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PermittedSuperstockistIds" Type="System.String" DbType="varchar(max)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="DBML.TempSalesChallan" Member="dbmlTempSalesChallans">
+    <Type Name="dbmlTempSalesChallan">
+      <Column Name="SelectBox" Type="System.Boolean" DbType="bool (System.Boolean)" CanBeNull="false" />
+      <Column Name="SalesChallanID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SalesInvoiceNo" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="SalesChallanDate" Type="System.String" DbType="string (System.String)" CanBeNull="true" />
+      <Column Name="TotalAmount" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="TransporterName" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="LRDate" Type="System.String" DbType="string (System.String)" CanBeNull="true" />
+      <Column Name="LRNo" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="DPStatusParaId" Type="System.Int32" DbType="int (System.Int32)" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="DBML.TempSalesChallan" Member="dbmlSalesChallanUpdtReqs">
+    <Type Name="dbmlSalesChallanUpdtReq">
+      <Column Name="SalesChallanID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="DPStatusParaId" Storage="_TransporterName" Type="System.Int32" DbType="int (System.Int32)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="DBML.tmpITP" Member="dbmlTempIPLs">
+    <Type Name="dbmlTempIPL">
+      <Column Name="ItemId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PartyId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ZZParty" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="ZZItemName" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Column Name="ZZItemLinked" Type="System.String" DbType="VarChar(1) NOT NULL" CanBeNull="false" />
+      <Column Name="ZZItemCode" Type="System.String" DbType="string (System.String)" CanBeNull="false" />
+      <Column Name="ZZFlag" Type="System.Int32" DbType="int (System.Int32)" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="DBML.TempItemPartyLink" Member="dbmlItemPartyLinkReqs">
+    <Type Name="dbmlItemPartyLinkReq">
+      <Column Name="ItemId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PartyId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="CreateId" Member="UserId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="" Member="dbmlTempOrderNotInserteds">
+    <Type Name="dbmlTempOrderNotInserted">
+      <Column Name="RowNumber" Type="System.Int32" DbType="int (System.Int32)" CanBeNull="false" />
+      <Column Name="OrderNo" Type="System.String" DbType="string (System.String)" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="[Work].ItemLedger" Member="dbmlItemLedgerOlds">
+    <Type Name="dbmlItemLedgerOld">
+      <Column Name="ItemLedgerId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ItemId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PartyId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="DocId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="DocDetailId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="LedgerDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="AmountDr" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="AmountCr" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="Narration" Type="System.String" DbType="NVarChar(150)" CanBeNull="true" />
+      <Column Name="OppNarration" Type="System.String" DbType="NVarChar(150)" CanBeNull="true" />
+      <Column Name="CreatedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="EditedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="EditedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="DBML.TempSalesOrder" Member="dbmlTempSalesOrders">
+    <Type Name="dbmlTempSalesOrder">
+      <Column Name="OrderNo" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="OrderDate" Type="System.String" CanBeNull="true" />
+      <Column Name="PartyId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="remark" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="CreateId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="UpdatedId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CurrencyID" Type="System.Int32" DbType="int" CanBeNull="false" />
+      <Column Name="RegisterID" Type="System.Int32" DbType="int" CanBeNull="false" />
+      <Column Name="YearID" Type="System.Int32" DbType="int" CanBeNull="false" />
+      <Column Name="ConsigneeID" Type="System.Int32" DbType="int" CanBeNull="false" />
+      <Column Name="DistributorID" Type="System.Int32" DbType="int" CanBeNull="false" />
+      <Column Name="SoTypeId" Type="System.Int32" DbType="int" CanBeNull="false" />
+      <Column Name="PartyGroupId" Type="System.Int32" DbType="int" CanBeNull="false" />
+      <Column Name="MenuID" Type="System.Int32" DbType="int" CanBeNull="false" />
+      <Column Name="FactoryId" Type="System.Int32" CanBeNull="false" />
+      <Column Name="SalesOrderNo" Type="System.String" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="Master.YearMaster" Member="dbmlTempYearMasters">
+    <Type Name="dbmlTempYearMaster">
+      <Column Name="YearID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="YearStartDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="YearEndDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="IsCurrent" Type="System.String" DbType="VarChar(2)" CanBeNull="true" />
+      <Column Name="YearName" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
+      <Column Name="ExportYearName" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="Master.CurrencyMaster" Member="dbmlTempCurrencyMasters">
+    <Type Name="dbmlTempCurrencyMaster">
+      <Column Name="CurrencyID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Currency" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="CurrencyDisplay" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
+      <Column Name="ConversionRate" Type="System.Decimal" DbType="Decimal(18,0)" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ModifiedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="Settings.OptionList" Member="dbmlOptionLists">
+    <Type Name="dbmlOptionList">
+      <Column Name="OptionListId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ParameterId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="OptionListCode" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="OptionListDesc" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="CreateId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="UpdateId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="UpdateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="DBML.TempItemTypeMaster" Member="dbmlTempItemTypeMasters">
+    <Type Name="dbmlTempItemTypeMaster">
+      <Column Name="RetailCategoryID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="RetailCategory" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="HasChild" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="ParentId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Status" Type="System.Decimal" DbType="Decimal(1,0)" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="MRPCategoryId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="LastEditedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="LastEditedDateTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="DBML.TempDiscountMaster" Member="dbmlTempDiscountMasters">
+    <Type Name="dbmlTempDiscountMaster">
+      <Column Name="DiscountId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="CompanyID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="FactoryID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Status" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="StartDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="EndDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ItemId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PartyId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Discount1" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="Discount2" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="Discount3" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="Discount4" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="Discount5" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="CreatedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedDateTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LastEditedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="LastEditedDateTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="DBML.TempHSNCodeMaster" Member="dbmlTempHSNCodeMasters">
+    <Type Name="dbmlTempHSNCodeMaster">
+      <Column Name="HSNCodeId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="HSNCode" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="HSNDescription" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="IsSAC" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="Rate" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="Exprate" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="LastEditedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="LastEditedDateTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="DBML.TempPriceListMaster" Member="dbmlTempPriceListMasters">
+    <Type Name="dbmlTempPriceListMaster">
+      <Column Name="PriceListId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ItemId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="MRP" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="DealerPrice" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="EffectiveDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ValidtillDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="CreatedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedDateTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="EditedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="EditedDateTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="DiscountPercent" Type="System.Decimal" CanBeNull="false" />
+      <Column Name="ForeignRate" Type="System.Decimal" CanBeNull="false" />
+      <Column Name="Status" Type="System.Int32" CanBeNull="false" />
+      <Column Name="ExportCurrencyId" Type="System.Int32" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="Trans.SalesChallanDetailView" Member="dbmlSalesChallanDetailViews">
+    <Type Name="dbmlSalesChallanDetailView">
+      <Column Name="SalesChallanDetailID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SalesChallanID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ItemID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Rate" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="BasicRate" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="DispatchQuantity" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="GrossValue" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="Remarks" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="ClientID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Client" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="NetAmount" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="TotalAmount" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="SalesChallanDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Discount1" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="Discount2" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="Discount3" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="Discount4" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="SchemeDiscount" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="Dis1Rate" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="Dis2Rate" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="Dis3rate" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="Dis4rate" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="SchemePercentage" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="ItemName" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Column Name="itemcode" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="ourname" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Column Name="ourcode" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="NetValue" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="Stock.ItemAdjustment" Member="dbmlItemAdjustments">
+    <Type Name="dbmlItemAdjustment">
+      <Column Name="ItemAdjustmentId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="PartyId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="VoucherNo" Type="System.String" DbType="NVarChar(150)" CanBeNull="true" />
+      <Column Name="VoucherDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="StatusPropId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Remark" Type="System.String" DbType="NVarChar(250)" CanBeNull="true" />
+      <Column Name="CreatedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="EditedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="EditedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="HdrAdjustmentTypeID" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="CustomerID" Type="System.Int32" DbType="int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="Stock.ItemAdjustmentDetail" Member="dbmlItemAdjustmentDetails">
+    <Type Name="dbmlItemAdjustmentDetail">
+      <Column Name="ItemAdjustmentDetailId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ItemAdjustmentId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ItemId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="AdjustmentTypeId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="QuantityIn" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="QuantityOut" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="CreatedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="EditedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="EditedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Rate" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="false" />
+      <Column Name="DPRate" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="Stock.ItemAdjustment" Member="dbmlItemAdjustmentDateWIses">
+    <Type Name="dbmlItemAdjustmentDateWIse">
+      <Column Name="ItemAdjustmentId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="PartyId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="VoucherNo" Type="System.String" DbType="NVarChar(150)" CanBeNull="true" />
+      <Column Name="VoucherDate" Type="System.String" DbType="nvarchar(50)" CanBeNull="true" />
+      <Column Name="StatusPropId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Remark" Type="System.String" DbType="NVarChar(250)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="Master.CustomerMaster" Member="dbmlCustomerMasters">
+    <Type Name="dbmlCustomerMaster">
+      <Column Name="PartyID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PartyCode" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="SuperStockistID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PartyGroupID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Party" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="ShortName" Type="System.String" DbType="VarChar(8)" CanBeNull="true" />
+      <Column Name="PartyType" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="PartyTypeId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="VendorCode" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Active" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="RegionId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PaymentTermID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="DeliveryTermID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Status" Type="System.Decimal" DbType="Decimal(1,0)" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="DistributorID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Createdby" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedDateTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Editedby" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="EditedDateTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="SalesPersonId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PriceGroupID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IsUnregisteredforGST" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsForeignParty" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="GSTNo" Type="System.String" DbType="VarChar(15)" CanBeNull="true" />
+      <Column Name="GSTEffectiveDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="PANNO" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
+      <Column Name="PANNoEffectiveDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="Master.FreightTypeMaster" Member="dbmlFreightTypeMasters">
+    <Type Name="dbmlFreightTypeMaster">
+      <Column Name="FreightTypeID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="FreightType" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="Master.CustomerAddressMaster" Member="dbmlCustomerAddressMasters">
+    <Type Name="dbmlCustomerAddressMaster">
+      <Column Name="PartyAddressID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ContactPersons" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="Pin" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="Email" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="Tel" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="Fax" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="CountryID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="StateID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="State" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="City" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="IsMain" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="Mobile" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="Address" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="AddressTypeID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PartyID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Website" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="Cityid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="RealAddress" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="ZZCountry" Type="System.String" DbType="nvarchar(200)" CanBeNull="true" />
+      <Column Name="ZZState" Type="System.String" DbType="nvarchar(200)" CanBeNull="true" />
+      <Column Name="ZZCity" Type="System.String" DbType="nvarchar(200)" CanBeNull="true" />
+      <Column Name="ZZIsUT" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="SalesPerson" Type="System.String" DbType="varchar(200)" CanBeNull="true" />
+      <Column Name="Transporter" Type="System.String" DbType="varchar(500)" CanBeNull="true" />
+      <Column Name="TransporterGST" Type="System.String" DbType="varchar(50)" CanBeNull="true" />
+      <Column Name="FreightId" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="CreditDays" Type="System.Int32" DbType="int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="Trans.DealerSalesChallan" Member="dbmlDealerSalesChallans">
+    <Type Name="dbmlDealerSalesChallan">
+      <Column Name="DealerSalesChallanID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="InvoiceNo" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="SuperStockistID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="InvoiceDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="CustomerID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Customer" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="ConsigneeID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CustomerGST" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="ConsigneeGST" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="FreightId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Status" Type="System.Decimal" DbType="Decimal(1,0)" CanBeNull="true" />
+      <Column Name="SealNo" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="LRNo" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Transporter" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="TransporterGST" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="VehicleNo" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="LRDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="GrossWeight" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="NetWeight" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="IsCancel" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="CancellationRemark" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="Approval1" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Approval1Date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Approval2" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Approval2Date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="CreatedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="EditedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="EditedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="EWayBillNo" Type="System.String" DbType="VarChar(30)" CanBeNull="true" />
+      <Column Name="EWayBillDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="EWayBillExpiryDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="NetAmount" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="OtherCharges" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="TaxAmount" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="TotalAmount" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="RoundOff" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="RoundedTotalAmount" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="TransporterGstNo" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="ConversionRate" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="YearID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="BillingPartyAddressID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="BillingAddress" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="BillingCountryID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="BillingCountry" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="BillingStateID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="BillingState" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="BillingCityID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="BillingCity" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="BillingPIN" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="ShippingPartyAddressID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ShippingAddress" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="ShippingCountryID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ShippingCountry" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="ShippingStateID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ShippingState" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="ShippingCityID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ShippingCity" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="ShippingPIN" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="ZZInvoiceDate" Type="System.String" DbType="nvarchar(200)" CanBeNull="true" />
+      <Column Name="ZZLRDate" Type="System.String" DbType="nvarchar(200)" CanBeNull="true" />
+      <Column Name="ZZEWayBillDate" Type="System.String" DbType="nvarchar(200)" CanBeNull="true" />
+      <Column Name="Remark" Type="System.String" DbType="varchar(500)" CanBeNull="true" />
+      <Column Name="ZZFreightType" Type="System.String" DbType="nvarchar(200)" CanBeNull="true" />
+      <Column Name="TCSChargeCodeID" Type="System.Int32" CanBeNull="true" />
+      <Column Name="TCSChargeName" Type="System.String" CanBeNull="false" />
+      <Column Name="TCSAmount" Type="System.Decimal" CanBeNull="false" />
+      <Column Name="GrandTotal" Type="System.Decimal" CanBeNull="false" />
+      <Column Name="NoOfBoxes" Type="System.Int32" CanBeNull="true" />
+      <Column Name="CreditDays" Type="System.Int32" CanBeNull="true" />
+      <Column Name="IsRoundOff" Type="System.Boolean" DbType="bit" CanBeNull="true" />
+      <Column Name="PrivateMarks" Type="System.String" DbType="varchar(200)" CanBeNull="true" />
+      <Column Name="InvoiceDateVal" Type="System.String" DbType="varchar(50)" CanBeNull="true" />
+      <Column Name="IsPurchaseReturn" Type="System.Boolean" DbType="bit" CanBeNull="true" />
+      <Column Name="AdditionalDiscount" Type="System.Decimal" DbType="decimal(18,4)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="Trans.DealerSalesChallanDetails" Member="dbmlDealerSalesChallanDetails">
+    <Type Name="dbmlDealerSalesChallanDetail">
+      <Column Name="DealerSalesChallanDetailID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="DealerSalesChallanID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ItemID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IsCharge" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="Rate" Type="System.Decimal" DbType="Decimal(18,5)" CanBeNull="true" />
+      <Column Name="UOMId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Quantity" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="Remarks" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="PARENTID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="BasicRate" Type="System.Decimal" DbType="Decimal(18,5)" CanBeNull="true" />
+      <Column Name="Discount1" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="Discount2" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="Discount3" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="Discount4" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="SchemeDiscount" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="Dis1Rate" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="Dis2Rate" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="SchemePercentage" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="Dis3rate" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="Dis4rate" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="GrossValue" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="NetValue" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="GSTRate" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="CGST" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="SGSTORUTGST" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="IGST" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="ZZItemName" Type="System.String" DbType="nvarchar(500)" CanBeNull="true" />
+      <Column Name="ZZOurCode" Type="System.String" DbType="nvarchar(500)" CanBeNull="true" />
+      <Column Name="DPRate" Type="System.Decimal" DbType="Decimal(18,5)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="Stock.ItemLedger" Member="dbmlItemLedgers">
+    <Type Name="dbmlItemLedger">
+      <Column Name="ItemLedgerId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ItemId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PartyId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="SalesChallanID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="SalesChallanDetailID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="LedgerDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="QuantityIn" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="QuantityOut" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="BasicRate" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="Amount" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="Narration" Type="System.String" DbType="NVarChar(150)" CanBeNull="true" />
+      <Column Name="OppNarration" Type="System.String" DbType="NVarChar(150)" CanBeNull="true" />
+      <Column Name="CreatedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="EditedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="EditedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="BPId" Type="System.Int32" DbType="INT" CanBeNull="false" />
+      <Column Name="Rate" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="false" />
+      <Column Name="varchar(100)" Member="ParentProductType" Type="System.String" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="Master.PartyType" Member="dbmlPartyTypes">
+    <Type Name="dbmlPartyType">
+      <Column Name="PartyTypeID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PartyType" Member="PartyType1" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="Master.AddressTypeMaster" Member="dbmlAddressTypeMasters">
+    <Type Name="dbmlAddressTypeMaster">
+      <Column Name="AddressTypeID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="AddressType" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="Master.CustomerMaster" Member="TempCustomerMasters">
+    <Type Name="TempCustomerMaster">
+      <Column Name="PartyID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PartyCode" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="SuperStockistID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PartyGroupID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Party" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="ShortName" Type="System.String" DbType="VarChar(8)" CanBeNull="true" />
+      <Column Name="PartyType" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="VendorCode" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Active" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="RegionId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PaymentTermID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="DeliveryTermID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Status" Type="System.Decimal" DbType="Decimal(1,0)" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="DistributorID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Createdby" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedDateTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Editedby" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="EditedDateTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="SalesPersonId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PriceGroupID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IsUnregisteredforGST" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsForeignParty" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="GSTNo" Type="System.String" DbType="VarChar(15)" CanBeNull="true" />
+      <Column Name="GSTEffectiveDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="PANNO" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
+      <Column Name="PANNoEffectiveDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="City" Type="System.String" CanBeNull="false" />
+      <Column Name="State" Type="System.String" CanBeNull="false" />
+      <Column Name="ZZPANNoEffectiveDate" Type="System.String" CanBeNull="false" />
+      <Column Name="ZZGSTEffectiveDate" Type="System.String" CanBeNull="false" />
+      <Column Name="SalesPerson" Type="System.String" DbType="varchar(200)" CanBeNull="true" />
+      <Column Name="Transporter" Type="System.String" DbType="varchar(500)" CanBeNull="true" />
+      <Column Name="TransporterGST" Type="System.String" DbType="varchar(50)" CanBeNull="true" />
+      <Column Name="FreightId" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="CreditDays" Type="System.Int32" DbType="int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="Master.CustomerAddressMaster" Member="TempCustomerAddressMasters">
+    <Type Name="TempCustomerAddressMaster">
+      <Column Name="PartyAddressID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ContactPersons" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="Pin" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="Email" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="Tel" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="Fax" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="CountryID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="StateID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="State" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="City" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="IsMain" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="Mobile" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="Address" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="AddressTypeID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PartyID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Website" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="Cityid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="RealAddress" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="Country" Type="System.String" CanBeNull="false" />
+      <Column Name="AddressType" Type="System.String" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="Master.CustomerMaster" Member="dbmlCustomerUpdateReqs">
+    <Type Name="dbmlCustomerUpdateReq">
+      <Column Name="PartyID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PartyCode" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="SuperStockistID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PartyGroupID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Party" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="ShortName" Type="System.String" DbType="VarChar(8)" CanBeNull="true" />
+      <Column Name="PartyType" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="VendorCode" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Active" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="RegionId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PaymentTermID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="DeliveryTermID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Status" Type="System.Decimal" DbType="Decimal(1,0)" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="DistributorID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Createdby" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedDateTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Editedby" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="EditedDateTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="SalesPersonId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PriceGroupID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IsUnregisteredforGST" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsForeignParty" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="GSTNo" Type="System.String" DbType="VarChar(15)" CanBeNull="true" />
+      <Column Name="GSTEffectiveDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="PANNO" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
+      <Column Name="PANNoEffectiveDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="City" Type="System.String" CanBeNull="false" />
+      <Column Name="State" Type="System.String" CanBeNull="false" />
+      <Column Name="ZZPANNoEffectiveDate" Type="System.String" CanBeNull="false" />
+      <Column Name="ZZGSTEffectiveDate" Type="System.String" CanBeNull="false" />
+      <Column Name="SalesPerson" Type="System.String" DbType="varchar(200)" CanBeNull="true" />
+      <Column Name="Transporter" Type="System.String" DbType="varchar(500)" CanBeNull="true" />
+      <Column Name="TransporterGST" Type="System.String" DbType="varchar(50)" CanBeNull="true" />
+      <Column Name="FreightId" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="CreditDays" Type="System.Int32" DbType="int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="Master.CustomerAddressMaster" Member="dbmlCustomerAddressUpdateReqs">
+    <Type Name="dbmlCustomerAddressUpdateReq">
+      <Column Name="PartyAddressID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ContactPersons" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="Pin" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="Email" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="Tel" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="Fax" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="CountryID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="StateID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="State" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="City" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="IsMain" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="Mobile" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="Address" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="AddressTypeID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PartyID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Website" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="Cityid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="RealAddress" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="Country" Type="System.String" CanBeNull="false" />
+      <Column Name="AddressType" Type="System.String" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="DBML.TempCustomerDiscountItemView" Member="TempCustomerDiscountItemViews">
+    <Type Name="TempCustomerDiscountItemView">
+      <Column Name="ItemID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PartyID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ZZProduct" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="ZZItemCode" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="Master.DealerSalesDiscountMaster" Member="TempDealerSalesDiscountMasters">
+    <Type Name="TempDealerSalesDiscountMaster">
+      <Column Name="SuperStockistID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PartyTypeID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PartyID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="EffectiveDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="ValidTillDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="Discount1" Type="System.Decimal" DbType="Decimal(16,2)" CanBeNull="true" />
+      <Column Name="Discount2" Type="System.Decimal" DbType="Decimal(16,2)" CanBeNull="true" />
+      <Column Name="Discount3" Type="System.Decimal" DbType="Decimal(16,2)" CanBeNull="true" />
+      <Column Name="CreatedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ItemID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ItemName" Type="System.String" CanBeNull="false" />
+      <Column Name="ItemCode" Type="System.String" CanBeNull="false" />
+      <Column Name="Party" Type="System.String" CanBeNull="false" />
+      <Column Name="PartyType" Type="System.String" CanBeNull="false" />
+      <Column Name="ZZEffectiveDate" Type="System.String" CanBeNull="false" />
+      <Column Name="ZZValidTillDate" Type="System.String" CanBeNull="false" />
+      <Column Name="DealerDSalesiscountMasterID" Type="System.String" CanBeNull="false" />
+      <Column Name="Status" Type="System.Int32" DbType="int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="" Member="dbmlItemLedgerReports">
+    <Type Name="dbmlItemLedgerReport">
+      <Column Name="ItemId" Type="System.Int32" DbType="int (System.Int32)" CanBeNull="false" />
+      <Column Name="ItemCode" Type="System.String" DbType="string (System.String)" CanBeNull="false" />
+      <Column Name="OpeningBalanceQty" Storage="_OpeningBalance" Type="System.Decimal" DbType="decimal (System.Decimal)" CanBeNull="false" />
+      <Column Name="QuantityIn" Type="System.Decimal" DbType="decimal (System.Decimal)" CanBeNull="false" />
+      <Column Name="QuantityOut" Type="System.Decimal" DbType="decimal (System.Decimal)" CanBeNull="false" />
+      <Column Name="ClosingBalanceQty" Storage="_ClosingBalance" Type="System.Decimal" DbType="decimal (System.Decimal)" CanBeNull="false" />
+      <Column Name="ItemName" Type="System.String" DbType="string (System.String)" CanBeNull="false" />
+      <Column Name="OpeningBalanceAmt" Type="System.Decimal" DbType="decimal (System.Decimal)" CanBeNull="false" />
+      <Column Name="ClosingBalanceAmt" Type="System.Decimal" DbType="decimal (System.Decimal)" CanBeNull="false" />
+      <Column Name="AmountIn" Type="System.Decimal" DbType="decimal (System.Decimal)" CanBeNull="false" />
+      <Column Name="AmountOut" Type="System.Decimal" DbType="decimal (System.Decimal)" CanBeNull="false" />
+      <Column Name="ParentProductType" Type="System.String" DbType="string (System.String)" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="" Member="dbmlitemLedgerDetails">
+    <Type Name="dbmlitemLedgerDetails">
+      <Column Name="ItemLedgerId" Type="System.Int32" DbType="int (System.Int32)" CanBeNull="false" />
+      <Column Name="ItemId" Type="System.Int32" DbType="int (System.Int32)" CanBeNull="false" />
+      <Column Name="LedgerDate" Type="System.String" DbType="string (System.String)" CanBeNull="false" />
+      <Column Name="EntryType" Type="System.String" DbType="string (System.String)" CanBeNull="false" />
+      <Column Name="VoucherNo" Type="System.String" DbType="string (System.String)" CanBeNull="false" />
+      <Column Name="QuantityIn" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="QuantityOut" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="BasicRate" Type="System.Decimal" DbType="decimal (System.Decimal)" CanBeNull="false" />
+      <Column Name="Rate" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="false" />
+      <Column Name="BuyerCustomerName" Type="System.String" DbType="varchar(200)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="Master.News" Member="dbmlNewsMasters">
+    <Type Name="dbmlNewsMaster">
+      <Column Name="NewsId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="NewsTitle" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="LinkPage" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="News" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="NewsDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="MetatagKeywords" Type="System.String" DbType="VarChar(1000)" CanBeNull="true" />
+      <Column Name="MetatagDescription" Type="System.String" DbType="VarChar(550)" CanBeNull="true" />
+      <Column Name="MetatagTitle" Type="System.String" DbType="VarChar(300)" CanBeNull="true" />
+      <Column Name="OpenNewWindow" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="CreatedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ModifiedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="IPAddress" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="ModifiedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="DisplayUrl" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="Active" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="Master.News" Member="dbmlNewsMasterUpdateReqs">
+    <Type Name="dbmlNewsMasterUpdateReq">
+      <Column Name="NewsId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="NewsTitle" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="LinkPage" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="News" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="NewsDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="MetatagKeywords" Type="System.String" DbType="VarChar(1000)" CanBeNull="true" />
+      <Column Name="MetatagDescription" Type="System.String" DbType="VarChar(550)" CanBeNull="true" />
+      <Column Name="MetatagTitle" Type="System.String" DbType="VarChar(300)" CanBeNull="true" />
+      <Column Name="OpenNewWindow" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="CreatedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ModifiedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="IPAddress" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="ModifiedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="DisplayUrl" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="Active" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="Master.NewsMasterView" Member="dbmlNewsMasterViews">
+    <Type Name="dbmlNewsMasterView">
+      <Column Name="NewsId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="NewsTitle" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="NewsDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ZZTitle" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="ZZNewsDate" Type="System.String" DbType="NVarChar(11)" CanBeNull="true" />
+      <Column Name="Active" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="Master.ChargeMaster" Member="dbmlChargeMasters">
+    <Type Name="dbmlChargeMaster">
+      <Column Name="ChargeId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Charge" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="ChargeRate" Type="System.Decimal" DbType="Decimal(8,3)" CanBeNull="true" />
+      <Column Name="RoundType" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="RoundOffDigit" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="isTCS" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="Active" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="" Member="dbmlSalesReports">
+    <Type Name="dbmlSalesReport">
+      <Column Name="RNo" Type="System.Int32" DbType="int (System.Int32)" CanBeNull="true" />
+      <Column Name="InvoiceNo" Type="System.String" DbType="varchar(50)" CanBeNull="true" />
+      <Column Name="InvoiceDate" Type="System.String" DbType="varchar(15)" CanBeNull="true" />
+      <Column Name="partycode" Type="System.String" DbType="varchar(100)" CanBeNull="true" />
+      <Column Name="SuperStockist" Type="System.String" DbType="varchar(250)" CanBeNull="false" />
+      <Column Name="Customer" Type="System.String" DbType="varchar(250)" CanBeNull="true" />
+      <Column Name="CustomerGST" Type="System.String" DbType="varchar(15)" CanBeNull="true" />
+      <Column Name="Consignee" Type="System.String" DbType="varchar(250)" CanBeNull="true" />
+      <Column Name="ConsigneeGST" Type="System.String" DbType="varchar(15)" CanBeNull="true" />
+      <Column Name="CustomerAddress" Type="System.String" DbType="varchar(2500)" CanBeNull="true" />
+      <Column Name="ConsigneeAddress" Type="System.String" DbType="varchar(2500)" CanBeNull="true" />
+      <Column Name="CustomerState" Type="System.String" DbType="varchar(500)" CanBeNull="true" />
+      <Column Name="ConsigneeState" Type="System.String" DbType="varchar(500)" CanBeNull="true" />
+      <Column Name="itemcode" Type="System.String" DbType="varchar(50)" CanBeNull="true" />
+      <Column Name="ItemName" Type="System.String" DbType="varchar(200)" CanBeNull="true" />
+      <Column Name="ParentProductType" Type="System.String" DbType="varchar(100)" CanBeNull="true" />
+      <Column Name="ProductType" Type="System.String" DbType="varchar(100)" CanBeNull="true" />
+      <Column Name="HSNCode" Type="System.String" DbType="varchar(20)" CanBeNull="true" />
+      <Column Name="UnitOfMeasure" Type="System.String" DbType="varchar(250)" CanBeNull="true" />
+      <Column Name="NoofPkt" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="QtyperPkt" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="Quantity" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="BasicRate" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="GrossItemAmount" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="Dis1Rate" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="Discount1" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="Dis2Rate" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="Discount2" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="Dis3Rate" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="Discount3" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="NetRate" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="TotalItemDiscount" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="TaxableValue" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="GSTRate" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="CGST" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="SGST" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="IGST" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="TotalItemAmount" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="OtherCharge" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="TCSAmount" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="RoundedTotalAmount" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="RoundOff" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="GrandTotal" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="LRNo" Type="System.String" DbType="varchar(50)" CanBeNull="true" />
+      <Column Name="LRDate" Type="System.DateTime" DbType="datetime" CanBeNull="true" />
+      <Column Name="Transporter" Type="System.String" DbType="varchar(500)" CanBeNull="true" />
+      <Column Name="TransporterGstNo" Type="System.String" DbType="varchar(50)" CanBeNull="true" />
+      <Column Name="EWayBillNo" Type="System.String" DbType="varchar(30)" CanBeNull="true" />
+      <Column Name="EWayBillDate" Type="System.DateTime" DbType="datetime" CanBeNull="true" />
+      <Column Name="CGSTSGSTText" Type="System.String" DbType="varchar(100)" CanBeNull="true" />
+      <Column Name="SalesPerson" Type="System.String" DbType="varchar(200)" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="" Member="dbmlDownloadInvoiceReports">
+    <Type Name="dbmlDownloadInvoiceReport">
+      <Column Name="InvoiceNo" Type="System.String" DbType="varchar(50)" CanBeNull="true" />
+      <Column Name="InvoiceDate" Type="System.String" DbType="varchar(15)" CanBeNull="true" />
+      <Column Name="partycode" Member="PartyCode" Storage="_partycode" Type="System.String" DbType="varchar(100)" CanBeNull="true" />
+      <Column Name="GrossItemAmount" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="Discount1" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="Discount2" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="Discount3" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="SchemeDiscount" Storage="_TotalItemDiscount" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="NETAMOUNT" Storage="_TaxableValue" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="CashDiscountAmount" Storage="_GSTRate" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="CGST" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="SGST" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="IGST" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="CessAmount" Storage="_TCSAmount" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="RoundedTotalAmount" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="RoundOff" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="billtype" Storage="_Transporter" Type="System.String" DbType="varchar(500)" CanBeNull="true" />
+      <Column Name="NARRATION" Storage="_TransporterGstNo" Type="System.String" DbType="varchar(2500)" CanBeNull="true" />
+      <Column Name="PREFIX" Type="System.String" DbType="varchar(100)" CanBeNull="false" />
+      <Column Name="LessOther" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="false" />
+      <Column Name="BasicRate" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="Quantity" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="Dis3Rate" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="Dis2Rate" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="Dis1Rate" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="SchemePercentage" Type="System.Decimal" DbType="numeric918,4)" CanBeNull="true" />
+      <Column Name="SGSTRate" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="GrossValue" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="NetValue" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="igstRate" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="Discount4" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="Dis4Rate" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="SGSTORUTGST" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="TRANTYPE" Type="System.String" DbType="varchar(50)" CanBeNull="true" />
+      <Column Name="GSTRateVal" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="HSNCode" Type="System.String" DbType="varchar(20)" CanBeNull="true" />
+      <Column Name="OurCode" Type="System.String" DbType="varchar(50)" CanBeNull="true" />
+      <Column Name="OurName" Type="System.String" DbType="varchar(200)" CanBeNull="true" />
+      <Column Name="mrp" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="DealerPrice" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="CGSTRate" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="Customer" Type="System.String" DbType="varchar(500)" CanBeNull="true" />
+      <Column Name="CustomerGST" Type="System.String" DbType="varchar(20)" CanBeNull="true" />
+      <Column Name="PlaceofSupply" Type="System.String" DbType="varchar(200)" CanBeNull="true" />
+      <Column Name="Rate" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="TCSAmountVal" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="Master.RegionMaster" Member="dbmlTempRegionMasters">
+    <Type Name="dbmlTempRegionMaster">
+      <Column Name="RegionID" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Region" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Status" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedDateTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="EditedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="EditedDateTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Char" DbType="Char(1)" CanBeNull="true" />
+      <Column Name="RegionalManager" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="Master.SalesZoneMaster" Member="dbmlTempSalesZoneMasters">
+    <Type Name="dbmlTempSalesZoneMaster">
+      <Column Name="SalesZoneID" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="SalesZone" Type="System.String" DbType="VarChar(150)" CanBeNull="true" />
+      <Column Name="CountryID" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="StateID" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="ZoneLevel" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ZonalManager" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Column Name="ZonalManagerEmailID" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Column Name="ZonalManagerID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="EditedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="EditedDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="RegionalManagerEmailID" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Column Name="RegionalManagerID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="SalesManagerID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="" Member="dbmlUOMMasters">
+    <Type Name="dbmlUOMMaster">
+      <Column Name="UOMId" Type="System.Int32" DbType="int" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="UnitOfMeasure" Type="System.String" DbType="varchar(150)" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="DBML.TempItemInsertUpdate" Member="dbmlTempItemInsertUpdateNews">
+    <Type Name="dbmlTempItemInsertUpdateNew">
+      <Column Name="ItemId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ItemName" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Column Name="OurName" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Column Name="ItemCode" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="OurCode" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="UOMId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="UOMIdAlt" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ConvToAlt" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="ItemWeight" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="ItemWeightUOM" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="RetailCategoryId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Status" Type="System.Decimal" DbType="Decimal(1,0)" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="MOQ" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="PackingSize" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="PackingSizeUOMId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="HSNCodeId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Description1" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="Description2" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="PackedWeight" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="true" />
+      <Column Name="PackedWeightUOMId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ColourId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="MRPCategoryId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="EditedBy" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="EditedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="SuperStockistID" Type="System.Int32" DbType="int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="" Member="dbmlMailServerDetails">
+    <Type Name="dbmlMailServerDetails">
+      <Column Name="MailTypeID" Type="System.Int32" DbType="int" CanBeNull="false" />
+      <Column Name="FromID" Type="System.String" DbType="varchar(50)" CanBeNull="true" />
+      <Column Name="CCEmail" Type="System.String" DbType="varchar(20)" CanBeNull="true" />
+      <Column Name="BCCEmail" Type="System.String" DbType="varchar(200)" CanBeNull="true" />
+      <Column Name="Password" Type="System.String" DbType="varchar(60)" CanBeNull="false" />
+      <Column Name="MailServer" Type="System.String" DbType="varchar(50)" CanBeNull="true" />
+      <Column Name="MailUser" Type="System.String" DbType="varchar(60)" CanBeNull="true" />
+      <Column Name="PortNo" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="SSL" Type="System.Boolean" DbType="bit" CanBeNull="true" />
+      <Column Name="ToEmailID" Type="System.String" DbType="varchar(200)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="" Member="dbmlPendingWebOrderStatusReports">
+    <Type Name="dbmlPendingWebOrderStatusReport">
+      <Column Name="SalesOrderNo" Type="System.String" DbType="varchar(250)" CanBeNull="true" />
+      <Column Name="Region" Type="System.String" DbType="varchar(50)" CanBeNull="true" />
+      <Column Name="PartyGroup" Type="System.String" DbType="varchar(100)" CanBeNull="true" />
+      <Column Name="Client" Type="System.String" DbType="varchar(250)" CanBeNull="true" />
+      <Column Name="Consignee" Type="System.String" DbType="varchar(250)" CanBeNull="true" />
+      <Column Name="State" Type="System.String" DbType="varchar(100)" CanBeNull="true" />
+      <Column Name="CityName" Type="System.String" DbType="varchar(100)" CanBeNull="true" />
+      <Column Name="ClientOrder" Type="System.String" DbType="varchar(100)" CanBeNull="true" />
+      <Column Name="OrderDate" Type="System.String" DbType="varchar(15)" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.String" DbType="varchar(15)" CanBeNull="true" />
+      <Column Name="ExpiryDate" Type="System.String" DbType="varchar(15)" CanBeNull="true" />
+      <Column Name="OurName" Type="System.String" DbType="varchar(500)" CanBeNull="true" />
+      <Column Name="OurCode" Type="System.String" DbType="varchar(100)" CanBeNull="true" />
+      <Column Name="ItemName" Type="System.String" DbType="varchar(500)" CanBeNull="true" />
+      <Column Name="ItemCode" Type="System.String" DbType="varchar(100)" CanBeNull="true" />
+      <Column Name="EANNo" Type="System.String" DbType="varchar(100)" CanBeNull="true" />
+      <Column Name="Project" Type="System.String" DbType="varchar(100)" CanBeNull="true" />
+      <Column Name="MRP" Type="System.Decimal" DbType="numeric(18,2)" CanBeNull="true" />
+      <Column Name="BasicRate" Type="System.Decimal" DbType="numeric(18,2)" CanBeNull="true" />
+      <Column Name="Discrate" Type="System.Decimal" DbType="numeric(18,2)" CanBeNull="true" />
+      <Column Name="SchDate" Type="System.String" DbType="varchar(15)" CanBeNull="true" />
+      <Column Name="SchQty" Type="System.Decimal" DbType="numeric(18,2)" CanBeNull="true" />
+      <Column Name="SchBox" Type="System.Decimal" DbType="numeric(18,2)" CanBeNull="true" />
+      <Column Name="DispQty" Type="System.Decimal" DbType="numeric(18,2) " CanBeNull="true" />
+      <Column Name="BalQty" Type="System.Decimal" DbType="numeric(18,2)" CanBeNull="true" />
+      <Column Name="ClosedQty" Type="System.Decimal" DbType="numeric(18,2)" CanBeNull="true" />
+      <Column Name="BalBox" Type="System.Decimal" DbType="numeric(18,2)" CanBeNull="true" />
+      <Column Name="ClosedBox" Type="System.Decimal" DbType="numeric(18,2)" CanBeNull="true" />
+      <Column Name="SalesInvoiceNo" Type="System.String" DbType="varchar(100)" CanBeNull="true" />
+      <Column Name="InvQty" Type="System.Decimal" DbType="numeric(18,2)" CanBeNull="true" />
+      <Column Name="InvDate" Type="System.String" DbType="varchar(15)" CanBeNull="true" />
+      <Column Name="ClosureReason" Type="System.String" DbType="varchar(2500)" CanBeNull="true" />
+      <Column Name="OrderStatus" Type="System.String" DbType="varchar(100)" CanBeNull="true" />
+      <Column Name="SalesPerson" Type="System.String" DbType="varchar(100)" CanBeNull="true" />
+      <Column Name="ItemRemarks" Type="System.String" DbType="varchar(2500)" CanBeNull="true" />
+      <Column Name="AdditionalRemarks" Type="System.String" DbType="varchar(2500)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="DBML.TempItemMaster" Member="dbmlTempItemMasterDPRates">
+    <Type Name="dbmlTempItemMasterDPRate">
+      <Column Name="ItemId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PartyId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="DPRate" Storage="_ZZDP" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="QtyBal" Storage="_ZZQuantityBalance" Type="System.Decimal" DbType="Decimal(18,4)" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="" Member="dbmlItemLedgerValuationReports">
+    <Type Name="dbmlItemLedgerValuationReport">
+      <Column Name="ItemId" Type="System.Int32" DbType="int (System.Int32)" CanBeNull="false" />
+      <Column Name="OurCode" Storage="_ItemCode" Type="System.String" DbType="string (System.String)" CanBeNull="false" />
+      <Column Name="OpnQty" Storage="_OpeningBalance" Type="System.Decimal" DbType="decimal (System.Decimal)" CanBeNull="false" />
+      <Column Name="QuantityIn" Type="System.Decimal" DbType="decimal (System.Decimal)" CanBeNull="false" />
+      <Column Name="QuantityOut" Type="System.Decimal" DbType="decimal (System.Decimal)" CanBeNull="false" />
+      <Column Name="ClBal" Storage="_ClosingBalance" Type="System.Decimal" DbType="decimal (System.Decimal)" CanBeNull="false" />
+      <Column Name="OurName" Storage="_ItemName" Type="System.String" DbType="string (System.String)" CanBeNull="false" />
+      <Column Name="OpnValue" Storage="_OpeningBalanceAmt" Type="System.Decimal" DbType="decimal (System.Decimal)" CanBeNull="false" />
+      <Column Name="ClValue" Storage="_ClosingBalanceAmt" Type="System.Decimal" DbType="decimal (System.Decimal)" CanBeNull="false" />
+      <Column Name="InValue" Storage="_AmountIn" Type="System.Decimal" DbType="decimal (System.Decimal)" CanBeNull="false" />
+      <Column Name="OutValue" Storage="_AmountOut" Type="System.Decimal" DbType="decimal (System.Decimal)" CanBeNull="false" />
+      <Column Name="ParentCategory" Type="System.String" DbType="varchar(500)" CanBeNull="true" />
+      <Column Name="Category" Type="System.String" DbType="varchar(500)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="DBML.TempStateMaster" Member="dbmlTempEInvoices">
+    <Type Name="dbmlTempEInvoice">
+      <Column Name="DocType" Storage="_State" Type="System.String" DbType="VarChar(15)" CanBeNull="true" />
+      <Column Name="DcoumentID" Storage="_CountryID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="DocDate" Storage="_Status" Type="System.String" DbType="varchar(15)" CanBeNull="true" />
+      <Column Name="Client" Storage="_RegionID" Type="System.String" DbType="varchar(1000)" CanBeNull="true" />
+      <Column Name="ShippingCity" Storage="_IsUT" Type="System.String" DbType="varchar(100)" CanBeNull="true" />
+      <Column Name="Distance" Storage="_StateCode" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="IRNNo" Storage="_TRatePerCarton" Type="System.String" DbType="varchar(500)" CanBeNull="true" />
+      <Column Name="AckNo" Type="System.String" DbType="varchar(50)" CanBeNull="true" />
+      <Column Name="EWayBillDate" Type="System.String" DbType="varchar(15)" CanBeNull="true" />
+      <Column Name="DocNo" Type="System.String" DbType="varchar(50)" CanBeNull="true" />
+      <Column Name="Remark" Type="System.String" DbType="varchar(2500)" CanBeNull="true" />
+      <Column Name="EnableEwayBill" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="EWayBillNo" Type="System.String" DbType="varchar(50)" CanBeNull="true" />
+      <Column Name="isEwayBillApplicable" Type="System.Boolean" DbType="bit" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="" Member="dbmlTempAPIAuthDetails">
+    <Type Name="dbmlTempAPIAuthDetails">
+      <Column Name="GSPCrediantialMasterId" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="SuperStockistID" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="GSPName" Type="System.String" DbType="varchar(20)" CanBeNull="true" />
+      <Column Name="ASPUserid" Type="System.String" DbType="varchar(20)" CanBeNull="true" />
+      <Column Name="ASPPassword" Type="System.String" DbType="varchar(20)" CanBeNull="true" />
+      <Column Name="EWBGSTIN" Type="System.String" DbType="varchar(30)" CanBeNull="true" />
+      <Column Name="EWBUserId" Type="System.String" DbType="varchar(30)" CanBeNull="true" />
+      <Column Name="EWBPassword" Type="System.String" DbType="varchar(30)" CanBeNull="true" />
+      <Column Name="Type" Type="System.String" DbType="varchar(20)" CanBeNull="true" />
+      <Column Name="AuthUrl" Type="System.String" DbType="varchar(250)" CanBeNull="true" />
+      <Column Name="EwbByIRN" Type="System.String" DbType="varchar(250)" CanBeNull="true" />
+      <Column Name="CancelEwbUrl" Type="System.String" DbType="varchar(250)" CanBeNull="true" />
+      <Column Name="EInvUserId" Type="System.String" DbType="varchar(250)" CanBeNull="true" />
+      <Column Name="EInvPassword" Type="System.String" DbType="varchar(250)" CanBeNull="true" />
+      <Column Name="CancelIRNURL" Type="System.String" DbType="varchar(200)" CanBeNull="true" />
+      <Column Name="GetIRNDetails" Type="System.String" DbType="varchar(200)" CanBeNull="true" />
+      <Column Name="EWBAuthTokenId" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="GSTTINNo" Type="System.String" DbType="varchar(50)" CanBeNull="true" />
+      <Column Name="EWBAuthTokenValidityDateTime" Type="System.DateTime" DbType="datetime" CanBeNull="true" />
+      <Column Name="APIKey" Type="System.String" DbType="varchar(100)" CanBeNull="true" />
+      <Column Name="SekKey" Type="System.String" DbType="varchar(100)" CanBeNull="true" />
+      <Column Name="EInvoiceTokenExp" Type="System.DateTime" DbType="datetime" CanBeNull="true" />
+      <Column Name="AuthToken" Type="System.String" DbType="varchar(100)" CanBeNull="true" />
+      <Column Name="BaseURL" Type="System.String" DbType="varchar(250)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="" Member="dbmlAPIAuthResponses">
+    <Type Name="dbmlAPIAuthResponse">
+      <Column Name="Status" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="ClientId" Type="System.String" DbType="varchar(100)" CanBeNull="true" />
+      <Column Name="UserName" Type="System.String" DbType="varchar(100)" CanBeNull="true" />
+      <Column Name="AuthToken" Type="System.String" DbType="varchar(100)" CanBeNull="true" />
+      <Column Name="Sek" Type="System.String" DbType="varchar(100)" CanBeNull="true" />
+      <Column Name="TokenExpiry" Type="System.DateTime" DbType="datetime" CanBeNull="true" />
+      <Column Name="ErrorDetails" Type="System.String" DbType="varchar(2500)" CanBeNull="true" />
+      <Column Name="InfoDtls" Type="System.String" DbType="varchar(2500)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="" Member="dbmlStatisticsReports">
+    <Type Name="dbmlStatisticsReport">
+      <Column Name="SuperStockist" Type="System.String" DbType="varchar()" CanBeNull="true" />
+      <Column Name="State" Type="System.String" DbType="varchar()" CanBeNull="true" />
+      <Column Name="Party" Type="System.String" DbType="varchar()" CanBeNull="true" />
+      <Column Name="PartyType" Type="System.String" DbType="varchar()" CanBeNull="true" />
+      <Column Name="City" Type="System.String" DbType="varchar()" CanBeNull="true" />
+      <Column Name="NoofInvoiceMade" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="LastInvoiceDate" Type="System.String" DbType="varchar(11)" CanBeNull="true" />
+      <Column Name="CustomerState" Type="System.String" DbType="varchar()" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="" Member="dbmlReprimarySaleReports">
+    <Type Name="dbmlReprimarySaleReport">
+      <Column Name="SuperStockist" Type="System.String" DbType="varrchar()" CanBeNull="true" />
+      <Column Name="PartyCode" Storage="_NoOfBoxes" Type="System.String" DbType="varchar()" CanBeNull="true" />
+      <Column Name="Party" Storage="_Quantity" Type="System.String" DbType="varchar()" CanBeNull="true" />
+      <Column Name="Region" Storage="_GrossItemAmount" Type="System.String" DbType="varchar()" CanBeNull="true" />
+      <Column Name="SalesZone" Storage="_TotalItemDiscount" Type="System.String" DbType="varchar()" CanBeNull="true" />
+      <Column Name="Quantity" Storage="_TaxableValue" Type="System.Decimal" DbType="numeric()" CanBeNull="true" />
+      <Column Name="CGST" Type="System.Decimal" DbType="numeric()" CanBeNull="true" />
+      <Column Name="SGST" Type="System.Decimal" DbType="numeric()" CanBeNull="true" />
+      <Column Name="IGST" Type="System.Decimal" DbType="numeric()" CanBeNull="true" />
+      <Column Name="GrossItemAmount" Storage="_TotalItemAmount" Type="System.Decimal" DbType="numeric()" CanBeNull="true" />
+      <Column Name="DiscountAmount" Storage="_OtherCharge" Type="System.Decimal" DbType="numeric()" CanBeNull="true" />
+      <Column Name="TaxableAmount" Storage="_TCSAmount" Type="System.Decimal" DbType="numeric()" CanBeNull="true" />
+      <Column Name="NetValue" Storage="_RoundOff" Type="System.Decimal" DbType="numeric()" CanBeNull="true" />
+      <Column Name="ParentProductType" Storage="_GrandTotal" Type="System.String" DbType="varchar()" CanBeNull="true" />
+      <Column Name="ProductType" Type="System.String" DbType="varchar()" CanBeNull="true" />
+      <Column Name="ItemCode" Type="System.String" DbType="varchar()" CanBeNull="true" />
+      <Column Name="ItemName" Type="System.String" DbType="varchar()" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Function Name="Stock.ItemAdjustmentGetByFromDateToDate" Method="ItemAdjustmentGetByFromDateToDate">
+    <Parameter Name="FromDate" Parameter="fromDate" Type="System.DateTime" DbType="DateTime" />
+    <Parameter Name="ToDate" Parameter="toDate" Type="System.DateTime" DbType="DateTime" />
+    <ElementType Name="ItemAdjustmentGetByFromDateToDateResult">
+      <Column Name="ItemAdjustmentId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PartyId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="VoucherNo" Type="System.String" DbType="NVarChar(150)" CanBeNull="true" />
+      <Column Name="VoucherDate" Type="System.String" DbType="NVarChar(11)" CanBeNull="true" />
+      <Column Name="StatusPropId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Remark" Type="System.String" DbType="NVarChar(250)" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="Trans.DealerSalesChallanGetByFromDateToDate" Method="DealerSalesChallanGetByFromDateToDate">
+    <Parameter Name="PartyID" Parameter="partyID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="FromDate" Parameter="fromDate" Type="System.DateTime" DbType="DateTime" />
+    <Parameter Name="ToDate" Parameter="toDate" Type="System.DateTime" DbType="DateTime" />
+    <Parameter Name="InvoiceNo" Parameter="invoiceNo" Type="System.String" DbType="NVarChar(200)" />
+    <ElementType Name="DealerSalesChallanGetByFromDateToDateResult">
+      <Column Name="DealerSalesChallanID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="InvoiceNo" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="InvoiceDate" Type="System.String" DbType="NVarChar(30)" CanBeNull="true" />
+      <Column Name="Party" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="Customer" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="Status" Type="System.Decimal" DbType="Decimal(1,0)" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="Trans.GetSalesInvoicePrint" Method="GetSalesInvoicePrint">
+    <Parameter Name="DealerSalesChallanID" Parameter="dealerSalesChallanID" Type="System.Int32" DbType="Int" />
+    <ElementType Name="GetSalesInvoicePrintResult">
+      <Column Name="InvoiceNo" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="InvoiceDate" Type="System.String" DbType="NVarChar(4000)" CanBeNull="true" />
+      <Column Name="Factory" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="FactoryAddress" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="FactoryGSTNo" Type="System.String" DbType="VarChar(15)" CanBeNull="true" />
+      <Column Name="FactoryPANNo" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
+      <Column Name="CustomerCode" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="Customer" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="CustomerGST" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="CustomerPAN" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
+      <Column Name="ConsigneeCode" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="Consignee" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="ConsigneeGST" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="ConsigneePAN" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
+      <Column Name="LRNo" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="LRDate" Type="System.String" DbType="NVarChar(4000)" CanBeNull="true" />
+      <Column Name="Transporter" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="VehicleNo" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="EWayBillNo" Type="System.String" DbType="VarChar(30)" CanBeNull="true" />
+      <Column Name="EWayBillDate" Type="System.String" DbType="NVarChar(4000)" CanBeNull="true" />
+      <Column Name="CustomerAddress" Type="System.String" DbType="NVarChar(902) NOT NULL" CanBeNull="false" />
+      <Column Name="ConsigneeAddress" Type="System.String" DbType="NVarChar(902) NOT NULL" CanBeNull="false" />
+      <Column Name="CustomerAddress1" Type="System.String" DbType="VarChar(157)" CanBeNull="true" />
+      <Column Name="ConsigneeState" Type="System.String" DbType="VarChar(157)" CanBeNull="true" />
+      <Column Name="Remark" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="AmountinWords" Type="System.String" DbType="VarChar(1) NOT NULL" CanBeNull="false" />
+      <Column Name="TotTaxableAmount" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="RoundOff" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="TotalAmount" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="FactoryNm" Type="System.String" DbType="VarChar(254)" CanBeNull="true" />
+      <Column Name="BankDetails" Type="System.String" DbType="VarChar(1) NOT NULL" CanBeNull="false" />
+      <Column Name="TermsnCondition" Type="System.String" DbType="VarChar(1) NOT NULL" CanBeNull="false" />
+      <Column Name="Juridiction" Type="System.String" DbType="VarChar(1) NOT NULL" CanBeNull="false" />
+    </ElementType>
+  </Function>
+</Database>

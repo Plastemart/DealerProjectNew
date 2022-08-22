@@ -1,0 +1,183 @@
+﻿@{Layout = null; }
+@model IEnumerable<DealerPortal.Models.News>
+@using DealerPortal.Common
+<div class="col-md-4">
+    <div class="p_panel marr0">
+        <div class="p_panel_headinng">
+            <a href="#">
+                <p> News</p>
+                <span>
+                    View All
+                </span>
+            </a>
+            <div class="clearfix"></div>
+
+        </div>
+        <div id="wn">
+            <div id="lyr" style="position: absolute; left: 0px; top: -460px; visibility: visible;">
+                <div>
+                    <ul>
+
+                        @foreach (var item in Model)
+                        {
+                            <li>
+
+
+                                <a href="@Util.NewsDetailUrl(item)">
+
+                                    <div class="news_listing">
+                                        <p class="date_section">
+                                            <span>@item.NewsDate.Value.Day</span><br />
+                                            @item.NewsDate.Value.ToString("MMM")
+                                        </p>
+                                        <p class="news_heading_section" title="@item.NewsTitle">@Util.GetCustomTitle(item.NewsTitle, 55)</p>
+                                    </div>
+                                </a>
+
+                                <div class="clearfix"></div>
+
+                            </li>
+
+
+                        }
+                    </ul>
+                </div>
+                <div id="rpt">
+                    <ul>
+
+                        @foreach (var item in Model)
+                        {
+                            <li>
+
+
+                                <a href="@Util.NewsDetailUrl(item)">
+
+                                    <div class="news_listing">
+                                        <p class="date_section">
+                                            <span>@item.NewsDate.Value.Day</span><br />
+                                            @item.NewsDate.Value.ToString("MMM")
+                                        </p>
+                                        <p class="news_heading_section" title="@item.NewsTitle">@Util.GetCustomTitle(item.NewsTitle, 55)</p>
+                                    </div>
+                                </a>
+
+                                <div class="clearfix"></div>
+
+                            </li>
+
+
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        .p_panel {
+            float: left;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-top: 3px solid #000;
+            margin-bottom: 25px;
+            margin-right: 10px;
+            background: #fff;
+            padding: 10px;
+        }
+
+        .marr0 {
+            margin-right: 0;
+        }
+
+        .p_panel .p_panel_headinng {
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 10px;
+        }
+
+        div#wn {
+            position: relative;
+            width: 100%;
+            height: 330px;
+            overflow: hidden;
+        }
+
+        .p_panel ul li {
+            margin-bottom: 10px;
+            min-height: 51px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        div#wn li {
+            padding-bottom: 5px;
+        }
+
+        .p_panel ul li a {
+            color: #444;
+        }
+
+            .p_panel ul li a .news_listing p.date_section {
+                text-align: center;
+                float: left;
+                margin-right: 20px;
+                border-left: 2px solid #ccc;
+                font-weight: 700;
+                padding-left: 10px;
+                font-size: 13px;
+            }
+
+        .news_listing p {
+            margin-bottom: 9px;
+        }
+
+        .p_panel ul li a .news_listing p.news_heading_section {
+            float: left;
+            width: 310px;
+        }
+
+        .news_listing p {
+            margin-bottom: 9px;
+        }
+
+        .p_panel .p_panel_headinng p {
+            float: left;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #000;
+        }
+
+        .p_panel .p_panel_headinng span {
+            float: right;
+            color: #000;
+        }
+    </style>
+    <script src="~/Scripts/dw_con_scroller.js"></script>
+    <script type="text/javascript">
+
+        if (DYN_WEB.Scroll_Div.isSupported()) {
+
+            DYN_WEB.Event.domReady(function () {
+
+                // arguments: id of scroll area div, id of content div
+                var wndo = new DYN_WEB.Scroll_Div('wn', 'lyr');
+                // see info online at http://www.dyn-web.com/code/scrollers/continuous/documentation.php
+                wndo.makeSmoothAuto({ axis: 'v', bRepeat: true, repeatId: 'rpt', speed: 40, bPauseResume: true });
+
+            });
+        }
+
+        //if (DYN_WEB.Scroll_Div.isSupported()) {
+
+        //    DYN_WEB.Event.domReady(function () {
+
+
+        //        // arguments: id of scroll area div, id of content div
+        //        var wndo = new DYN_WEB.Scroll_Div('wn1', 'lyr1');
+        //        // see info online at http://www.dyn-web.com/code/scrollers/continuous/documentation.php
+        //        wndo.makeSmoothAuto({ axis: 'v', bRepeat: true, repeatId: 'rpt1', speed: 20, bPauseResume: true });
+
+        //    });
+        //}
+
+    </script>
+</div>

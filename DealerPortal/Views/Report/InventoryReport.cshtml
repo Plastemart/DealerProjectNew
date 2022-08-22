@@ -1,0 +1,350 @@
+﻿
+@{
+    ViewBag.Title = "InventoryReport";
+}
+
+<div class="box box-warning">
+    <div class="box-header with-border">
+        <div class="box-header-left">
+            <h3 class="box-title" style="line-height:2px;">Inventory Report</h3>
+        </div>
+        <div class="box-header-right">
+            <ul>
+                <li>
+                    <a href="javascript:void(0)" title="Excel" class="cart" onclick="Excel()"><i class="fa fa-file-excel-o"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="box-body">
+        <form class="form-horizontal">
+            <div class="row" id="DivddlCustomer" style="display:none">
+                <div class="col-md-6">
+                    <div id="ddlCustomer"></div>
+                </div><br /><br />
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <div id="txtFromDate"></div>
+                </div>
+                <div class="col-md-2">
+                    <div id="txtToDate"></div>
+                </div>
+                <div class="col-md-3">
+                    <div id="ddlSubCategory"></div>
+                </div>
+                @*<div class="col-md-3">
+                    <div id="ddlItem"></div>
+                </div>*@
+                <div class="col-md-2">
+                    <a href='javascript:void(0)' class='btn btn-danger btn-flat' style='background: #e32228;' onclick='InventoryFromDateToDateReport()'>Get Data</a><input type="hidden" id="HdnUserTypeId"><input type="hidden" id="HdnSelectedUser">
+                </div>
+            </div>
+        </form>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive ">
+                    <div id="tblitem">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var RetailCategoryList = [];
+    var varddlSubCategory = "";
+    var ItemList = [];
+    var InventoryReportList = [];
+    var InventoryitemDetails = [];
+    var varddlCategory = "";
+    var varddlItem = "";
+    var Now = new Date()
+    var FDate = new Date()
+    var CustomerList = [];
+    var varddlCustomer = "";
+
+    arrayCr = @Html.Raw(Json.Encode(@ViewBag.RetailCategoryList));
+    if(arrayCr !=null)
+    {
+        for(var i = 0; i < arrayCr.length; i++){
+            RetailCategoryList[i] = arrayCr[i];
+        }
+         model = {};
+         model.RetailCategoryID = -1
+         model.RetailCategory = "All"
+         RetailCategoryList.push(model);
+
+    }
+
+    strUserTypeId = @Html.Raw(@ViewBag.UserTypeID);
+    arrayCr1 = @Html.Raw(Json.Encode(@ViewBag.CustomerList));
+    if(arrayCr1 !=null)
+    {
+        for(var i = 0; i < arrayCr1.length; i++){
+            CustomerList[i] = arrayCr1[i];
+        }
+         model = {};
+         model.PartyId = -1
+         model.Party = "All"
+         CustomerList.push(model);
+
+    }
+    //alert(strUserTypeId);
+    if (strUserTypeId == "22") {
+        $("#DivddlCustomer").removeAttr("style");
+    }
+
+    $(document).ready(function () {
+        $("#ddlSubCategory").dxSelectBox({
+            height: 30,
+            dataSource: new DevExpress.data.ArrayStore({
+                data: RetailCategoryList,
+                key: "RetailCategoryID"
+            }),
+            displayExpr: "RetailCategory",
+            valueExpr: "RetailCategoryID",
+            placeholder: "Select Category",
+            searchEnabled: true,
+            onValueChanged: function (data) {
+                varddlSubCategory = data.value
+                //ItemMasterGetByRetailCategoryId()
+            }
+        });
+        //$("#ddlItem").dxSelectBox({
+        //    height: 30,
+        //    dataSource: new DevExpress.data.ArrayStore({
+        //        data: ItemList,
+        //        key: "ItemId"
+        //    }),
+        //    displayExpr: "ItemName",
+        //    valueExpr: "ItemId",
+        //    placeholder: "Select Item",
+        //    searchEnabled: true,
+        //    onValueChanged: function (data) {
+        //        varddlItem = data.value
+        //    }
+        //});
+
+        $("#txtFromDate").dxDateBox({
+            height: 30,
+            type: "date",
+            value: FDate.setDate(FDate.getDate() - 7),
+            placeholder: "From Date",
+            displayFormat: "dd/MM/yyyy"
+        });
+        $("#txtToDate").dxDateBox({
+            height: 30,
+            type: "date",
+            value: Now,
+            placeholder: "To Date",
+            displayFormat: "dd/MM/yyyy"
+        });
+
+        //Added by Kamini 17May2021---Customer Dropdown
+        $("#ddlCustomer").dxSelectBox({
+            height: 30,
+            dataSource: new DevExpress.data.ArrayStore({
+                data: CustomerList,
+                key: "PartyID"
+            }),
+            displayExpr: "Party",
+            valueExpr: "PartyID",
+            placeholder: "Select Stockist",
+            searchEnabled: true,
+            onValueChanged: function (data) {
+                varddlCustomer = data.value
+            }
+        });
+        //Added by Kamini 17May2021---Customer Dropdown
+        BindReportdata()
+    });
+
+    function SetDate(dateStr) {
+        var strDate
+        var now = new Date(dateStr);
+        var Day = now.getDate()
+        var Month = (now.getMonth() + 1)
+        var Year = now.getFullYear()
+        if (Day < 10) {
+            Day = "0" + Day;
+        }
+        if (Month < 10) {
+            Month = "0" + Month;
+        }
+        strDate = Month + "/" + Day + "/" + Year
+        return strDate;
+    }
+
+
+    function InventoryFromDateToDateReport() {
+        debugger;
+        try
+        {
+            if (varddlSubCategory == undefined || varddlSubCategory == null || varddlSubCategory == "")
+            {
+                return true
+            }
+            loadPanel.show();
+            var VarFromdate = SetDate($("#txtFromDate").dxDateBox('instance').option('value'));
+            var VarToDate = SetDate($("#txtToDate").dxDateBox('instance').option('value'));
+
+            var VarPartyId = "0";
+
+            if (strUserTypeId == "22") {
+                VarPartyId = varddlCustomer;
+            }
+
+            var data = { 'SubCategoryId': varddlSubCategory, 'Fromdate': VarFromdate, 'Todate': VarToDate, 'PartyId': VarPartyId };
+            //alert(varddlSubCategory);
+            //alert(VarFromdate);
+            //alert(VarToDate);
+            //alert(VarPartyId);
+
+
+            //var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            //alert(dataWithAntiforgeryToken);
+            $.ajax({
+                url: "../Report/InventoryFromDateToDateReport",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: data, 
+                success: function (Response) {
+                    loadPanel.hide();
+                    if (Response.StatusId != "99") {
+                        InventoryReportList = Response.Result;
+                        $("#tblitem").dxDataGrid('instance').option("dataSource", InventoryReportList);
+                    }
+                    else {
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large1111!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large22!");
+        }
+    }
+
+
+    function BindReportdata() {
+        $("#tblitem").dxDataGrid({
+            dataSource: InventoryReportList,
+            loadPanel: {
+                enabled: true
+            },
+            allowSorting: true,
+            filterRow: { visible: true },
+            headerFilter: {
+                visible: true,
+                allowSearch: true
+            },
+            //paging: {
+            //    pageSize: 20
+            //},
+            groupPanel: {
+                visible: true,
+                allowColumnDragging: false
+            },
+            columns: [
+                //{
+                    //dataField: "ItemCode", width: '10%', caption: "Item Code", cellTemplate: function (container, options) {
+                    //    $('<a style="color:#333; text-decoration: underline;" />').addClass('dx-link')
+                    //        .text(options.value)
+                    //        .on('dxclick', function (e) {
+                    //            PopShowitemDetails(options.data.ItemCode, options.data.ItemName, options.data.OpeningBalanceQty, options.data.ClosingBalanceQty)
+                    //            ItemLedgerDetailGetByItemIdFromDateToDate(options.data.ItemId)
+                    //        })
+                    //        .appendTo(container);
+                    //}
+                //},
+                {dataField: "ParentProductType", width: "20%", caption: "Category", groupIndex: 0},
+                { dataField: "ItemCode", width: "10%", caption: "Item Code" },
+                { dataField: "ItemName", width: "50%", caption: "" },
+                {
+                    dataField: "OpeningBalanceQty", width: "10%", caption: "Opening Stock",
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Opening <br/> Stock").css('text-align', 'center').appendTo(header);
+                    }
+                    , format: { type: "fixedPoint", precision: 2 }
+                },
+                //{
+                //    dataField: "OpeningBalanceAmt", width: "10%", caption: "Opening Balance Amt",
+                //    headerCellTemplate: function (header, info) {
+                //        $('<div>').html("Opening <br/> Balance Amt").css('text-align', 'center').appendTo(header);
+                //    }
+                //    , format: { type: "fixedPoint", precision: 4 }
+                //},
+                { dataField: "QuantityIn", width: "10%", caption: "Inward", format: { type: "fixedPoint", precision: 2 } },
+                //{ dataField: "AmountIn", width: "10%", caption: "Amount In", format: { type: "fixedPoint", precision: 4 } },
+                { dataField: "QuantityOut", width: "10%", caption: "Outward", format: { type: "fixedPoint", precision: 2 } },
+                //{ dataField: "AmountOut", width: "10%", caption: "Amount Out", format: { type: "fixedPoint", precision: 4 } },
+                {
+                    dataField: "ClosingBalanceQty", width: "10%", caption: "Closing Stock",
+                    headerCellTemplate: function (header, info) {
+                        $('<div>').html("Closing <br/> Stock").css('text-align', 'center').appendTo(header);
+                    },
+                    format: { type: "fixedPoint", precision: 2 }
+                },
+                //{
+                //    dataField: "ClosingBalanceAmt", width: "10%", caption: "Closing Balance Amt",
+                //     headerCellTemplate: function (header, info) {
+                //        $('<div>').html("Closing <br/> Balance Amt").css('text-align', 'center').appendTo(header);
+                //    },
+                //    format: { type: "fixedPoint", precision: 4 }
+                //},
+            ],
+            export: {
+                fileName: "Inventory Report"
+            },
+            showRowLines: true,
+            showBorders: true,
+            summary: {
+                groupItems: [
+                    { name: "Opening Stock", column: "OpeningBalanceQty", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true },
+                    //{ name: "Opening Balance Amt", column: "OpeningBalanceAmt", summaryType: "custom", valueFormat: { type: "fixedPoint", precision: 4 } },
+                    { name: "Inward", column: "QuantityIn", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true },
+                    //{ name: "Amount In", column: "AmountIn", summaryType: "custom", valueFormat: { type: "fixedPoint", precision: 4 } },
+                    { name: "Outward", column: "QuantityOut", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true },
+                    //{ name: "Amount Out", column: "AmountOut", summaryType: "custom", valueFormat: { type: "fixedPoint", precision: 4 } },
+                    { name: "Closing Stock", column: "ClosingBalanceQty", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true },
+                    //{ name: "Closing Balance Amt", column: "ClosingBalanceAmt", summaryType: "custom", valueFormat: { type: "fixedPoint", precision: 4 } },
+
+                ]
+                //calculateCustomSummary: function (options) {
+                //    (
+                //        options.name === "Opening Balance Qty"
+                //        || options.name === "Opening Balance Amt"
+                //        || options.name === "Quantity In"
+                //        || options.name === "Amount In"
+                //        || options.name === "Quantity Out"
+                //        || options.name === "Amount Out"
+                //        || options.name === "Closing Balance Qty"
+                //        || options.name === "Closing Balance Amt"
+
+                //    )
+                //    if (options.summaryProcess === "start") {
+                //        options.totalValue = 0;
+                //    }
+                //    if (options.summaryProcess === "calculate") {
+                //        if (options.value > 0) {
+                //            options.totalValue = options.totalValue + options.value;
+                //        }
+                //    }
+                //}
+            }
+
+        });
+    }
+
+    function Excel() {
+        $("#tblitem").dxDataGrid("instance").exportToExcel(false);
+    }
+</script>

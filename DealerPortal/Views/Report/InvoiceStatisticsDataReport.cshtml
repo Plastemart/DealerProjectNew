@@ -1,0 +1,345 @@
+﻿
+@{
+    ViewBag.Title = "InvoiceStatisticsDataReport";
+}
+<input type="hidden" id="hdnCurrentUserTypeId" value='@Session["UserTypeId"]' />
+
+<div class="box box-warning">
+    <div class="box-header with-border">
+        <div class="box-header-left">
+            <h3 class="box-title" style="line-height:2px;">Invoice Statistics Report</h3>
+        </div>
+        <div class="box-header-right">
+            <ul>
+                <li>
+                    <a href="javascript:void(0)" title="Excel" class="cart" onclick="Excel()"><i class="fa fa-file-excel-o"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="box-body">
+        <form class="form-horizontal">
+            <div class="row">
+                <div class="col-md-2">
+                    <div id="txtFromDate"></div>
+                </div>
+                <div class="col-md-2">
+                    <div id="txtToDate"></div>
+                </div>
+                <div class="col-md-3" id="DivddlCustomer">
+                    <span class="floating-input" id="ddlCustomer">
+                        <span class="highlight"></span>
+                        <label>Super Stockist</label>
+                    </span>
+                </div>
+
+                <div class="col-md-3 ">
+                    <span class="floating-input" id="txtBuyer" style="
+                    height: 31px; border-radius: 5px;  display:none">
+                        <span class="highlight"></span>
+                        <label>Select Customer</label>
+                    </span>
+                </div>
+
+                <div class="col-md-2">
+                    <a href='javascript:void(0)' class='btn btn-danger btn-flat' style='background: #e32228;' onclick='InvoiceStatisticsDataReportFromDateToDateReport()'>Get Data</a><input type="hidden" id="HdnUserTypeId"><input type="hidden" id="HdnSelectedUser">
+                </div>
+
+        </form>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive ">
+                    <div id="tblitem">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var RetailCategoryList = [];
+    var varddlSubCategory = "";
+    var ItemList = [];
+    var SalesReportList = [];
+    var InventoryitemDetails = [];
+    var varddlCategory = "";
+    var varddlItem = "";
+    var Now = new Date();
+    var FDate = new Date();
+    var CustomerList = [];
+    var varddlCustomer = "";
+    var varddlBuyer = "";
+    var ReportTypeList = [];
+    var varddlReportType = "";
+
+   
+
+    strUserTypeId = @Html.Raw(@ViewBag.UserTypeID);
+    arrayCr1 = @Html.Raw(Json.Encode(@ViewBag.CustomerList));
+    arrayRT = @Html.Raw("[{\"ReportType\":\"Summary\",\"ReportID\":2}, {\"ReportType\":\"Detail\",\"ReportID\":3}, {\"ReportType\":\"Invoice Statistics Data Report\",\"ReportID\":1}, {\"ReportType\":\"Invoice Statistics Data\",\"ReportID\":4}]");
+    if(arrayCr1 !=null)
+    {
+        for(var i = 0; i < arrayCr1.length; i++){
+            CustomerList[i] = arrayCr1[i];
+        }
+       
+
+    }
+  
+    if (strUserTypeId == "22" || strUserTypeId == "23") {
+        $("#DivddlCustomer").removeAttr("style");
+    }
+
+    for (var j = 0; j < arrayRT.length; j++) {
+        ReportTypeList[j] = arrayRT[j];
+    }
+
+    $(document).ready(function () {
+        
+
+        if (document.getElementById("hdnCurrentUserTypeId").value == "22" || document.getElementById("hdnCurrentUserTypeId").value == "23") {
+            $("#DivddlCustomer").removeAttr("style");
+        }
+
+        $("#txtFromDate").dxDateBox({
+            height: 30,
+            type: "date",
+            value: FDate.setDate(FDate.getDate() - 7),
+            placeholder: "From Date",
+            displayFormat: "dd/MMM/yyyy"
+        });
+        $("#txtToDate").dxDateBox({
+            height: 30,
+            type: "date",
+            value: Now,
+            placeholder: "To Date",
+            displayFormat: "dd/MMM/yyyy"
+        });
+
+
+        $("#ddlCustomer").dxSelectBox({
+            height: 30,
+            dataSource: new DevExpress.data.ArrayStore({
+                data: CustomerList,
+                key: "PartyID"
+            }),
+            displayExpr: "Party",
+            valueExpr: "PartyID",
+            placeholder: "Select Super Stockist",
+            searchEnabled: true,
+            onValueChanged: function (data) {
+                varddlCustomer = data.value
+                GetBuyersbyPartyID();
+            }
+        });
+        
+    });
+
+    function SetDate(dateStr) {
+        var strDate
+        var now = new Date(dateStr);
+        var Day = now.getDate()
+        var Month = (now.getMonth() + 1)
+        var Year = now.getFullYear()
+        if (Day < 10) {
+            Day = "0" + Day;
+        }
+        if (Month < 10) {
+            Month = "0" + Month;
+        }
+        strDate = Month + "/" + Day + "/" + Year
+        return strDate;
+    }
+
+
+    function GetBuyersbyPartyID() {
+        try {
+            debugger;
+            var strParty = $("#ddlCustomer").dxSelectBox('instance').option('value');
+            var data = { 'PartyID': strParty };
+            if (strParty.length == 1) {
+                PartyVal = strParty[0].PartyID;
+            }
+            else {
+                PartyVal = "0";
+            }
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Home/GetBuyersbyPartyID",
+                type: 'POST',
+                dataType: 'json',
+                data: dataWithAntiforgeryToken,
+                async: true,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        BuyerList = Response.Result;                                         
+                        fillbuyer();
+                 
+                    }
+                    else {
+
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            alert("Data size is too large!");
+        }
+    }
+
+    function fillbuyer(){
+         $("#txtBuyer").dxSelectBox({
+                            dataSource: new DevExpress.data.ArrayStore({
+                                data: BuyerList,
+                                key: "PartyID"
+                            }),
+                            displayExpr: "Party",
+                            valueExpr: "PartyID",
+                            placeholder: "Select Customer",
+                            searchEnabled: true,
+                            onValueChanged: function (data) {
+                            varddlBuyer = data.value;
+                            }
+                        });
+    }
+
+    function InvoiceStatisticsDataReportFromDateToDateReport() {
+        debugger;
+        try
+        {
+            
+            if (strUserTypeId == "22" || strUserTypeId == "23") {
+                
+                if (varddlCustomer == undefined || varddlCustomer == null) {
+                    return true
+                }
+            }
+            
+            loadPanel.show();
+            var VarFromdate = SetDate($("#txtFromDate").dxDateBox('instance').option('value'));
+            var VarToDate = SetDate($("#txtToDate").dxDateBox('instance').option('value'));
+
+            //var VarPartyId = "0";
+            var VarBuyerId = "0";
+            if (varddlBuyer != "" && varddlBuyer != null)
+                {
+                VarBuyerId = varddlBuyer;
+            }
+            //if (strUserTypeId == "22") {
+
+            //    //added by Kamini on 22 July 2022 for multiple super stockist selection
+            //    var strParty = $("#ddlCustomer").dxTagBox("instance").option("selectedItems");
+            //    if (strParty.length == 1) {
+            //        VarPartyId = strParty[0].PartyID;
+            //    }
+            //    else {
+            //        for (z = 0; z < strParty.length; z++) {
+            //            PartyIdList = PartyIdList + strParty[z].PartyID + ",";
+            //        }
+            //        VarPartyId = PartyIdList.substring(0, PartyIdList.length - 1);
+            //    }
+            
+            var data = {
+                'SuperStockistID': varddlCustomer, 'Fromdate': VarFromdate, 'Todate': VarToDate, 'CustomerID': VarBuyerId, };
+
+
+
+            //var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            //alert(dataWithAntiforgeryToken);
+            $.ajax({
+                url: "../Report/InvoiceStatisticsDataReportFromDateToDateReport",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: data,
+                success: function (Response) {
+                    loadPanel.hide();
+                    if (Response.StatusId != "99") {
+                        debugger;
+                        SalesReportList = Response.Result;                       
+                        BindReportdata();
+                        fillbuyer();
+
+                    }
+                    else {
+                        alert(Response.Status);
+                    }
+                    
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large22!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large11!");
+        }
+    }
+
+
+    function BindReportdata() {
+        debugger;
+        //var selValue = $('input[name=rbtRptGroup]:checked').attr('id');
+            //$("#DivRadio").attr("style", "display:none");
+            $("#tblitem").dxDataGrid({
+                dataSource: SalesReportList,
+                loadPanel: {
+                    enabled: true
+                },
+                height: 500,
+                allowSorting: true,
+                columnAutoWidth: true,
+                allowColumnResizing: true,
+                filterRow: { visible: true },
+                headerFilter: {
+                    visible: true,
+                    allowSearch: true
+                },
+                paging: {
+                    pageSize: 20,
+                    enabled: false
+                },
+                columnFixing: {
+                    enabled: true
+                },
+               
+                columns: [
+                    {
+                        dataField: "SuperStockist", groupIndex: 0, caption: "SuperStockist", displayFormat: "SuperStockist: {0}",
+                        sortOrder: 'asc'
+                    },
+                    { dataField: "State", caption: "State" },
+                    { dataField: "Party", caption: "Party" },
+                    { dataField: "PartyType", caption: "Party Type" },
+                    { dataField: "City", caption: "City" },
+                    { dataField: "CustomerState", caption: "CustomerState" },
+                    { dataField: "State", caption: "State"},
+                    { dataField: "NoofInvoiceMade", caption: "No of Invoice Made"},
+                    { dataField: "LastInvoiceDate", caption: "Last Invoice Date"},
+
+                ],
+                export: {
+                    fileName: "Invoice Statistics Data Report"
+                },
+                showRowLines: true,
+                showBorders: true,
+                
+            });
+        }
+
+
+
+    function Excel() {
+        $("#tblitem").dxDataGrid("instance").exportToExcel(false);
+    }
+
+   
+</script>
+
