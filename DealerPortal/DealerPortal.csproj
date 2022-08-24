@@ -503,6 +503,7 @@
     <Content Include="Views\Report\PartyProductWiseSummarySalesReport.cshtml" />
     <Content Include="Views\Report\InvoiceStatisticsDataReport.cshtml" />
     <Content Include="Views\Report\ReprimarySaleReport.cshtml" />
+    <Content Include="Views\Report\ReprimarySalesRegionWiseReport.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

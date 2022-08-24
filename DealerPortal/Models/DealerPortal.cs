@@ -434,6 +434,9 @@ namespace DealerPortal.Models
         public dbmlStatus objdbmlStatus = new dbmlStatus();
     }
 
+
+
+
     public class returndbmlDealerSalesChallan
     {
         public dbmlDealerSalesChallan objdbmlDealerSalesChallan = new dbmlDealerSalesChallan();
@@ -540,6 +543,7 @@ namespace DealerPortal.Models
     #endregion
     // sandeep 9-8-2022
     #region 
+        //Added By Piyush 24-08-2022
     public class requestdbmlReprimarySaleReport
     {
         public ObservableCollection<dbmlReprimarySaleReport> objdbmlReprimarySaleReport = new ObservableCollection<dbmlReprimarySaleReport>();
@@ -549,6 +553,16 @@ namespace DealerPortal.Models
 
     #endregion
 
+    #region  Reprimary Sales Region Wise Report
+
+    public class requestdbmlReprimarySaleRegionWiseReport
+    {
+        public ObservableCollection<dbmlReprimarySaleRegionWiseReport> objdbmlReprimarySaleRegionWiseReport = new ObservableCollection<dbmlReprimarySaleRegionWiseReport>();
+
+        public dbmlStatus objdbmlStatus = new dbmlStatus();
+    }
+
+    #endregion
 
     #region  Download Report
     public class requestdbmlDownloadInvoiceReport

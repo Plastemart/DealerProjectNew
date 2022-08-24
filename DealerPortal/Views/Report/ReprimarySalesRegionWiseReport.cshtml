@@ -1,0 +1,414 @@
+﻿
+@{
+    ViewBag.Title = "ReprimarySalesRegionWiseReport";
+}
+<input type="hidden" id="hdnCurrentUserTypeId" value='@Session["UserTypeId"]' />
+
+<div class="box box-warning">
+    <div class="box-header with-border">
+        <div class="box-header-left">
+            <h3 class="box-title" style="line-height:2px;">Reprimary Sales Region Wise Report</h3>
+        </div>
+        <div class="box-header-right">
+            <ul>
+                <li>
+                    <a href="javascript:void(0)" title="Excel" class="cart" onclick="Excel()"><i class="fa fa-file-excel-o"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="box-body">
+        <form class="form-horizontal">
+            <div class="row">
+
+
+                <div class="col-md-3" id="DivddlCustomer">
+                    <span class="floating-input" id="ddlCustomer">
+                        <span class="highlight"></span>
+                        <label>Super Stockist</label>
+                    </span>
+                </div>
+
+                <div class="col-md-2">
+                    <div id="txtDate"></div>
+                </div>
+
+                @*<div class="col-md-3 ">
+            <span class="floating-input" id="txtBuyer" style="
+            height: 31px; border-radius: 5px;  display:none">
+                <span class="highlight"></span>
+                <label>Select Customer</label>
+            </span>
+        </div>*@
+
+                <div class="col-md-2">
+                    <a href='javascript:void(0)' class='btn btn-danger btn-flat' style='background: #e32228;' onclick='ReprimarySalesRegionWiseDateReport()'>Get Data</a><input type="hidden" id="HdnUserTypeId"><input type="hidden" id="HdnSelectedUser">
+                </div>
+            </div>
+
+        </form>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive ">
+                    <div id="tblitem">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var RetailCategoryList = [];
+    var varddlSubCategory = "";
+    var ItemList = [];
+    var SalesReportList = [];
+    var InventoryitemDetails = [];
+    var varddlCategory = "";
+    var varddlItem = "";
+    var Now = new Date();
+    var FDate = new Date();
+    var CustomerList = [];
+    var varddlCustomer = "";
+    var varddlBuyer = "";
+    var ReportTypeList = [];
+    var varddlReportType = "";
+
+
+
+    strUserTypeId = @Html.Raw(@ViewBag.UserTypeID);
+    arrayCr1 = @Html.Raw(Json.Encode(@ViewBag.CustomerList));
+    arrayRT = @Html.Raw("[{\"ReportType\":\"Summary\",\"ReportID\":2}, {\"ReportType\":\"Detail\",\"ReportID\":3}, {\"ReportType\":\"Reprimary Sales Region Wise Report\",\"ReportID\":1}, {\"ReportType\":\"Reprimary Sales Region Wise Report\",\"ReportID\":4}]");
+    if(arrayCr1 !=null)
+    {
+        for(var i = 0; i < arrayCr1.length; i++){
+            CustomerList[i] = arrayCr1[i];
+        }
+
+
+    }
+
+    if (strUserTypeId == "22" || strUserTypeId == "23") {
+        $("#DivddlCustomer").removeAttr("style");
+    }
+
+    for (var j = 0; j < arrayRT.length; j++) {
+        ReportTypeList[j] = arrayRT[j];
+    }
+
+    $(document).ready(function () {
+
+
+        if (document.getElementById("hdnCurrentUserTypeId").value == "22" || document.getElementById("hdnCurrentUserTypeId").value == "23") {
+            $("#DivddlCustomer").removeAttr("style");
+        }
+
+        $("#txtDate").dxDateBox({
+            height: 30,
+            type: "date",
+            value: FDate.setDate(FDate.getDate()),
+            placeholder: "From Date",
+            displayFormat: "dd/MMM/yyyy"
+        });
+      
+
+
+        $("#ddlCustomer").dxSelectBox({
+            height: 30,
+            dataSource: new DevExpress.data.ArrayStore({
+                data: CustomerList,
+                key: "PartyID"
+            }),
+            displayExpr: "Party",
+            valueExpr: "PartyID",
+            placeholder: "Select Super Stockist",
+            searchEnabled: true,
+            onValueChanged: function (data) {
+                varddlCustomer = data.value
+                GetBuyersbyPartyID();
+            }
+        });
+
+    });
+
+    function SetDate(dateStr) {
+        var strDate
+        var now = new Date(dateStr);
+        var Day = now.getDate()
+        var Month = (now.getMonth() + 1)
+        var Year = now.getFullYear()
+        if (Day < 10) {
+            Day = "0" + Day;
+        }
+        if (Month < 10) {
+            Month = "0" + Month;
+        }
+        strDate = Month + "/" + Day + "/" + Year
+        return strDate;
+    }
+
+
+    function GetBuyersbyPartyID() {
+        try {
+            debugger;
+            var strParty = $("#ddlCustomer").dxSelectBox('instance').option('value');
+            var data = { 'PartyID': strParty };
+            if (strParty.length == 1) {
+                PartyVal = strParty[0].PartyID;
+            }
+            else {
+                PartyVal = "0";
+            }
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Home/GetBuyersbyPartyID",
+                type: 'POST',
+                dataType: 'json',
+                data: dataWithAntiforgeryToken,
+                async: true,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        BuyerList = Response.Result;
+                        fillbuyer();
+
+                    }
+                    else {
+
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    alert("Data size is too large!");
+                }
+            });
+        }
+        catch (e) {
+            alert("Data size is too large!");
+        }
+    }
+
+    function fillbuyer(){
+         $("#txtBuyer").dxSelectBox({
+                            dataSource: new DevExpress.data.ArrayStore({
+                                data: BuyerList,
+                                key: "PartyID"
+                            }),
+                            displayExpr: "Party",
+                            valueExpr: "PartyID",
+                            placeholder: "Select Customer",
+                            searchEnabled: true,
+                            onValueChanged: function (data) {
+                            varddlBuyer = data.value;
+                            }
+                        });
+    }
+
+    function ReprimarySalesRegionWiseDateReport() {
+        debugger;
+        try
+        {
+
+            if (strUserTypeId == "22" || strUserTypeId == "23") {
+
+                if (varddlCustomer == undefined || varddlCustomer == null) {
+                    return true
+                }
+            }
+
+            loadPanel.show();
+            var Vardate = SetDate($("#txtDate").dxDateBox('instance').option('value'));
+           
+
+            //var VarPartyId = "0";
+            var VarBuyerId = "0";
+            if (varddlBuyer != "" && varddlBuyer != null)
+                {
+                VarBuyerId = varddlBuyer;
+            }
+            //if (strUserTypeId == "22") {
+
+            //    //added by Kamini on 22 July 2022 for multiple super stockist selection
+            //    var strParty = $("#ddlCustomer").dxTagBox("instance").option("selectedItems");
+            //    if (strParty.length == 1) {
+            //        VarPartyId = strParty[0].PartyID;
+            //    }
+            //    else {
+            //        for (z = 0; z < strParty.length; z++) {
+            //            PartyIdList = PartyIdList + strParty[z].PartyID + ",";
+            //        }
+            //        VarPartyId = PartyIdList.substring(0, PartyIdList.length - 1);
+            //    }
+
+            var data = {
+                'SuperStockistID': varddlCustomer, 'RunDate': Vardate};
+
+
+
+            //var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            //alert(dataWithAntiforgeryToken);
+            $.ajax({
+                url: "../Report/ReprimarySalesRegionWiseDateReport",
+                type: 'POST',
+                dataType: 'json',
+                async: true,
+                data: data,
+                success: function (Response) {
+                    loadPanel.hide();
+                    if (Response.StatusId != "99") {
+                        debugger;
+                        SalesReportList = Response.Result;
+                        BindReportdata();
+                        fillbuyer();
+
+                    }
+                    else {
+                        alert(Response.Status);
+                    }
+
+                },
+                error: function (xhr) {
+                    loadPanel.hide();
+                    alert("Data size is too large22!");
+                }
+            });
+        }
+        catch (e) {
+            loadPanel.hide();
+            alert("Data size is too large11!");
+        }
+    }
+
+
+    function BindReportdata() {
+        debugger;
+        //var selValue = $('input[name=rbtRptGroup]:checked').attr('id');
+            //$("#DivRadio").attr("style", "display:none");
+            $("#tblitem").dxDataGrid({
+                dataSource: SalesReportList,
+                loadPanel: {
+                    enabled: true
+                },
+                height: 500,
+                allowSorting: true,
+                columnAutoWidth: true,
+                allowColumnResizing: true,
+                filterRow: { visible: true },
+                headerFilter: {
+                    visible: true,
+                    allowSearch: true
+                },
+                paging: {
+                    pageSize: 20,
+                    enabled: false
+                },
+                columnFixing: {
+                    enabled: true
+                },
+
+                columns: [
+                    {
+                        dataField: "PartyCode", caption: "Party Code", headerCellTemplate: function (header, info) {
+                            $('<div>').html("Party<br/>Code").css('text-align', 'center').appendTo(header);
+                        },
+                    },
+
+                    {
+                        dataField: "Party", caption: "Party", headerCellTemplate: function (header, info) {
+                            $('<div>').html("Party").css('text-align', 'center').appendTo(header);
+                        },
+                    },
+                    {
+                        dataField: "Region", caption: "Region", headerCellTemplate: function (header, info) {
+                            $('<div>').html("Region").css('text-align', 'center').appendTo(header);
+                        },
+                    },
+
+                    {
+                        dataField: "SalesZone", caption: "SalesZone", headerCellTemplate: function (header, info) {
+                            $('<div>').html("SalesZone").css('text-align', 'center').appendTo(header);
+                        },
+                    },
+                    {
+                        dataField: "MTDCY", caption: "MTDCY", headerCellTemplate: function (header, info) {
+                            $('<div>').html("MTDCY").css('text-align', 'center').appendTo(header);
+                        }, format: { type: "fixedPoint", precision: 2 }
+                    },
+                    {
+                        dataField: "YTDCY", caption: "YTDCY", headerCellTemplate: function (header, info) {
+                            $('<div>').html("YTDCY").css('text-align', 'center').appendTo(header);
+                        }, format: { type: "fixedPoint", precision: 2 }
+                    },
+
+                    {
+                        dataField: "MTDLY", caption: "MTDLY", headerCellTemplate: function (header, info) {
+                            $('<div>').html("MTDLY").css('text-align', 'center').appendTo(header);
+                        }, format: { type: "fixedPoint", precision: 2 }
+                    },
+
+                    {
+                        dataField: "YTDLY", caption: "YTDLY", headerCellTemplate: function (header, info) {
+                            $('<div>').html("YTDLY").css('text-align', 'center').appendTo(header);
+                        }, format: { type: "fixedPoint", precision: 2 }
+                    },
+
+                    {
+                        dataField: "MOMINCDEC", caption: "MOM INC DEC", headerCellTemplate: function (header, info) {
+                            $('<div>').html("MOMINCDEC").css('text-align', 'center').appendTo(header);
+                        }, format: { type: "fixedPoint", precision: 2 }
+                    },
+
+                    {
+                        dataField: "YOYINCDEC", caption: "YOY INC DEC", headerCellTemplate: function (header, info) {
+                            $('<div>').html("YOYINCDEC").css('text-align', 'center').appendTo(header);
+                        }, format: { type: "fixedPoint", precision: 2 }
+                    },
+
+                    {
+                        dataField: "MOMINCDECPER", caption: "MOM INC DEC(%)", headerCellTemplate: function (header, info) {
+                            $('<div>').html("MOMINCDEC(%)").css('text-align', 'center').appendTo(header);
+                        }, format: { type: "fixedPoint", precision: 2 }
+                    },
+
+                    {
+                        dataField: "YOYINCDECPER", caption: "YOY INC DEC(%)", headerCellTemplate: function (header, info) {
+                            $('<div>').html("YOYINCDECPER").css('text-align', 'center').appendTo(header);
+                        }, format: { type: "fixedPoint", precision: 2 }
+                    },
+
+
+
+                ],
+                export: {
+                    fileName: "Reprimary Sales Region Wise Report"
+                },
+                showRowLines: true,
+                showBorders: true,
+                summary: {
+                totalItems: [
+                    { name: "PartyCode", column: "PartyCode", displayFormat: "Grand Total" },
+                    //{ name: "Party", column: "Party", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    //{ name: "Region", column: "Region", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    //{ name: "SalesZone", column: "SalesZone", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "MTDCY", column: "MTDCY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "YTDCY", column: "YTDCY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "MTDLY", column: "MTDLY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "YTDLY", column: "YTDLY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "MOMINCDEC", column: "MOMINCDEC", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "YOYINCDEC", column: "YOYINCDEC", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "MOMINCDECPER", column: "MOMINCDECPER", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                    { name: "YOYINCDECPER", column: "YOYINCDECPER", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                ]
+            }
+
+            });
+        }
+
+
+
+    function Excel() {
+        $("#tblitem").dxDataGrid("instance").exportToExcel(false);
+    }
+
+
+</script>
+

@@ -808,6 +808,14 @@ namespace DealerPortal
 			}
 		}
 		
+		public System.Data.Linq.Table<dbmlReprimarySaleRegionWiseReport> dbmlReprimarySaleRegionWiseReports
+		{
+			get
+			{
+				return this.GetTable<dbmlReprimarySaleRegionWiseReport>();
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="Stock.ItemAdjustmentGetByFromDateToDate")]
 		public ISingleResult<ItemAdjustmentGetByFromDateToDateResult> ItemAdjustmentGetByFromDateToDate([global::System.Data.Linq.Mapping.ParameterAttribute(Name="FromDate", DbType="DateTime")] System.Nullable<System.DateTime> fromDate, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="ToDate", DbType="DateTime")] System.Nullable<System.DateTime> toDate)
 		{
@@ -28257,6 +28265,231 @@ namespace DealerPortal
 				if ((this._ItemName != value))
 				{
 					this._ItemName = value;
+				}
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="")]
+	public partial class dbmlReprimarySaleRegionWiseReport
+	{
+		
+		private string _Property1;
+		
+		private string _Party;
+		
+		private string _Region;
+		
+		private string _SalesZone;
+		
+		private System.Nullable<decimal> _MTDCY;
+		
+		private System.Nullable<decimal> _YTDCY;
+		
+		private System.Nullable<decimal> _MTDLY;
+		
+		private System.Nullable<decimal> _YTDLY;
+		
+		private string _MOMINCDEC;
+		
+		private string _YOYINCDEC;
+		
+		private string _MOMINCDECPER;
+		
+		private string _YOYINCDECPER;
+		
+		public dbmlReprimarySaleRegionWiseReport()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Property1", DbType="varchar(100)")]
+		public string PartyCode
+		{
+			get
+			{
+				return this._Property1;
+			}
+			set
+			{
+				if ((this._Property1 != value))
+				{
+					this._Property1 = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Party", DbType="varchar(50)")]
+		public string Party
+		{
+			get
+			{
+				return this._Party;
+			}
+			set
+			{
+				if ((this._Party != value))
+				{
+					this._Party = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Region", DbType="varchar(50)")]
+		public string Region
+		{
+			get
+			{
+				return this._Region;
+			}
+			set
+			{
+				if ((this._Region != value))
+				{
+					this._Region = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SalesZone", DbType="varchar(50)")]
+		public string SalesZone
+		{
+			get
+			{
+				return this._SalesZone;
+			}
+			set
+			{
+				if ((this._SalesZone != value))
+				{
+					this._SalesZone = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MTDCY", DbType="numeric(18,4)")]
+		public System.Nullable<decimal> MTDCY
+		{
+			get
+			{
+				return this._MTDCY;
+			}
+			set
+			{
+				if ((this._MTDCY != value))
+				{
+					this._MTDCY = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_YTDCY", DbType="numeric(18,4)")]
+		public System.Nullable<decimal> YTDCY
+		{
+			get
+			{
+				return this._YTDCY;
+			}
+			set
+			{
+				if ((this._YTDCY != value))
+				{
+					this._YTDCY = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MTDLY", DbType="numeric(18,4)")]
+		public System.Nullable<decimal> MTDLY
+		{
+			get
+			{
+				return this._MTDLY;
+			}
+			set
+			{
+				if ((this._MTDLY != value))
+				{
+					this._MTDLY = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_YTDLY", DbType="numeric(18,4)")]
+		public System.Nullable<decimal> YTDLY
+		{
+			get
+			{
+				return this._YTDLY;
+			}
+			set
+			{
+				if ((this._YTDLY != value))
+				{
+					this._YTDLY = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MOMINCDEC", DbType="varchar(50)")]
+		public string MOMINCDEC
+		{
+			get
+			{
+				return this._MOMINCDEC;
+			}
+			set
+			{
+				if ((this._MOMINCDEC != value))
+				{
+					this._MOMINCDEC = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_YOYINCDEC", DbType="varchar(50)")]
+		public string YOYINCDEC
+		{
+			get
+			{
+				return this._YOYINCDEC;
+			}
+			set
+			{
+				if ((this._YOYINCDEC != value))
+				{
+					this._YOYINCDEC = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MOMINCDECPER", DbType="varchar(50)")]
+		public string MOMINCDECPER
+		{
+			get
+			{
+				return this._MOMINCDECPER;
+			}
+			set
+			{
+				if ((this._MOMINCDECPER != value))
+				{
+					this._MOMINCDECPER = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_YOYINCDECPER", DbType="varchar(50)")]
+		public string YOYINCDECPER
+		{
+			get
+			{
+				return this._YOYINCDECPER;
+			}
+			set
+			{
+				if ((this._YOYINCDECPER != value))
+				{
+					this._YOYINCDECPER = value;
 				}
 			}
 		}

@@ -3543,7 +3543,6 @@ namespace DealerPortal.Controllers
                     }
                     db.ExecuteNonQuery(dbCmd, dbTrans);
                     // IDOut = (int)db.GetParameterValue(dbCmd, "@IdOut");
-
                 }
                 foreach (dbmlItemAdjustmentDetail itemD in objinput.objdbmlItemAdjustmentDetail)
                 {
@@ -3578,7 +3577,6 @@ namespace DealerPortal.Controllers
                         }
                         db.ExecuteNonQuery(dbCmd, dbTrans);
                     }
-
                 }
                 dbTrans.Commit();
                 objReturn.objdbmlStatus.StatusId = 1;
@@ -6122,8 +6120,58 @@ namespace DealerPortal.Controllers
 
         #endregion
 
+
+        #region ReprimarySalesRegionWiseReport
+        [HttpGet]
+        public requestdbmlReprimarySaleRegionWiseReport ReprimarySalesRegionWiseDateReport(string SuperStockistID, string RunDate)
+        {
+            ObservableCollection<dbmlReprimarySaleRegionWiseReport> objdbmlReprimarySaleRegionWiseReport = new ObservableCollection<dbmlReprimarySaleRegionWiseReport>();
+            requestdbmlReprimarySaleRegionWiseReport objreturn = new requestdbmlReprimarySaleRegionWiseReport();
+            try
+            {
+                DataSet dataSet = new DataSet();
+                Database database = new SqlDatabase(co.StrSetConnection());
+                DbCommand dbCommand = database.GetStoredProcCommand("[Trans].[GetReprimarySalesZoneWise]", SuperStockistID, RunDate);
+                dbCommand.CommandTimeout = 80000000;
+                database.LoadDataSet(dbCommand, dataSet, "item");
+                if (dataSet.Tables.Count > 0 && dataSet.Tables["Item"].Rows.Count > 0)
+                {
+                    objdbmlReprimarySaleRegionWiseReport = new ObservableCollection<dbmlReprimarySaleRegionWiseReport>(from dRows in dataSet.Tables["item"].AsEnumerable()
+                                                                                                   select (co.ConvertTableToListNew<dbmlReprimarySaleRegionWiseReport>(dRows)));
+
+                    objreturn.objdbmlReprimarySaleRegionWiseReport = objdbmlReprimarySaleRegionWiseReport;
+                    objreturn.objdbmlStatus.StatusId = 1;
+                    objreturn.objdbmlStatus.Status = "Success";
+                }
+                else
+                {
+                    objreturn.objdbmlStatus.StatusId = 2;
+                    objreturn.objdbmlStatus.Status = "Record not found";
+                }
+
+
+                dataSet.Dispose();
+                dbCommand.Dispose();
+                database = null;
+            }
+            catch (Exception ex)
+            {
+                objreturn.objdbmlStatus.StatusId = 99;
+                objreturn.objdbmlStatus.Status = ex.Message + " " + ex.StackTrace;
+            }
+            return objreturn;
+
+        }
+
+        #endregion
+
+
     }
 }
+
+
+
+
 
 //[HttpGet]
 //public returndbmlTempOrderDetail OrderDetailGetByOrderNo(string OrderNo)

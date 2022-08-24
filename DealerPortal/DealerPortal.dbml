@@ -1582,6 +1582,22 @@
       <Column Name="ItemName" Type="System.String" DbType="varchar()" CanBeNull="false" />
     </Type>
   </Table>
+  <Table Name="" Member="dbmlReprimarySaleRegionWiseReports">
+    <Type Name="dbmlReprimarySaleRegionWiseReport">
+      <Column Name="PartyCode" Storage="_Property1" Type="System.String" DbType="varchar(100)" CanBeNull="true" />
+      <Column Name="Party" Type="System.String" DbType="varchar(50)" CanBeNull="true" />
+      <Column Name="Region" Type="System.String" DbType="varchar(50)" CanBeNull="true" />
+      <Column Name="SalesZone" Type="System.String" DbType="varchar(50)" CanBeNull="true" />
+      <Column Name="MTDCY" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="YTDCY" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="MTDLY" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="YTDLY" Type="System.Decimal" DbType="numeric(18,4)" CanBeNull="true" />
+      <Column Name="MOMINCDEC" Type="System.String" DbType="varchar(50)" CanBeNull="true" />
+      <Column Name="YOYINCDEC" Type="System.String" DbType="varchar(50)" CanBeNull="true" />
+      <Column Name="MOMINCDECPER" Type="System.String" DbType="varchar(50)" CanBeNull="true" />
+      <Column Name="YOYINCDECPER" Type="System.String" DbType="varchar(50)" CanBeNull="true" />
+    </Type>
+  </Table>
   <Function Name="Stock.ItemAdjustmentGetByFromDateToDate" Method="ItemAdjustmentGetByFromDateToDate">
     <Parameter Name="FromDate" Parameter="fromDate" Type="System.DateTime" DbType="DateTime" />
     <Parameter Name="ToDate" Parameter="toDate" Type="System.DateTime" DbType="DateTime" />

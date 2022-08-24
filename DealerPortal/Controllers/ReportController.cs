@@ -692,7 +692,7 @@ namespace DealerPortal.Controllers
 
         }
         //[ValidateAntiForgeryToken]
-        public ActionResult ReprimarySaleReportFromDateToDateReport(string SuperStockistID, int ReportTypeID, string Fromdate, string Todate)
+        public ActionResult ReprimarySaleReportFromDateToDateReport(string SuperStockistID, string Fromdate, string Todate)
          {
             if (Session["UserId"] == null)
             {
@@ -713,7 +713,7 @@ namespace DealerPortal.Controllers
                     PartyIdVal = Session["PartyId"].ToString();
 
                 HttpClient client = new HttpClient();
-                var response = client.GetAsync(apiUrl + "ReprimarySaleReportFromDateToDateReport?Fromdate=" + Fromdate + "&Todate=" + Todate + "&SuperStockistID=" + PartyIdVal + "&ReportTypeID=" + ReportTypeID).Result;
+                var response = client.GetAsync(apiUrl + "ReprimarySaleReportFromDateToDateReport?Fromdate=" + Fromdate + "&Todate=" + Todate + "&SuperStockistID=" + PartyIdVal).Result;
                 string responseBody = response.Content.ReadAsStringAsync().Result;
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
                 serializer.MaxJsonLength = Int32.MaxValue;
@@ -731,6 +731,71 @@ namespace DealerPortal.Controllers
 
         #endregion
 
+        //Added by Piyush on 22-08-2022
+        public ActionResult ReprimarySalesRegionWiseReport()
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            string apiUrl = System.Configuration.ConfigurationManager.AppSettings["apiUrl"];
+            HttpClient client = new HttpClient();
+            returndbmlRetailCategoryMaster objreturn = new returndbmlRetailCategoryMaster();
+            returndbmlPartyMaster objreturn2 = new returndbmlPartyMaster();
+            string responseBody = "";
+            string responseBody2 = "";
+
+            var response1 = client.GetAsync(apiUrl + "RetailCategoryMasterGetByParentIdForDropdown?ParentId=-1").Result;
+            responseBody = response1.Content.ReadAsStringAsync().Result;
+            objreturn = (new JavaScriptSerializer()).Deserialize<returndbmlRetailCategoryMaster>(responseBody);
+            ViewBag.RetailCategoryList = objreturn.objdbmlRetailCategoryMaster.ToList();
+
+            //var response2 = client.GetAsync(apiUrl + "PartyMasterGetAll").Result;
+            var response2 = client.GetAsync(apiUrl + "PartyMasterGetAllByUserId?UserId=" + Session["UserId"].ToString()).Result;
+            responseBody2 = response2.Content.ReadAsStringAsync().Result;
+            objreturn2 = (new JavaScriptSerializer()).Deserialize<returndbmlPartyMaster>(responseBody2);
+            ViewBag.CustomerList = objreturn2.objdbmlPartyMaster.ToList();
+            ViewBag.UserTypeID = Session["UserTypeId"].ToString();
+            return View();
+
+        }
+        //[ValidateAntiForgeryToken]
+        public ActionResult ReprimarySalesRegionWiseDateReport(string SuperStockistID,string RunDate)
+        {
+            if (Session["UserId"] == null)
+            {
+                return Json(new { StatusId = 99, Status = "Your session has been expired, please login again." }, JsonRequestBehavior.AllowGet);
+            }
+            int intStatusId = 99;
+            string strStatus = "Invalid";
+            requestdbmlReprimarySaleRegionWiseReport objreturn = new requestdbmlReprimarySaleRegionWiseReport();
+            try
+            {
+                string apiUrl = System.Configuration.ConfigurationManager.AppSettings["apiUrl"];
+                string PartyIdVal = "0";
+
+                if (Session["UserTypeId"].ToString() == "22" || Session["UserTypeId"].ToString() == "23")
+                    PartyIdVal = SuperStockistID;
+                else
+                    //PartyIdVal = Convert.ToInt32(Session["PartyId"]);
+                    PartyIdVal = Session["PartyId"].ToString();
+
+                HttpClient client = new HttpClient();
+                var response = client.GetAsync(apiUrl + "ReprimarySalesRegionWiseDateReport?SuperStockistID=" + PartyIdVal + "&RunDate=" + RunDate).Result;
+                string responseBody = response.Content.ReadAsStringAsync().Result;
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
+                serializer.MaxJsonLength = Int32.MaxValue;
+                objreturn = (serializer).Deserialize<requestdbmlReprimarySaleRegionWiseReport>(responseBody);
+                intStatusId = objreturn.objdbmlStatus.StatusId;
+                strStatus = objreturn.objdbmlStatus.Status;
+
+            }
+            catch (Exception ex)
+            {
+                strStatus = ex.Message;
+            }
+            return Json(new { Result = objreturn.objdbmlReprimarySaleRegionWiseReport, Status = strStatus, StatusId = intStatusId }, JsonRequestBehavior.AllowGet);
+        }
 
     }
 }
