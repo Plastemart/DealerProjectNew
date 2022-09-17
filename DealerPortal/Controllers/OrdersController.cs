@@ -25,6 +25,9 @@ using System.Web;
 using System.Text;
 using System.IO;
 using Newtonsoft.Json;
+using System.Xml;
+using System.Xml.Serialization;
+using Newtonsoft.Json.Linq;
 
 namespace DealerPortal.Controllers
 {
@@ -1677,6 +1680,48 @@ namespace DealerPortal.Controllers
             return objreturn;
 
         }
+        //sandeep 24-08-22 StockBulkAdjustment
+        [HttpGet]
+        public returndbmlStockBulkAdjustment StockBulkAdjustment(string PartyID)
+        {
+            ObservableCollection<dbmlStockBulkAdjustment> objdbmlStockBulkAdjustment = new ObservableCollection<dbmlStockBulkAdjustment>();
+            returndbmlStockBulkAdjustment objreturn = new returndbmlStockBulkAdjustment();
+            try
+            {
+                DataSet dataSet = new DataSet();
+                Database database = new SqlDatabase(co.StrSetConnection());
+                DbCommand dbCommand = database.GetStoredProcCommand("[Master].[ItemMasterGetAllForStockAdjustment]", Convert.ToInt32(PartyID));
+                dbCommand.CommandTimeout = 80000000;
+                database.LoadDataSet(dbCommand, dataSet, "itemMaster");
+                if (dataSet.Tables.Count > 0 && dataSet.Tables["itemMaster"].Rows.Count > 0)
+                {
+                    objdbmlStockBulkAdjustment = new ObservableCollection<dbmlStockBulkAdjustment>(from dRows in dataSet.Tables["itemMaster"].AsEnumerable()
+                                                                                     select (co.ConvertTableToListNew<dbmlStockBulkAdjustment>(dRows)));
+
+                    objreturn.objdbmlStockBulkAdjustment = objdbmlStockBulkAdjustment;
+                    objreturn.objdbmlStatus.StatusId = 1;
+                    objreturn.objdbmlStatus.Status = "Success";
+                }
+                else
+                {
+                    objreturn.objdbmlStatus.StatusId = 2;
+                    objreturn.objdbmlStatus.Status = "Record not found";
+                }
+
+
+                dataSet.Dispose();
+                dbCommand.Dispose();
+                database = null;
+            }
+            catch (Exception ex)
+            {
+                objreturn.objdbmlStatus.StatusId = 99;
+                objreturn.objdbmlStatus.Status = ex.Message + " " + ex.StackTrace;
+            }
+            return objreturn;
+
+        }
+
 
         #endregion
 
@@ -3543,6 +3588,7 @@ namespace DealerPortal.Controllers
                     }
                     db.ExecuteNonQuery(dbCmd, dbTrans);
                     // IDOut = (int)db.GetParameterValue(dbCmd, "@IdOut");
+
                 }
                 foreach (dbmlItemAdjustmentDetail itemD in objinput.objdbmlItemAdjustmentDetail)
                 {
@@ -3577,6 +3623,7 @@ namespace DealerPortal.Controllers
                         }
                         db.ExecuteNonQuery(dbCmd, dbTrans);
                     }
+
                 }
                 dbTrans.Commit();
                 objReturn.objdbmlStatus.StatusId = 1;
@@ -4890,7 +4937,7 @@ namespace DealerPortal.Controllers
         // Sandeep 13/8/2022
         #region ReprimarySaleReport
         [HttpGet]
-        public requestdbmlReprimarySaleReport ReprimarySaleReportFromDateToDateReport(string Fromdate, string Todate, string SuperStockistID, int ReportTypeID )
+        public requestdbmlReprimarySaleReport ReprimarySaleReportFromDateToDateReport(string Fromdate, string Todate, string SuperStockistID, int ReportTypeID, string ProductTypeID, string ProductID)
         {
             ObservableCollection<dbmlReprimarySaleReport> objdbmlReprimarySaleReport = new ObservableCollection<dbmlReprimarySaleReport>();
             requestdbmlReprimarySaleReport objreturn = new requestdbmlReprimarySaleReport();
@@ -4898,7 +4945,7 @@ namespace DealerPortal.Controllers
             {
                 DataSet dataSet = new DataSet();
                 Database database = new SqlDatabase(co.StrSetConnection());
-                DbCommand dbCommand = database.GetStoredProcCommand("[Trans].[GetRePrimarySalesReportData]", SuperStockistID, ReportTypeID, Fromdate, Todate);
+                DbCommand dbCommand = database.GetStoredProcCommand("[Trans].[GetRePrimarySalesReportData]", SuperStockistID, ReportTypeID, Fromdate, Todate, ProductTypeID, ProductID);
                 dbCommand.CommandTimeout = 80000000;
                 database.LoadDataSet(dbCommand, dataSet, "item");
                 if (dataSet.Tables.Count > 0 && dataSet.Tables["Item"].Rows.Count > 0)
@@ -4929,6 +4976,101 @@ namespace DealerPortal.Controllers
             return objreturn;
 
         }
+
+        #endregion
+        // Sandeep 05/9/2022
+        #region ReprimarySalesProductwiseReport
+        [HttpGet]
+        public requestdbmlReprimarySalesProductWise ReprimarySalesProductwiseReportDateToDateReport(string SalesZoneID, string RegionID, string SuperStockistID,string RunDate,string ProductTypeID, string ProductID)
+        {
+            ObservableCollection<dbmlReprimarySalesProductWise> objdbmlReprimarySalesProductWise = new ObservableCollection<dbmlReprimarySalesProductWise>();
+            requestdbmlReprimarySalesProductWise objreturn = new requestdbmlReprimarySalesProductWise();
+            try
+            {
+                DataSet dataSet = new DataSet();
+                Database database = new SqlDatabase(co.StrSetConnection());
+                DbCommand dbCommand = database.GetStoredProcCommand("[Trans].[GetReprimarySalesProductWise]", SalesZoneID, RegionID, SuperStockistID, RunDate, ProductTypeID, ProductID);
+                dbCommand.CommandTimeout = 80000000;
+                database.LoadDataSet(dbCommand, dataSet, "item");
+                if (dataSet.Tables.Count > 0 && dataSet.Tables["Item"].Rows.Count > 0)
+                {
+                    objdbmlReprimarySalesProductWise = new ObservableCollection<dbmlReprimarySalesProductWise>(from dRows in dataSet.Tables["item"].AsEnumerable()
+                                                                                                   select (co.ConvertTableToListNew<dbmlReprimarySalesProductWise>(dRows)));
+
+                    objreturn.objdbmlReprimarySalesProductWise = objdbmlReprimarySalesProductWise;
+                    objreturn.objdbmlStatus.StatusId = 1;
+                    objreturn.objdbmlStatus.Status = "Success";
+                }
+                else
+                {
+                    objreturn.objdbmlStatus.StatusId = 2;
+                    objreturn.objdbmlStatus.Status = "Record not found";
+                }
+
+
+                dataSet.Dispose();
+                dbCommand.Dispose();
+                database = null;
+            }
+            catch (Exception ex)
+            {
+                objreturn.objdbmlStatus.StatusId = 99;
+                objreturn.objdbmlStatus.Status = ex.Message + " " + ex.StackTrace;
+            }
+            return objreturn;
+
+        }
+
+
+
+
+        #endregion
+
+        // Sandeep 09/9/2022
+        #region ReprimarySalesProductMonthWiseReport
+        [HttpGet]
+        public requestdbmlReprimarySalesProductMonthWise ReprimarySalesProductMonthWiseDateToDateReport(string SalesZoneID, string RegionID, string SuperStockistID, string RunDate, string ProductTypeID, string ProductID)
+        {
+            ObservableCollection<dbmlReprimarySalesProductMonthWise> objdbmlReprimarySalesProductMonthWise = new ObservableCollection<dbmlReprimarySalesProductMonthWise>();
+            requestdbmlReprimarySalesProductMonthWise objreturn = new requestdbmlReprimarySalesProductMonthWise();
+            try
+            {
+                DataSet dataSet1 = new DataSet();
+                Database database = new SqlDatabase(co.StrSetConnection());
+                DbCommand dbCommand = database.GetStoredProcCommand("[Trans].[GetReprimarySalesProductMonthWise]", SalesZoneID, RegionID, SuperStockistID, RunDate, ProductTypeID, ProductID);
+                dbCommand.CommandTimeout = 80000000;
+                database.LoadDataSet(dbCommand, dataSet1, "Table1");
+                if (dataSet1.Tables.Count > 0 && dataSet1.Tables["Table1"].Rows.Count > 0)
+                {
+                    objdbmlReprimarySalesProductMonthWise = new ObservableCollection<dbmlReprimarySalesProductMonthWise>(from dRows in dataSet1.Tables["Table1"].AsEnumerable()
+                                                                                                               select (co.ConvertTableToListNew<dbmlReprimarySalesProductMonthWise>(dRows)));
+
+                    objreturn.objdbmlReprimarySalesProductMonthWise = objdbmlReprimarySalesProductMonthWise;
+                    objreturn.objdbmlStatus.StatusId = 1;
+                    objreturn.objdbmlStatus.Status = "Success";
+                }
+                else
+                {
+                    objreturn.objdbmlStatus.StatusId = 2;
+                    objreturn.objdbmlStatus.Status = "Record not found";
+                }
+
+
+                dataSet1.Dispose();
+                dbCommand.Dispose();
+                database = null;
+            }
+            catch (Exception ex)
+            {
+                objreturn.objdbmlStatus.StatusId = 99;
+                objreturn.objdbmlStatus.Status = ex.Message + " " + ex.StackTrace;
+            }
+            return objreturn;
+
+        }
+
+
+
 
         #endregion
 
@@ -6118,12 +6260,221 @@ namespace DealerPortal.Controllers
 
         }
 
-        #endregion
+        [HttpPost]
+        public returndbmlStockBulkAdjustment CheckStockBulkData(StockBulkUpload objContent)
+        {
+            ObservableCollection<dbmlStockBulkUpload> objdbmlStockBulkUpload = new ObservableCollection<dbmlStockBulkUpload>();
+            requestdbmlStockBulkUpload objReturn = new requestdbmlStockBulkUpload();
+
+            returndbmlStockBulkAdjustment objreturn = new returndbmlStockBulkAdjustment();
+
+            string inputJson = (new System.Web.Script.Serialization.JavaScriptSerializer()).Serialize(objContent.objdbmlStockBulkUpload);
+            //dynamic jsonData = JObject.Parse(inputJson);
+            //string newObj   = jsonData.objdbmlStockBulkUpload;
+
+            DataTable dt = (DataTable)JsonConvert.DeserializeObject(inputJson, (typeof(DataTable)));
+
+            DbConnection dbCon = null;
+            DbTransaction dbTrans = null;
+            DataSet dstemp = new DataSet();
+            dt.TableName = "Table1";
+            dstemp.Tables.Add(dt.Copy());
+            int intOut = 0;
+            string setMsg = "";
+            string strMailId = "";
+            try
+            {
+                Database db = new SqlDatabase(co.StrSetConnection());
+                DbCommand dbCmd = null;
+                dbCon = db.CreateConnection();
+                dbCon.Open();
+                dbTrans = dbCon.BeginTransaction();
+
+                
+                dbCmd = db.GetStoredProcCommand("[Master].[CheckStockBulkData]");
 
 
-        #region ReprimarySalesRegionWiseReport
+                db.AddInParameter(dbCmd, "XMLDoc", DbType.Xml, dstemp.GetXml().ToUpper());
+                db.AddInParameter(dbCmd, "TableName", DbType.String, dstemp.DataSetName.ToUpper() + "/" + dstemp.Tables[0].TableName.ToUpper());
+                db.AddOutParameter(dbCmd, "DocIdOut", DbType.Int32, 0);
+                db.AddOutParameter(dbCmd, "DocErrOut", DbType.String, 500);
+                db.ExecuteNonQuery(dbCmd, dbTrans);
+                intOut = Convert.ToInt32(db.GetParameterValue(dbCmd, "@DocIdOut"));
+                setMsg = db.GetParameterValue(dbCmd, "@DocErrOut").ToString();
+
+
+                if (intOut >= 0)
+                {
+                    dbTrans.Commit();
+                    
+                    objreturn = GetItemIdForStockAdjustmentBulkUpload(objContent);
+                    //objreturn.objdbmlStockBulkAdjustment = objreturn.objdbmlStockBulkAdjustment;
+                    //objReturn = UserMasterGetAll();
+                    objreturn.objdbmlStatus.StatusId = intOut;
+                    objreturn.objdbmlStatus.Status = setMsg;
+                }
+                else
+                {
+                    objreturn.objdbmlStatus.StatusId = intOut;
+                    objreturn.objdbmlStatus.Status = setMsg;
+                }
+            }
+            catch (Exception ex)
+            {
+                dbTrans.Rollback();
+                objreturn.objdbmlStatus.StatusId = 99;
+                objreturn.objdbmlStatus.Status = ex.Message + " " + ex.StackTrace;
+            }
+            finally
+            {
+                if (dbCon != null && dbCon.State == ConnectionState.Open)
+                {
+                    dbCon.Close();
+                    dbCon.Dispose();
+                }
+            }
+            return objreturn;
+        }
+
         [HttpGet]
-        public requestdbmlReprimarySaleRegionWiseReport ReprimarySalesRegionWiseDateReport(string SuperStockistID, string RunDate)
+        public returndbmlStockBulkAdjustment GetItemIdForStockAdjustmentBulkUpload(StockBulkUpload objContent)
+        {
+            ObservableCollection<dbmlStockBulkAdjustment> objdbmlStockBulkAdjustment = new ObservableCollection<dbmlStockBulkAdjustment>();
+            returndbmlStockBulkAdjustment objreturn = new returndbmlStockBulkAdjustment();
+            try
+            {
+                string inputJson = (new System.Web.Script.Serialization.JavaScriptSerializer()).Serialize(objContent.objdbmlStockBulkUpload);
+                //dynamic jsonData = JObject.Parse(inputJson);
+                //string newObj   = jsonData.objdbmlStockBulkUpload;
+
+                DataTable dt = (DataTable)JsonConvert.DeserializeObject(inputJson, (typeof(DataTable)));
+
+               
+                DataSet dstemp = new DataSet();
+                dt.TableName = "Table1";
+                dstemp.Tables.Add(dt.Copy());
+
+                DataSet dataSet = new DataSet();
+                Database database = new SqlDatabase(co.StrSetConnection());
+                DbCommand dbCommand = database.GetStoredProcCommand("[Master].[GetItemForStockBulkData]");
+                database.AddInParameter(dbCommand, "XMLDoc", DbType.Xml, dstemp.GetXml().ToUpper());
+                database.AddInParameter(dbCommand, "TableName", DbType.String, dstemp.DataSetName.ToUpper() + "/" + dstemp.Tables[0].TableName.ToUpper());
+                dbCommand.CommandTimeout = 80000000;
+                database.LoadDataSet(dbCommand, dataSet, "GetItemForStockBulkData");
+                if (dataSet.Tables.Count > 0 && dataSet.Tables["GetItemForStockBulkData"].Rows.Count > 0)
+                {
+                    objdbmlStockBulkAdjustment = new ObservableCollection<dbmlStockBulkAdjustment>(from dRows in dataSet.Tables["GetItemForStockBulkData"].AsEnumerable()
+                                                                                                                                           select (co.ConvertTableToListNew<dbmlStockBulkAdjustment>(dRows)));
+
+                    objreturn.objdbmlStockBulkAdjustment = objdbmlStockBulkAdjustment;
+                    objreturn.objdbmlStatus.StatusId = 1;
+                    objreturn.objdbmlStatus.Status = "Success";
+                }
+                else
+                {
+                    objreturn.objdbmlStatus.StatusId = -1;
+                    objreturn.objdbmlStatus.Status = "Record not found";
+                }
+                dataSet.Dispose();
+                dbCommand.Dispose();
+                database = null;
+            }
+            catch (Exception ex)
+            {
+                objreturn.objdbmlStatus.StatusId = 99;
+                objreturn.objdbmlStatus.Status = ex.Message + " " + ex.StackTrace;
+            }
+            return objreturn;
+        }
+
+        // sandeep 05-09-22
+        [HttpGet]
+        public returndbmlZone Zone()
+        {
+            ObservableCollection<dbmlZone> objdbmlZone = new ObservableCollection<dbmlZone>();
+            returndbmlZone objreturn = new returndbmlZone();
+            try
+            {
+                DataSet dataSet = new DataSet();
+                Database database = new SqlDatabase(co.StrSetConnection());
+                DbCommand dbCommand = database.GetStoredProcCommand("[dbo].[GetZone]");
+                dbCommand.CommandTimeout = 80000000;
+                database.LoadDataSet(dbCommand, dataSet, "item");
+                if (dataSet.Tables.Count > 0 && dataSet.Tables["Item"].Rows.Count > 0)
+                {
+                    objdbmlZone = new ObservableCollection<dbmlZone>(from dRows in dataSet.Tables["item"].AsEnumerable()
+                                                                                   select (co.ConvertTableToListNew<dbmlZone>(dRows)));
+
+                    objreturn.objdbmlZone = objdbmlZone;
+                    objreturn.objdbmlStatus.StatusId = 1;
+                    objreturn.objdbmlStatus.Status = "Success";
+                }
+                else
+                {
+                    objreturn.objdbmlStatus.StatusId = 2;
+                    objreturn.objdbmlStatus.Status = "Record not found";
+                }
+
+
+                dataSet.Dispose();
+                dbCommand.Dispose();
+                database = null;
+            }
+            catch (Exception ex)
+            {
+                objreturn.objdbmlStatus.StatusId = 99;
+                objreturn.objdbmlStatus.Status = ex.Message + " " + ex.StackTrace;
+            }
+            return objreturn;
+
+        }
+
+
+        // sandeep 06-09-22
+        [HttpGet]
+        public returndbmlRegion Region(int ZoneID)
+        {
+            ObservableCollection<dbmlRegion> objdbmlRegion = new ObservableCollection<dbmlRegion>();
+            returndbmlRegion objreturn = new returndbmlRegion();
+            try
+            {
+                DataSet dataSet = new DataSet();
+                Database database = new SqlDatabase(co.StrSetConnection());
+                DbCommand dbCommand = database.GetStoredProcCommand("[dbo].[GetRegion]", ZoneID);
+                dbCommand.CommandTimeout = 80000000;
+                database.LoadDataSet(dbCommand, dataSet, "item");
+                if (dataSet.Tables.Count > 0 && dataSet.Tables["Item"].Rows.Count > 0)
+                {
+                    objdbmlRegion = new ObservableCollection<dbmlRegion>(from dRows in dataSet.Tables["item"].AsEnumerable()
+                                                                     select (co.ConvertTableToListNew<dbmlRegion>(dRows)));
+
+                    objreturn.objdbmlRegion = objdbmlRegion;
+                    objreturn.objdbmlStatus.StatusId = 1;
+                    objreturn.objdbmlStatus.Status = "Success";
+                }
+                else
+                {
+                    objreturn.objdbmlStatus.StatusId = 2;
+                    objreturn.objdbmlStatus.Status = "Record not found";
+                }
+
+
+                dataSet.Dispose();
+                dbCommand.Dispose();
+                database = null;
+            }
+            catch (Exception ex)
+            {
+                objreturn.objdbmlStatus.StatusId = 99;
+                objreturn.objdbmlStatus.Status = ex.Message + " " + ex.StackTrace;
+            }
+            return objreturn;
+
+        }
+
+        // piyush 13-09-2022 
+        [HttpGet]
+        public requestdbmlReprimarySaleRegionWiseReport ReprimarySalesRegionWiseDateToDateReport(string SalesZoneID, string RegionID, string SuperStockistID, string RunDate, string ProductTypeID, string ProductID)
         {
             ObservableCollection<dbmlReprimarySaleRegionWiseReport> objdbmlReprimarySaleRegionWiseReport = new ObservableCollection<dbmlReprimarySaleRegionWiseReport>();
             requestdbmlReprimarySaleRegionWiseReport objreturn = new requestdbmlReprimarySaleRegionWiseReport();
@@ -6131,13 +6482,13 @@ namespace DealerPortal.Controllers
             {
                 DataSet dataSet = new DataSet();
                 Database database = new SqlDatabase(co.StrSetConnection());
-                DbCommand dbCommand = database.GetStoredProcCommand("[Trans].[GetReprimarySalesZoneWise]", SuperStockistID, RunDate);
+                DbCommand dbCommand = database.GetStoredProcCommand("[Trans].[GetReprimarySalesZoneWise]", SalesZoneID, RegionID, SuperStockistID, RunDate, ProductTypeID, ProductID);
                 dbCommand.CommandTimeout = 80000000;
                 database.LoadDataSet(dbCommand, dataSet, "item");
                 if (dataSet.Tables.Count > 0 && dataSet.Tables["Item"].Rows.Count > 0)
                 {
                     objdbmlReprimarySaleRegionWiseReport = new ObservableCollection<dbmlReprimarySaleRegionWiseReport>(from dRows in dataSet.Tables["item"].AsEnumerable()
-                                                                                                   select (co.ConvertTableToListNew<dbmlReprimarySaleRegionWiseReport>(dRows)));
+                                                                                                                       select (co.ConvertTableToListNew<dbmlReprimarySaleRegionWiseReport>(dRows)));
 
                     objreturn.objdbmlReprimarySaleRegionWiseReport = objdbmlReprimarySaleRegionWiseReport;
                     objreturn.objdbmlStatus.StatusId = 1;
@@ -6163,15 +6514,11 @@ namespace DealerPortal.Controllers
 
         }
 
-        #endregion
 
+        #endregion
 
     }
 }
-
-
-
-
 
 //[HttpGet]
 //public returndbmlTempOrderDetail OrderDetailGetByOrderNo(string OrderNo)

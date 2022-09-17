@@ -18,6 +18,14 @@ using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using System.IO;
 using ZXing.QrCode;
+using System.Data.OleDb;
+using System.Xml;
+using System.Data.SqlClient;
+using iTextSharp;
+using iTextSharp.text;
+using iTextSharp.tool.xml;
+using iTextSharp.text.pdf;
+using iTextSharp.text.html.simpleparser;
 
 namespace DealerPortal.Controllers
 {
@@ -2608,6 +2616,39 @@ namespace DealerPortal.Controllers
             return View();
         }
 
+
+        //sandeep 24-08-22 Stock Bulk Adjustent 
+        public ActionResult StockBulkAdjustment()
+        {
+            returndbmlItemMaster objreturn = new returndbmlItemMaster();
+            string apiUrl = System.Configuration.ConfigurationManager.AppSettings["apiUrl"];
+            HttpClient client = new HttpClient();
+            var response = client.GetAsync(apiUrl + "ItemMasterGetAllForStockAdjustment?PartyID=" + Convert.ToString(Session["PartyId"])).Result;
+
+            string responseBody = response.Content.ReadAsStringAsync().Result;
+            objreturn = (new JavaScriptSerializer()).Deserialize<returndbmlItemMaster>(responseBody);
+            ViewBag.ItemListSA = objreturn.objdbmlItemMasterView.ToList();
+
+            returndbmlOptionList objOL = new returndbmlOptionList();
+            string apiUrl1 = System.Configuration.ConfigurationManager.AppSettings["apiUrl"];
+            HttpClient client1 = new HttpClient();
+            //var response1 = client1.GetAsync(apiUrl1 + "OptionListGetByParameterId?ParameterId=5").Result;
+            var response1 = client1.GetAsync(apiUrl1 + "OptionListByStockAdjustmentType?ParameterId=5&AdType=3").Result;
+            string responseBody1 = response1.Content.ReadAsStringAsync().Result;
+            objOL = (new JavaScriptSerializer()).Deserialize<returndbmlOptionList>(responseBody1);
+            ViewBag.OptionListSA = objOL.objdbmlOptionList.ToList();
+
+            returndbmlTempCustomer objreturn2 = new returndbmlTempCustomer();
+            string apiUrl2 = System.Configuration.ConfigurationManager.AppSettings["apiUrl"];
+            HttpClient client2 = new HttpClient();
+            var response2 = client2.GetAsync(apiUrl + "GetCustomerForCheck?PartyId=" + Session["PartyId"]).Result;
+            string responseBody2 = response2.Content.ReadAsStringAsync().Result;
+            objreturn2 = (new JavaScriptSerializer()).Deserialize<returndbmlTempCustomer>(responseBody2);
+            ViewBag.CustomerList = objreturn2.objdbmlTempCustomer.ToList();
+            ViewBag.FormDisplayTitle = "Stock Adjustment";
+            return View();
+        }
+
         public ActionResult SalesReturn()
         {
             returndbmlItemMaster objreturn = new returndbmlItemMaster();
@@ -3178,6 +3219,58 @@ namespace DealerPortal.Controllers
                 strStatus = ex.Message;
             }
             return Json(new { ResultHeader = objreturn.dtDealerSalesChallan.Replace('\\', '/').Replace("\r\n", "").Replace("\t", ""), ResultDetail = objreturn.dtDealerSalesChallanDetails.Replace('\\', '/').Replace("\r\n", "").Replace("\t", ""), ResultGST = objreturn.dtDealerSalesChallanGST.Replace('\\', '/').Replace("\r\n", "").Replace("\t", ""), Status = strStatus, StatusId = intStatusId }, JsonRequestBehavior.AllowGet);//ResultHeader = objreturn.objdbmlDealerSalesChallan, ResultDetail = objreturn.objdbmlDealerSalesChallanDetail, 
+        }
+
+        public ActionResult SendInvoiceHTML(string DealerSalesChallanID, string EmailBody)
+        {
+            if (Session["UserId"] == null)
+            {
+                return Json(new { StatusId = 99, Status = "Your session has been expired, please login again." }, JsonRequestBehavior.AllowGet);
+            }
+            int intStatusId = 99;
+            string strStatus = "Invalid";
+            try
+            {
+                if (EmailBody != "")
+                {
+                    string vDate = DateTime.Now.ToString("dd/MM/yyyy");
+                    string FileName = DealerSalesChallanID.Replace('/', '-') + "-" + "Invoice.pdf";
+                    StringReader sr = new StringReader(EmailBody);
+                    PdfSharpConvert(EmailBody, FileName);
+                    //Document pdfDoc = new Document(PageSize.A4, 10f, 10f, 10f, 0f);
+                    //PdfWriter writer = PdfWriter.GetInstance(pdfDoc, Response.OutputStream);
+                    //pdfDoc.Open();
+                    //XMLWorkerHelper.GetInstance().ParseXHtml(writer, pdfDoc, sr);
+                    //pdfDoc.Close();
+
+
+                    //Response.ContentType = "application/pdf";
+                    //Response.AddHeader("content-disposition", "attachment;filename=" + FileName + ".pdf");
+                    //Response.Cache.SetCacheability(HttpCacheability.NoCache);
+                    //Response.Write(pdfDoc);
+                    //Response.End();
+                }
+                intStatusId = 1;
+                strStatus = "";
+            }
+            catch (Exception ex)
+            {
+                strStatus = ex.Message;
+            }
+            return Json(new { Status = strStatus, StatusId = intStatusId }, JsonRequestBehavior.AllowGet);
+        }
+
+        public void PdfSharpConvert(String html, string fname)
+        {
+            Byte[] res = null;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                var pdf = TheArtOfDev.HtmlRenderer.PdfSharp.PdfGenerator.GeneratePdf(html, PdfSharp.PageSize.A4);
+                //pdf.Save(Server.MapPath("../upload/PdfFiles/"));
+                pdf.Save(Path.Combine(Server.MapPath("~/Upload/PdfFiles"), fname));
+                //res = ms.ToArray();
+            }
+            //return res;
         }
         #endregion
 
@@ -4539,6 +4632,308 @@ namespace DealerPortal.Controllers
             }
             return Json(new { Result = objreturn.objDealerSalesChallanGetByFromDateToDateResult, Status = strStatus, StatusId = intStatusId }, JsonRequestBehavior.AllowGet);
         }
+
+        // sandeep 24-08-22
+         public ActionResult ExportToExcel()
+        {
+            var grdReport = new System.Web.UI.WebControls.GridView();
+            grdReport.DataSource = GetData();
+            grdReport.DataBind();
+
+            System.IO.StringWriter sw = new System.IO.StringWriter();
+            System.Web.UI.HtmlTextWriter htw = new System.Web.UI.HtmlTextWriter(sw);
+            grdReport.RenderControl(htw);
+            byte[] bindata = System.Text.Encoding.ASCII.GetBytes(sw.ToString());
+            return File(bindata, "appliaction/ms-excel", "ReportFile.xls");
+        }
+        [NonAction]
+        public DataTable GetData()
+        {
+            DataTable dt = new DataTable();
+            //dt.Columns.Add("no");
+            //dt.Columns.Add("name");
+
+            //dt.Rows.Add(1, "sachin");
+            //dt.Rows.Add(2, "rahul");
+
+            dt.Columns.Add("OurCode");
+            dt.Columns.Add("OurName");
+            dt.Columns.Add("DPRate");
+            dt.Columns.Add("Rate");
+            dt.Columns.Add("OpnQty");
+
+            dt.Rows.Add("");
+            //dt.Rows.Add(2, "");
+            //dt.Rows.Add(3, "");
+            //dt.Rows.Add(4, ""); 
+            //dt.Rows.Add(5, "");
+
+            return dt;
+
+        }
+
+        [HttpPost]
+        public ActionResult UploadFiles()
+        {
+            string fname=string.Empty;
+            int intStatusId = 99;
+            string strStatus = "Invalid";
+            // Checking no of files injected in Request object  
+            if (Request.Files.Count > 0)
+            {
+                requestdbmlStockBulkUpload objreturn = new requestdbmlStockBulkUpload();
+                StockBulkUpload reqobjStockBulkUpload = new StockBulkUpload();
+
+                returndbmlStockBulkAdjustment objreturn1 = new returndbmlStockBulkAdjustment();
+                try
+                {
+                    GeneralFunction co = new GeneralFunction();
+                    //  Get all files from Request object  
+                    HttpFileCollectionBase files = Request.Files;
+                    for (int i = 0; i < files.Count; i++)
+                    {
+                        //string path = AppDomain.CurrentDomain.BaseDirectory + "Uploads/";  
+                        //string filename = Path.GetFileName(Request.Files[i].FileName);  
+
+                        HttpPostedFileBase file = files[i];
+                        
+                        
+
+                        // Checking for Internet Explorer  
+                        if (Request.Browser.Browser.ToUpper() == "IE" || Request.Browser.Browser.ToUpper() == "INTERNETEXPLORER")
+                        {
+                            string[] testfiles = file.FileName.Split(new char[] { '\\' });
+                            fname = testfiles[testfiles.Length - 1];
+                        }
+                        else
+                        {
+                            fname = file.FileName;
+                        }
+
+                        string fileExtension = System.IO.Path.GetExtension(fname);
+                        string fileNamewithoutExt = System.IO.Path.GetFileNameWithoutExtension(fname);
+
+                        fname = fileNamewithoutExt + DateTime.Now.Ticks.ToString() +  fileExtension;
+
+                        // Get the complete folder path and store the file inside it.  
+                        fname = Path.Combine(Server.MapPath("~/Upload/"), fname);
+                        file.SaveAs(fname);
+
+                        string excelConnectionString = string.Empty;
+                        //excelConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + fname + ";Extended Properties=\"Excel 12.0;HDR=Yes;IMEX=2\"";
+                        //connection String for xls file format.
+                        if (fileExtension == ".xls")
+                        {
+                            excelConnectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + fname + ";Extended Properties=\"Excel 8.0;HDR=Yes;IMEX=2\"";
+                        }
+                        //connection String for xlsx file format.
+                        else if (fileExtension == ".xlsx")
+                        {
+                            excelConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + fname + ";Extended Properties=\"Excel 12.0;HDR=Yes;IMEX=2\"";
+                        }
+                        //Create Connection to Excel work book and add oledb namespace
+                        OleDbConnection excelConnection = new OleDbConnection(excelConnectionString);
+                        OleDbCommand cmdExcel = new OleDbCommand();
+                        OleDbDataAdapter oda = new OleDbDataAdapter();
+                         DataTable dt = new DataTable();
+                        cmdExcel.Connection = excelConnection;
+
+                        //Get the name of First Sheet
+                        excelConnection.Open();
+                        DataTable dtExcelSchema;
+                        dtExcelSchema = excelConnection.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
+
+                        string SheetName = dtExcelSchema.Rows[0]["TABLE_NAME"].ToString();
+                        excelConnection.Close();
+
+                        //Read Data from First Sheet
+                        excelConnection.Open();
+                        cmdExcel.CommandText = "SELECT [OURCODE],[OURNAME],[DPRATE],[RATE],[OPNQTY] FROM [Sheet1$]";
+
+                        oda.SelectCommand = cmdExcel;
+                        oda.Fill(dt);
+
+                        if (!dt.Columns.Contains("ItemID"))
+                        {
+                            dt.Columns.Add("ItemID", typeof(Int32));
+                            IEnumerable<DataRow> rows = dt.Rows.Cast<DataRow>();
+                            // Loop through the rows and change the name.
+                            rows.ToList().ForEach(r => r.SetField("ItemID", "0"));
+                        }
+
+                        if (dt.Rows.Count > 0)
+                        {
+                            oda.Dispose();
+                            excelConnection.Close();
+                            excelConnection.Dispose();
+                            if ((System.IO.File.Exists(fname)))
+                            {
+                                System.IO.File.Delete(fname);
+                            }
+
+                            dt.TableName = "Table1";
+                            DataSet dstemp = new DataSet();
+                            dstemp.Tables.Add(dt.Copy());
+
+
+
+                            //ObservableCollection<dbmlStockBulkUpload> objdbmlStockBulkUpload = new ObservableCollection<dbmlStockBulkUpload>();
+                            //objdbmlStockBulkUpload = new ObservableCollection<dbmlStockBulkUpload>(from dRows in dstemp.Tables["Table1"].AsEnumerable()
+                            //select (co.ConvertTableToListNew<dbmlStockBulkUpload>(dRows)));
+                            List<dbmlStockBulkUpload> objBulkUpload = new List<dbmlStockBulkUpload>();
+
+
+                            objBulkUpload = (from DataRow dr1 in dt.Rows
+                                      select new dbmlStockBulkUpload()
+                                      {
+                                          //StudentId = Convert.ToInt32(dr1["StudentId"]),
+                                          ItemID = Convert.ToInt32( dr1["ItemID"]),
+                                          OurCode = dr1["OurCode"].ToString(),
+                                          DPRate = Convert.ToDecimal( dr1["DPRate"].ToString()),
+                                          Rate = Convert.ToDecimal (dr1["Rate"].ToString()),
+                                          OpnQty = Convert.ToDecimal (dr1["OpnQty"].ToString()),
+                                          OurName = dr1["OurName"].ToString()
+                                      }).ToList();
+
+                            //var result = new OrdersController().CreateXML(objBulkUpload);
+                            ObservableCollection<dbmlStockBulkUpload> myCollection = new ObservableCollection<dbmlStockBulkUpload>(objBulkUpload);
+                            objreturn.objdbmlStockBulkUpload = myCollection;
+
+                            reqobjStockBulkUpload.objdbmlStockBulkUpload = myCollection;
+
+                            string inputJson = (new JavaScriptSerializer()).Serialize(reqobjStockBulkUpload);
+
+                            HttpClient client = new HttpClient();
+                            HttpContent inputContent = new StringContent(inputJson, Encoding.UTF8, "application/json");
+
+                          
+                           
+
+                            string apiUrl = System.Configuration.ConfigurationManager.AppSettings["apiUrl"];
+                            var response = client.PostAsync(apiUrl + "CheckStockBulkData", inputContent).Result;
+                            string responseBody = response.Content.ReadAsStringAsync().Result;
+                            objreturn1 = (new JavaScriptSerializer()).Deserialize<returndbmlStockBulkAdjustment>(responseBody);
+                            intStatusId = objreturn1.objdbmlStatus.StatusId;
+                            strStatus = objreturn1.objdbmlStatus.Status;
+
+
+
+                            //if(intStatusId > 0)
+                            //{
+                            //    var response1 = client.GetAsync(apiUrl + "GetItemIdForStockAdjustmentBulkUpload").Result;
+                            //    string responseBody1 = response.Content.ReadAsStringAsync().Result;
+                            //    objreturn = (new JavaScriptSerializer()).Deserialize<requestdbmlStockBulkUpload>(responseBody1);
+                            //    intStatusId = objreturn.objdbmlStatus.StatusId;
+                            //    strStatus = objreturn.objdbmlStatus.Status;
+                            //}
+
+                        }
+
+                    }
+
+
+                    // Returns message that successfully uploaded  
+                    return Json(new { Result = objreturn1.objdbmlStockBulkAdjustment, Status = strStatus, StatusId = intStatusId }, JsonRequestBehavior.AllowGet);
+                }
+                catch (Exception ex)
+                {
+                    
+                    if ((System.IO.File.Exists(fname)))
+                    {
+                        System.IO.File.Delete(fname);
+                    }
+                    return Json("Error occurred. Error details: " + ex.Message);
+
+                }
+            }
+            else
+            {
+                return Json("No files selected.");
+            }
+
+        }
+
+        //[HttpPost]
+        //public ActionResult UploadToDB(HttpPostedFileBase file)
+        //{
+        //    DataSet ds = new DataSet();
+        //    if (Request.Files["file"].ContentLength > 0)
+        //    {
+        //        string fileExtension =
+        //                             System.IO.Path.GetExtension(Request.Files["file"].FileName);
+        //        if (fileExtension == ".xls" || fileExtension == ".xlsx")
+        //        {
+        //            string fileLocation = Server.MapPath("~/Content/") + Request.Files["file"].FileName;
+        //            if (System.IO.File.Exists(fileLocation))
+        //            {
+        //                System.IO.File.Delete(fileLocation);
+        //            }
+        //            Request.Files["file"].SaveAs(fileLocation);
+        //            string excelConnectionString = string.Empty;
+        //            excelConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + fileLocation + ";Extended Properties=\"Excel 12.0;HDR=Yes;IMEX=2\"";
+        //            //connection String for xls file format.
+        //            if (fileExtension == ".xls")
+        //            {
+        //                excelConnectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + fileLocation + ";Extended Properties=\"Excel 8.0;HDR=Yes;IMEX=2\"";
+        //            }
+        //            //connection String for xlsx file format.
+        //            else if (fileExtension == ".xlsx")
+        //            {
+        //                excelConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + fileLocation + ";Extended Properties=\"Excel 12.0;HDR=Yes;IMEX=2\"";
+        //            }
+        //            //Create Connection to Excel work book and add oledb namespace
+        //            OleDbConnection excelConnection = new OleDbConnection(excelConnectionString);
+        //            excelConnection.Open();
+        //            DataTable dt = new DataTable();
+
+        //            dt = excelConnection.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
+        //            if (dt == null)
+        //            {
+        //                return null;
+        //            }
+        //            String[] excelSheets = new String[dt.Rows.Count];
+        //            int t = 0;
+        //            //excel data saves in temp file here.
+        //            foreach (DataRow row in dt.Rows)
+        //            {
+        //                excelSheets[t] = row["TABLE_NAME"].ToString();
+        //                t++;
+        //            }
+        //            OleDbConnection excelConnection1 = new OleDbConnection(excelConnectionString);
+        //            string query = string.Format("Select * from [{0}]", excelSheets[0]);
+
+        //            using (OleDbDataAdapter dataAdapter = new OleDbDataAdapter(query, excelConnection1))
+        //            {
+        //                dataAdapter.Fill(ds);
+        //            }
+        //        }
+        //        if (fileExtension.ToString().ToLower().Equals(".xml"))
+        //        {
+        //            string fileLocation = Server.MapPath("~/Content/") + Request.Files["FileUpload"].FileName;
+        //            if (System.IO.File.Exists(fileLocation))
+        //            {
+        //                System.IO.File.Delete(fileLocation);
+        //            }
+
+        //            Request.Files["FileUpload"].SaveAs(fileLocation);
+        //            XmlTextReader xmlreader = new XmlTextReader(fileLocation);
+        //            ds.ReadXml(xmlreader);
+        //            xmlreader.Close();
+        //        }
+        //        //for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+        //        //{
+        //        //    string constr = "Data Source=NEERAJ-PC;Initial Catalog=CodeSolution;Persist Security Info=True;User ID=sa; password=12345678";
+        //        //    SqlConnection con = new SqlConnection(constr);
+        //        //    string query = "Insert into record(Name,Contact_no,Email) Values('" + ds.Tables[0].Rows[i][0].ToString() + "','" + ds.Tables[0].Rows[i][1].ToString() + "','" + ds.Tables[0].Rows[i][2].ToString() + "')";
+        //        //    SqlCommand cmd = new SqlCommand(query, con);
+        //        //    con.Open();
+        //        //    cmd.ExecuteNonQuery();
+        //        //    con.Close();
+        //        //    ViewBag.Message = "value inserted ";
+        //        //}
+        //    }
+        //    return View();
+        //}
 
         #endregion
     }
