@@ -49,6 +49,12 @@ namespace DealerPortal.Models
         public ObservableCollection<dbmlItemMasterView> objdbmlItemMasterView = new ObservableCollection<dbmlItemMasterView>();
         public dbmlStatus objdbmlStatus = new dbmlStatus();
     }
+    // sandeep 24-08-22
+    public class returndbmlStockBulkAdjustment
+    {
+        public ObservableCollection<dbmlStockBulkAdjustment> objdbmlStockBulkAdjustment = new ObservableCollection<dbmlStockBulkAdjustment>();
+        public dbmlStatus objdbmlStatus = new dbmlStatus();
+    }
 
     public class requestdbmlTempItemInsertUpdate
     {
@@ -80,6 +86,7 @@ namespace DealerPortal.Models
        public ObservableCollection<TempCustomerMaster> objdbmlTempCustomer = new ObservableCollection<TempCustomerMaster>();
         public dbmlStatus objdbmlStatus = new dbmlStatus();
     }
+
     public class returndbmlTempCustomerAddress
     {
         public ObservableCollection<TempCustomerAddressMaster> objdbmlTempCustomerAddress = new ObservableCollection<TempCustomerAddressMaster>();
@@ -434,9 +441,6 @@ namespace DealerPortal.Models
         public dbmlStatus objdbmlStatus = new dbmlStatus();
     }
 
-
-
-
     public class returndbmlDealerSalesChallan
     {
         public dbmlDealerSalesChallan objdbmlDealerSalesChallan = new dbmlDealerSalesChallan();
@@ -543,26 +547,70 @@ namespace DealerPortal.Models
     #endregion
     // sandeep 9-8-2022
     #region 
-        //Added By Piyush 24-08-2022
     public class requestdbmlReprimarySaleReport
     {
         public ObservableCollection<dbmlReprimarySaleReport> objdbmlReprimarySaleReport = new ObservableCollection<dbmlReprimarySaleReport>();
 
         public dbmlStatus objdbmlStatus = new dbmlStatus();
     }
+    public class requestdbmlStockBulkUpload
+    {
+        public ObservableCollection<dbmlStockBulkUpload> objdbmlStockBulkUpload = new ObservableCollection<dbmlStockBulkUpload>();
 
-    #endregion
+        public dbmlStatus objdbmlStatus = new dbmlStatus();
 
-    #region  Reprimary Sales Region Wise Report
+    }
+
+    public class StockBulkUpload
+    {
+        public ObservableCollection<dbmlStockBulkUpload> objdbmlStockBulkUpload = new ObservableCollection<dbmlStockBulkUpload>();
+    }
+
+    public class requestdbmlReprimarySalesProductWise
+    {
+        public ObservableCollection<dbmlReprimarySalesProductWise> objdbmlReprimarySalesProductWise = new ObservableCollection<dbmlReprimarySalesProductWise>();
+
+        public dbmlStatus objdbmlStatus = new dbmlStatus();
+
+    }
+
+    public class requestdbmlReprimarySalesProductMonthWise
+    {
+        public ObservableCollection<dbmlReprimarySalesProductMonthWise> objdbmlReprimarySalesProductMonthWise = new ObservableCollection<dbmlReprimarySalesProductMonthWise>();
+
+        public dbmlStatus objdbmlStatus = new dbmlStatus();
+
+    }
+
+    //piyush 13-09-2022
 
     public class requestdbmlReprimarySaleRegionWiseReport
     {
         public ObservableCollection<dbmlReprimarySaleRegionWiseReport> objdbmlReprimarySaleRegionWiseReport = new ObservableCollection<dbmlReprimarySaleRegionWiseReport>();
 
         public dbmlStatus objdbmlStatus = new dbmlStatus();
+
     }
 
+
+    public class returndbmlZone
+    {
+        public ObservableCollection<dbmlZone> objdbmlZone = new ObservableCollection<dbmlZone>();
+
+        public dbmlStatus objdbmlStatus = new dbmlStatus();
+    }
+
+    public class returndbmlRegion
+    {
+        public ObservableCollection<dbmlRegion> objdbmlRegion = new ObservableCollection<dbmlRegion>();
+
+        public dbmlStatus objdbmlStatus = new dbmlStatus();
+    }
+
+
+
     #endregion
+
 
     #region  Download Report
     public class requestdbmlDownloadInvoiceReport
