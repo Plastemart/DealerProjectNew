@@ -43,6 +43,7 @@
 <input type="hidden" id="hdnCurrentUserTypeId" value='@Session["UserTypeId"]' />
 <input type="hidden" id="hdnSuperStockistId" value='@Session["PartyId"]' />
 <input type="hidden" id="hdnIsInvoiceAuto" value='@Session["IsInvoiceAuto"].ToString()' />
+<input type="hidden" id="hdnInvoiceHTML" value='' />
 <div class="box box-warning">
     <div class="box-header with-border">
         <div class="box-header-left">
@@ -65,7 +66,7 @@
             <button class="btn btn-sm btn-success" id="btnPrint" title="Print" onclick="PrintInvoice()"> Print </button>
         </div><br />
         <div id="DivddlCustomer" style="display:none" class="floating-label">
-            <div class="col-md-6">
+            <div class="col-md-6 ">
                 <span class="floating-input" id="ddlCustomer">
                     <span class="highlight"></span>
                     <label>Super Stockist</label>
@@ -105,12 +106,12 @@
             </div>
         </div>
         @*<div class="col-md-4">
-            <div class="floating-label">
-                <input class="floating-input" type="text" placeholder=" ">
-                <span class="highlight"></span>
-                <label>Consignee</label>
-            </div>
-        </div>*@
+                <div class="floating-label">
+                    <input class="floating-input" type="text" placeholder=" ">
+                    <span class="highlight"></span>
+                    <label>Consignee</label>
+                </div>
+            </div>*@
         <div class="col-md-4">
             <div class="floating-label">
                 <span class="floating-input" id="txtBillingAddress">
@@ -255,28 +256,28 @@
         </div>
         <div class="col-md-2">
             <div class="floating-label">
-                <input class="floating-input" type="number" placeholder=" " id="txtNoOfBoxes" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                <input class="floating-input" type="text" placeholder=" " id="txtNoOfBoxes" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
                 <span class="highlight"></span>
                 <label>No Of Boxes</label>
             </div>
         </div>
         <div class="col-md-2">
             <div class="floating-label">
-                <input class="floating-input" type="number" placeholder=" " id="txtGrossWeight" onkeypress="return CheckIsDecimalFourPlace(event,this)">
+                <input class="floating-input" type="text" placeholder=" " id="txtGrossWeight" onkeypress="return CheckIsDecimalFourPlace(event,this)">
                 <span class="highlight"></span>
                 <label>Gross Weight</label>
             </div>
         </div>
         <div class="col-md-2">
             <div class="floating-label">
-                <input class="floating-input" type="number" placeholder=" " id="txtNetWeight" onkeypress="return CheckIsDecimalFourPlace(event,this)">
+                <input class="floating-input" type="text" placeholder=" " id="txtNetWeight" onkeypress="return CheckIsDecimalFourPlace(event,this)">
                 <span class="highlight"></span>
                 <label>Net Weight</label>
             </div>
         </div>
         <div class="col-md-1">
             <div class="floating-label">
-                <input class="floating-input" type="number" placeholder=" " id="txtCreditDays" onkeypress="return event.charCode >= 48 && event.charCode <= 57" onchange="CalculateDueDate()">
+                <input class="floating-input" type="text" placeholder=" " id="txtCreditDays" onkeypress="return event.charCode >= 48 && event.charCode <= 57" onchange="CalculateDueDate()">
                 <span class="highlight"></span>
                 <label>Cr. Days</label>
             </div>
@@ -498,6 +499,7 @@
     var varddlCustomer = "";
     var SuperStockistArr = [];
     var ItemDPRateList = [];
+    var EmailInvoiceText = "";
 
     function pad2(n) {
         return (n < 10 ? '0' : '') + n;
@@ -511,6 +513,9 @@
         if(document.getElementById("hdnCurrentUserTypeId").value == "22") {
             $("#DivddlCustomer").removeAttr("style");
         }
+
+
+
         GetAllPartyMaster();
         //Added by Kamini 29May2021---Customer Dropdown
         GetBuyersbyPartyID();
@@ -519,11 +524,39 @@
         GetTCSChargeMaster();
         Clear();
         EnDisable(true);
+        //$("#ddlCustomer").dxSelectBox('instance').option('disabled', false);
+        //$("#ddlCustomer").prop('disabled', false);
+
     });
 
     function EnDisable(Status) {
         //alert("into enable");
-        $("input[type=text]").prop('disabled', Status);
+        //$("input[type=text]").prop('disabled', Status);
+
+        $("#txtBuyer").prop('disabled', Status);
+        $("#ddlCustomer").prop('disabled', Status);
+        $("#txtInvoiceNo").prop('disabled', Status);
+        $("#txtInvoiceDate").prop('disabled', Status);
+        $("#txtBillingAddress").prop('disabled', Status);
+        $("#txtSealNo").prop('disabled', Status);
+        $("#txtSalesPerson").prop('disabled', Status);
+        $("#txtCreditDays").prop('disabled', Status);
+        $("#txtGrossWeight").prop('disabled', Status);
+        $("#txtNoOfBoxes").prop('disabled', Status);
+        $("#txtEWayBillDate").prop('disabled', Status);
+        $("#txtEWayBillNo").prop('disabled', Status);
+        $("#txtRemark").prop('disabled', Status);
+        $("#txtLRDate").prop('disabled', Status);
+        $("#txtLRNo").prop('disabled', Status);
+        $("#txtVechicleNo").prop('disabled', Status);
+        $("#txtFreight").prop('disabled', Status);
+        $("#txtTransporterGST").prop('disabled', Status);
+        $("#txtTransporter").prop('disabled', Status);
+        $("#txtShippingAddress").prop('disabled', Status);
+
+        $("#txtRemark").prop('disabled', Status);
+
+
         $("input[type=date]").prop('disabled', Status);
         $("input[type=checkbox]").prop('disabled', Status);
         $("select").prop('disabled', Status);
@@ -553,7 +586,8 @@
         //Added on 23 feb 2022 for multiple DP rate selection
         $("#ddlDPRate").prop('disabled', true);
 
-        $("#ddlCustomer").dxSelectBox('instance').option('disabled', Status);
+        //$("#ddlCustomer").dxSelectBox('instance').option('disabled', Status);
+        //$("#ddlCustomer").dxSelectBox('instance').option('disabled', true);
         //$('#chkTCS').prop('disabled', false);
     }
 
@@ -562,8 +596,52 @@
         //var CustObj = $('#ddlCustomer').dxSelectBox('instance');
         //CustObj.option('value', '');
         //$('#txtBuyer').dxSelectBox('instance').option('value', '');
-        //$('#txtConsignee').dxSelectBox('instance').option('value', '');
-        //$('#txtFreight').dxSelectBox('instance').option('value', '');
+        debugger;
+        $('#txtConsignee').dxSelectBox('instance').option('value', '');
+        $('#txtFreight').val(0);
+
+        $("#txtBuyer").dxSelectBox('instance').option('value', '');
+
+
+        //$("input[type=text]").val('');
+
+
+
+        //$('#txtBillingAddress').dxSelectBox('instance').option('value', null);
+        //$('#txtShippingAddress').dxSelectBox('instance').option('value', null);
+
+        $("#txtInvoiceNo").val('');
+        $("#txtInvoiceDate").val('');
+        $("#txtSealNo").val('');
+        $("#txtSalesPerson").val('');
+        $("#txtCreditDays").val('');
+        $("#txtGrossWeight").val('');
+        $("#txtNoOfBoxes").val('');
+        $("#txtEWayBillDate").val('');
+        $("#txtEWayBillNo").val('');
+        $("#txtRemark").val('');
+        $("#txtLRDate").val('');
+        $("#txtLRNo").val('');
+        $("#txtVechicleNo").val('');
+        $("#txtFreight").val('');
+        $("#txtTransporterGST").val('');
+        $("#txtTransporter").val('');
+
+        $("#txtRemark").val('');
+
+        $("#txtBCountry").val('');
+        $("#txtBState").val('');
+        $("#txtBCity").val('');
+        $("#txtBPin").val('');
+        $("#txtSCountry").val('');
+        $("#txtSState").val('');
+        $("#txtSCity").val('');
+        $("#txtSPin").val('');
+        $("#txtPrivateMarks").val('');
+
+
+
+
         $("#txtInvoiceDate").prop('type', 'text');
         $("#txtEWayBillDate").prop('type', 'text');
         $("#txtLRDate").prop('type', 'text');
@@ -578,7 +656,7 @@
         $("#hiddenTradeDisRate").val('0');
         $("#hiddenScheDisRate").val('0');
         $("#hiddenSpecialDisRate").val('0');
-        $("input[type=text]").val('');
+        //$("input[type=text]").val('');
         $("input[type=date]").val('');
         $("select").val('0');
         $("textarea").val('');
@@ -604,6 +682,8 @@
         $("#lblGrandValue").html('');
         $("#txtInvoiceNo").focus();
         $('#hdnDealerSalesChallanId').val('');
+        $('#txtSalesPerson').val('');
+        $('#txtCreditDays').val('');
     }
 
     function ClearDetails() {
@@ -987,13 +1067,13 @@
         }
 
         debugger;
-        
+
         var today = new Date();
 
         var date = today.getFullYear() + '-' + "0" + (today.getMonth() + 1) + '-'+ "0" + today.getDate() ;
-        alert(date);
+        //alert(date);
         $("#txtInvoiceDate").val(Date.parse(date));
-        
+
 
         $("#btnSave").prop('disabled', false);
         ClearItemGridData();
@@ -1007,14 +1087,26 @@
             $('#txtInvoiceNo').val('');
             $("#txtInvoiceNo").prop('disabled', true);
         }
+        var currentdate = getCurrentDate();
+        //alert(currentdate)
+        $("#txtInvoiceDate").val(ConvertJSONDateToDDMMYYYYNew(currentdate));
+
     }
 
     function Cancel() {
+        debugger;
         $("#btnSave").prop('disabled', true);
         ClearItemGridData();
         Clear();
+        //GetAllPartyMaster();
+        //GetBuyersbyPartyID();
         EnDisable(true);
-        $("#ddlCustomer").dxSelectBox('instance').option('disabled', true);
+
+        GetAllPartyMaster();
+        if (document.getElementById("hdnCurrentUserTypeId").value == "22") {
+            $("#ddlCustomer").dxSelectBox('instance').option('value', '');
+        }
+        //$("#ddlCustomer").prop('disabled', Status);
     }
 
     function Edit() {
@@ -1167,6 +1259,7 @@
             if (CheckHeaderValidation()) {
                 var objHeader = HeaderModel();
                 var objDetail = DetailModel();
+                var emailtext = "";
                 if (objHeader != null && objDetail.length > 0) {
                     $.ajax({
                         url: '../Home/DealerSalesChallanInsert',
@@ -1178,6 +1271,8 @@
                         success: function (Response) {
                             if (Response.StatusId === 1) {
                                 $("#btnSave").prop('disabled', true);
+                                GenerateInvoiceEmail(objHeader.DealerSalesChallanID, 1);
+                                emailtext = document.getElementById("hdnInvoiceHTML").value;
                                 alertSuccess(Response.Status);
                                 Clear();
                                 EnDisable(true);
@@ -1194,6 +1289,31 @@
                 else {
                     alert("Item Details are required.");
                 }
+
+                var data = { 'DealerSalesChallanID': objHeader.DealerSalesChallanID, 'EmailBody': EmailInvoiceText };
+                //var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+                $.ajax({
+                    url: "../Home/SendInvoiceHTML",
+                    type: 'POST',
+                    dataType: 'json',
+                    data: data,
+                    async: false,
+                    success: function (Response) {
+                        if (Response.StatusId != "99") {
+                            //PrintRecord(JSON.parse(Response.ResultHeader), JSON.parse(Response.ResultDetail), JSON.parse(Response.ResultGST));
+                            alert(Response.StatusId);
+                            //alert(JSON.parse(Response.ResultHeader));
+                            //alert(JSON.parse(Response.ResultDetail));
+                            //alert(JSON.parse(Response.ResultGST));
+                        }
+                        else {
+                            alert(Response.Status);
+                        }
+                    },
+                    error: function (xhr) {
+                        alert("Data size is too largeAAA!");
+                    }
+                });
             }
         } catch (e) {
             alert(e.message);
@@ -1907,7 +2027,7 @@
                         //alert(JSON.parse(Response.ResultHeader));
                         //alert(JSON.parse(Response.ResultDetail));
                         //alert(JSON.parse(Response.ResultGST));
-                        PrintRecord(JSON.parse(Response.ResultHeader), JSON.parse(Response.ResultDetail), JSON.parse(Response.ResultGST),n);
+                        PrintRecord(JSON.parse(Response.ResultHeader), JSON.parse(Response.ResultDetail), JSON.parse(Response.ResultGST),n,1);
                     }
                     else {
                         alert(Response.Status);
@@ -1935,7 +2055,7 @@
         });
     }
 
-    function PrintRecord(HE, DE, GS, prno) {
+    function PrintRecord(HE, DE, GS, prno, callprint) {
         //alert("hi in print");
         debugger;
         var GSTType = HE[0].GSTType;
@@ -1961,7 +2081,7 @@
         PHtml1 += '<div style="width: 100%;"><b style="text-transform: uppercase;">Tax Invoice</b></div>';
         PHtml1 += '<div style="width: 100%;text-align:center">';
         PHtml1 += '<span><b>GSTIN No. :</b> ' + HE[0].FactoryGSTNo + '</span>&nbsp;&nbsp;&nbsp;';
-        PHtml1 += '<span><b>PAN NO. :</b> ' + HE[0].FactoryPANNo + '</span>';        
+        PHtml1 += '<span><b>PAN NO. :</b> ' + HE[0].FactoryPANNo + '</span>';
         PHtml1 += '</div>';
         PHtml1 += '</div>';
 
@@ -2350,7 +2470,7 @@
         Rtext = HE[0].RoundOff;
         PHtml += '<p style="margin-top: 0;margin-bottom: 0; ' + (HE[0].AdditionalDiscount != 0 && HE[0].AdditionalDiscount != "" ? "" : "padding-top: 20px;") + '">Round Off: <span style="float: right;">' + (Rtext.indexOf("-") >= 0 ? "(" + HE[0].RoundOff + ")" : HE[0].RoundOff) + '</span></p>';
         PHtml += '<p style="margin-top: 0;font-weight: 600; margin-bottom: 0; border-top: 1px solid #000;">Final Amount: <span style="float: right;">' + (HE[0].TCSChargeCodeID != 0 ? (parseFloat(HE[0].TotalAmount) + parseFloat(HE[0].TCSAmount - (HE[0].AdditionalDiscount != 0 ? HE[0].AdditionalDiscount : 0))).toFixed(2) : (HE[0].AdditionalDiscount != 0 ? parseFloat(HE[0].TotalAmount) - parseFloat(HE[0].AdditionalDiscount) : HE[0].TotalAmount)) + '</span></p>';
-        
+
         //PHtml += '</td>';
         //PHtml += '</tr>';
         //PHtml += '</table>';
@@ -2409,7 +2529,12 @@
 
 
         //$(w.document.body).html((PHtml1 + PHtml) + (PHtml2 + PHtml) + (PHtml3 + PHtml));
-        FnPrint((FinalPHtml + PHtml));
+
+        if (callprint == 1) {
+            FnPrint((FinalPHtml + PHtml));
+        }
+        document.getElementById("hdnInvoiceHTML").value = (FinalPHtml + PHtml);
+        EmailInvoiceText = (FinalPHtml + PHtml);
     }
 
     function FnPrint(txtcontant) {
@@ -2807,7 +2932,7 @@
         $('#tbody').html('');
         $("#chkTCS").prop('checked', false);
     }
-    
+
     function GetSuperStockistLoginSessionDetails() {
         try {
             debugger;
@@ -2859,7 +2984,84 @@
             strDate = Month + "/" + Day + "/" + Year
             return strDate;
     }
+    function getCurrentDate() {
+        var month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = month[today.getMonth()];
+        var yyyy = today.getFullYear();
+        if (dd < 10) { dd = '0' + dd }
+        if (mm < 10) { mm = '0' + mm }
+        return (dd + "-" + mm + "-" + yyyy);
+    }
 
-  
+    function GenerateInvoiceEmail(DSCID, n) {
+        debugger;
+        try {
+            var Emailtext = "";
+            var data = { 'DealerSalesChallanID': DSCID };
+            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Home/GetSalesInvoicePrint",
+                type: 'POST',
+                dataType: 'json',
+                data: dataWithAntiforgeryToken,
+                async: false,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        //PrintRecord(JSON.parse(Response.ResultHeader), JSON.parse(Response.ResultDetail), JSON.parse(Response.ResultGST));
+                        //alert(Response.StatusId);
+                        //alert(JSON.parse(Response.ResultHeader));
+                        //alert(JSON.parse(Response.ResultDetail));
+                        //alert(JSON.parse(Response.ResultGST));
+                        PrintRecord(JSON.parse(Response.ResultHeader), JSON.parse(Response.ResultDetail), JSON.parse(Response.ResultGST), n, 0);
+                        Emailtext = document.getElementById("hdnInvoiceHTML").value;
+                        //alert(Emailtext);
+                    }
+                    else {
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    alert("Data size is too largeBBB!");
+                }
+            });
+        }
+        catch (e) {
+            alert("Data size is too largeCCC!");
+        }
+    }
 
+    function GenerateInvoiceEmail1(DSCID, etext) {
+        debugger;
+        try {
+            var data = { 'DealerSalesChallanID': DSCID, 'EmailBody': EmailInvoiceText };
+            //var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+            $.ajax({
+                url: "../Home/SendInvoiceHTML",
+                type: 'POST',
+                dataType: 'json',
+                data: data,
+                async: false,
+                success: function (Response) {
+                    if (Response.StatusId != "99") {
+                        //PrintRecord(JSON.parse(Response.ResultHeader), JSON.parse(Response.ResultDetail), JSON.parse(Response.ResultGST));
+                        alert(Response.StatusId);
+                        //alert(JSON.parse(Response.ResultHeader));
+                        //alert(JSON.parse(Response.ResultDetail));
+                        //alert(JSON.parse(Response.ResultGST));
+                    }
+                    else {
+                        alert(Response.Status);
+                    }
+                },
+                error: function (xhr) {
+                    alert("Data size is too largeAAA!");
+                }
+            });
+        }
+        catch (e) {
+            alert("Data size is too largeCCC!");
+        }
+    }
 </script>

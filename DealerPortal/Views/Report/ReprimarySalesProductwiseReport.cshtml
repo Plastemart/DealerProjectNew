@@ -1,8 +1,9 @@
 ﻿
 @{
-    ViewBag.Title = "ReprimarySalesRegionWiseReport";
+    ViewBag.Title = "ReprimarySalesProductwiseReport";
 }
 
+@*<h2>ReprimarySalesProductwiseReport</h2>*@
 
 @Html.AntiForgeryToken()
 <input type="hidden" id="hdnCurrentUserTypeId" value='@Session["UserTypeId"]' />
@@ -10,7 +11,7 @@
 <div class="box box-warning">
     <div class="box-header with-border">
         <div class="box-header-left">
-            <h3 class="box-title" style="line-height:2px;">Reprimary Sales Zone Wise Report</h3>
+            <h3 class="box-title" style="line-height:2px;">Reprimary Sales Product Wise Report</h3>
         </div>
         <div class="box-header-right">
             <ul>
@@ -24,6 +25,12 @@
         <form class="form-horizontal">
             <div class="row">
 
+                @*<div class="col-md-3" id="DivddlZone">
+            <span class="floating-input" id="ddlZone">
+                <span class="highlight"></span>
+                <label>Zone</label>
+            </span>
+        </div>*@
                 <div class="col-md-3">
                     <div id="ddlZone"></div>
                 </div>
@@ -49,14 +56,52 @@
                     <div id="ddlItem"></div>
                 </div>
 
+                @*<div class="col-md-3" id="DivddlParentItemType" >
+            <span class="floating-input" id="ddlParentItemType">
+                <span class="highlight"></span>
+                <label>Parent Item Type</label>
+            </span>
+        </div>
+
+        <div class="col-md-3" id="DivddlItemType" style="margin-top: 10px;">
+            <span class="floating-input" id="ddlItemType">
+                <span class="highlight"></span>
+                <label>Item Type</label>
+            </span>
+        </div>*@
 
                 <div class="col-md-2" style="margin-top: 10px;">
                     <div id="txtDate"></div>
                 </div>
 
+                <div class="col-md-1" style="margin-top: 10px;">
+                    <div class="floating-label" style="margin-top: 7px;">
+                        <input name="ChkQty" type="checkbox" id="chkQty" /> @*onchange="chkChargesChange()"*@
+                        <span class="highlight"></span>
+                        <label style="left: 22px;top: 0px">Qty</label>
+                    </div>
+                    <div><span id="lblQTY"></span></div>
+                </div>
+
+                <div class="col-md-1" style="margin-top: 11px;">
+                    <div class="floating-label" style="margin-top: 7px;">
+                        <input name="ChkQty"  type="checkbox" id="chkValue" /> @*onchange="chkChargesChange()"*@
+                        <span class="highlight"></span>
+                        <label style="left: 22px;top: 0px">Value</label>
+                    </div>
+                    <div><span id="lblValue"></span></div>
+                </div>
+
+                @*<div class="col-md-3 ">
+            <span class="floating-input" id="txtBuyer" style="
+            height: 31px; border-radius: 5px;  display:none">
+                <span class="highlight"></span>
+                <label>Select Customer</label>
+            </span>
+        </div>*@
 
                 <div class="col-md-2">
-                    <a href='javascript:void(0)' class='btn btn-danger btn-flat' style='background: #e32228;margin-top: 11px' onclick='ReprimarySalesRegionWiseDateToDateReport()'>Get Data</a><input type="hidden" id="HdnUserTypeId"><input type="hidden" id="HdnSelectedUser">
+                    <a href='javascript:void(0)' class='btn btn-danger btn-flat' style='background: #e32228;margin-top: 11px' onclick='ReprimarySalesProductwiseReportDateToDateReport()'>Get Data</a><input type="hidden" id="HdnUserTypeId"><input type="hidden" id="HdnSelectedUser">
                 </div>
             </div>
 
@@ -99,7 +144,6 @@
     var varddlItem = "";
     var Regionid = "";
     var Zoneid = "";
-    
 
 
     arrayCr = @Html.Raw(Json.Encode(@ViewBag.RetailCategoryList));
@@ -139,8 +183,8 @@
         //var newArray = CustomerList.filter(function (el) {
         //    return el.RegionID == regionID
         //});
-        for (var i = 0; i < arrayCr1.length; i++){
-                CustomerList[i] = arrayCr1[i];
+        for (var i = 0; i < arrayCr1.length; i++){          
+                CustomerList[i] = arrayCr1[i];         
         }
     }
 
@@ -249,7 +293,6 @@
             searchEnabled: true,
             onValueChanged: function (data) {
                 debugger;
-                //zoneid = data.value
                 ddlZoneList = data.value
                 Zoneid = data.value
                 Region(data.value)
@@ -277,7 +320,7 @@
             }
 
         });
-
+       
     });
 
 
@@ -322,7 +365,7 @@
         }
     }
 
-
+   
 
     function Region(vZoneID) {
         try {
@@ -383,7 +426,7 @@
             }
 
         });
-
+        
     }
     function ReFillStockistList() {
         //var filterItemlist = $.grep(CustomerList, function (object) {
@@ -393,9 +436,9 @@
         var Stockist = [];
 
         for (var i = 0; i < CustomerList.length; i++) {
-            if (Number(CustomerList[i].RegionId) == Number(Regionid)) {
+            if (Number(CustomerList[i].RegionId) == Number(Regionid) ) {
                 Stockist.push(CustomerList[i]);
-
+                
             }
         }
         $("#ddlCustomer").dxSelectBox({
@@ -415,6 +458,7 @@
             }
         });
     }
+    
 
     function ItemLedgerGetByItemIdFromDateToDate() {
         if (CheckHeaderValidation()) {
@@ -516,7 +560,7 @@
                         BuyerList = Response.Result;
                         //$("#ddlCustomer").dxSelectBox('instance').option("dataSource", CustomerList);
                         //$("#ddlCustomer").dxSelectBox('instance').option('value', CustomerList[0].PartyVal);
-                        ReFillStockistList();
+                        fillStockist();
                         fillbuyer();
 
                     }
@@ -549,12 +593,12 @@
                             onValueChanged: function (data) {
                             varddlBuyer = data.value;
                             }
-         });
+                        });
     }
 
+   
 
-
-    function ReprimarySalesRegionWiseDateToDateReport() {
+    function ReprimarySalesProductwiseReportDateToDateReport() {
         debugger;
         try
         {
@@ -563,6 +607,22 @@
             var SelStockist = "";
             var SelRegion = "";
             var SelZone = "";
+
+
+            if (!$('#chkQty').is(':checked') && !$('#chkValue').is(':checked')) {
+                alert("Please select Quantity or Value ");
+                return false;     
+            }
+           
+
+            //else if ($('#chkValue').is(':checked')) {
+
+            //}
+            //else
+            //{
+            //    alert("Please select Value ");
+            //    return false;
+            //}
 
             if (strUserTypeId == "22" || strUserTypeId == "23") {
 
@@ -581,6 +641,7 @@
                 {
                 VarBuyerId = varddlBuyer;
             }
+
 
             if (varddlSubCategory == "") {
                 SelCat = "-1";
@@ -606,7 +667,8 @@
             if (Regionid == "") {
                 SelRegion = "0";
             }
-            else {
+            else
+            {
                 SelRegion = Regionid;
             }
 
@@ -616,6 +678,7 @@
             else {
                 SelZone = Zoneid;
             }
+
             //if (strUserTypeId == "22") {
 
             //    //added by Kamini on 22 July 2022 for multiple super stockist selection
@@ -638,7 +701,7 @@
             var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
             //alert(dataWithAntiforgeryToken);
             $.ajax({
-                url: "../Report/ReprimarySalesRegionWiseDateToDateReport",
+                url: "../Report/ReprimarySalesProductwiseReportDateToDateReport",
                 type: 'POST',
                 dataType: 'json',
                 async: true,
@@ -647,14 +710,11 @@
                     if (SelItem == -1) {
                         BindReportdata();
                     }
-                    
                     loadPanel.hide();
                     if (Response.StatusId != "99") {
                         debugger;
-                        
                         SalesReportList = Response.Result;
                         $("#tblitem").dxDataGrid('instance').option("dataSource", SalesReportList);
-                        
                         BindReportdata();
                         fillbuyer();
 
@@ -676,125 +736,270 @@
         }
     }
 
-
+    
     function GetColumn() {
         debugger;
         var retUArr = [];
-        debugger;
 
-         
-        retUArr = [
+         if ($('#chkQty').is(':checked') && $('#chkValue').is(':checked')) {
+            retUArr = [
                 {
                     dataField: "PartyCode", caption: "Party Code", headerCellTemplate: function (header, info) {
-                        $('<div>').html("Party Code").css('white-space', 'nowrap').appendTo(header);
+                        $('<div>').html("Party<br/>Code").css('white-space', 'nowrap').appendTo(header);
                     },
                 },
+
                 {
                     dataField: "Party", caption: "Party", headerCellTemplate: function (header, info) {
                         $('<div>').html("Party").css('white-space', 'nowrap').appendTo(header);
                     },
                 },
-
                 {
                     dataField: "Region", caption: "Region", headerCellTemplate: function (header, info) {
                         $('<div>').html("Region").css('white-space', 'nowrap').appendTo(header);
                     },
                 },
+
                 {
-                    dataField: "SalesZone", groupIndex: 0, caption: "Sales Zone", headerCellTemplate: function (header, info) {
+                    dataField: "SalesZone", caption: "Sales Zone", headerCellTemplate: function (header, info) {
                         $('<div>').html("Sales Zone").css('white-space', 'nowrap').appendTo(header);
                     },
                 },
-
                 {
-                    dataField: "MTDCY", caption: "MTD CY", headerCellTemplate: function (header, info) {
-                        $('<div>').html("MTD CY").css('white-space', 'nowrap').appendTo(header);
+                    dataField: "OurCode", caption: "OurCode", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Our Code").css('white-space', 'nowrap').appendTo(header);
+                    },
+                },
+                {
+                    dataField: "OurName", caption: "OurName", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Our Name").css('white-space', 'nowrap').appendTo(header);
+                    },
+                },
+                {
+                    dataField: "MTDCY", caption: "MTDCY", headerCellTemplate: function (header, info) {
+                        $('<div>').html("MTDCY").css('white-space', 'nowrap').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "YTDCY", caption: "YTDCY", headerCellTemplate: function (header, info) {
+                        $('<div>').html("YTDCY").css('white-space', 'nowrap').appendTo(header);
                     }, format: { type: "fixedPoint", precision: 2 }
                 },
 
                 {
-                    dataField: "YTDCY", caption: "YTD CY", headerCellTemplate: function (header, info) {
+                    dataField: "MTDLY", caption: "MTDLY", headerCellTemplate: function (header, info) {
+                        $('<div>').html("MTDLY").css('white-space', 'nowrap').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+
+                {
+                    dataField: "YTDLY", caption: "YTDLY", headerCellTemplate: function (header, info) {
+                        $('<div>').html("YTDLY").css('white-space', 'nowrap').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+
+                {
+                    dataField: "MTDQCY", caption: "MTDQCY", headerCellTemplate: function (header, info) {
+                        $('<div>').html("MTDQCY").css('white-space', 'nowrap').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+
+                {
+                    dataField: "YTDQCY", caption: "YTDQCY", headerCellTemplate: function (header, info) {
+                        $('<div>').html("YTDQCY").css('white-space', 'nowrap').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+
+                {
+                    dataField: "MTDQLY", caption: "MTDQLY", headerCellTemplate: function (header, info) {
+                        $('<div>').html("MTDQLY").css('white-space', 'nowrap').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+
+                {
+                    dataField: "YTDQLY", caption: "YTDQLY", headerCellTemplate: function (header, info) {
+                        $('<div>').html("YTDQLY").css('white-space', 'nowrap').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+
+            ]
+        }
+
+
+         
+         else if ($('#chkQty').is(':checked')) {
+            retUArr = [
+                {
+                    dataField: "PartyCode", caption: "Party Code", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Party<br/>Code").css('white-space', 'nowrap').appendTo(header);
+                    },
+                },
+
+                {
+                    dataField: "Party", caption: "Party", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Party").css('white-space', 'nowrap').appendTo(header);
+                    },
+                },
+                {
+                    dataField: "Region", caption: "Region", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Region").css('white-space', 'nowrap').appendTo(header);
+                    },
+                },
+
+                {
+                    dataField: "SalesZone", caption: "Sales Zone", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Sales Zone").css('white-space', 'nowrap').appendTo(header);
+                    },
+                },
+                {
+                    dataField: "OurCode", caption: "OurCode", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Our Code").css('white-space', 'nowrap').appendTo(header);
+                    },
+                },
+                {
+                    dataField: "OurName", caption: "OurName", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Our Name").css('white-space', 'nowrap').appendTo(header);
+                    },
+                },
+                
+                {
+                    dataField: "MTDQCY", caption: "MTDQCY", headerCellTemplate: function (header, info) {
+                        $('<div>').html("MTDQCY").css('white-space', 'nowrap').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+
+                {
+                    dataField: "YTDQCY", caption: "YTDQCY", headerCellTemplate: function (header, info) {
+                        $('<div>').html("YTDQCY").css('white-space', 'nowrap').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+
+                {
+                    dataField: "MTDQLY", caption: "MTDQLY", headerCellTemplate: function (header, info) {
+                        $('<div>').html("MTDQLY").css('white-space', 'nowrap').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+
+                {
+                    dataField: "YTDQLY", caption: "YTDQLY", headerCellTemplate: function (header, info) {
+                        $('<div>').html("YTDQLY").css('white-space', 'nowrap').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+
+            ]
+
+        }
+       
+        else if ($('#chkValue').is(':checked')) {
+            retUArr = [
+                {
+                    dataField: "PartyCode", caption: "Party Code", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Party Code").css('white-space', 'nowrap').appendTo(header);
+                    },
+                },
+
+                {
+                    dataField: "Party", caption: "Party", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Party").css('white-space', 'nowrap').appendTo(header);
+                    },
+                },
+                {
+                    dataField: "Region", caption: "Region", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Region").css('white-space', 'nowrap').appendTo(header);
+                    },
+                },
+
+                {
+                    dataField: "SalesZone", caption: "Sales Zone", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Sales Zone").css('white-space', 'nowrap').appendTo(header);
+                    },
+                },
+                {
+                    dataField: "OurCode", caption: "OurCode", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Our Code").css('white-space', 'nowrap').appendTo(header);
+                    },
+                },
+                {
+                    dataField: "OurName", caption: "OurName", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Our Name").css('white-space', 'nowrap').appendTo(header);
+                    },
+                },
+                {
+                    dataField: "MTDCY", caption: "MTHCY", headerCellTemplate: function (header, info) {
+                        $('<div>').html("MTD CY").css('white-space', 'nowrap').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "YTDCY", caption: "YTDCY", headerCellTemplate: function (header, info) {
                         $('<div>').html("YTD CY").css('white-space', 'nowrap').appendTo(header);
                     }, format: { type: "fixedPoint", precision: 2 }
                 },
 
                 {
-                    dataField: "MTDLY", caption: "MTD LY", headerCellTemplate: function (header, info) {
+                    dataField: "MTDLY", caption: "MTDLY", headerCellTemplate: function (header, info) {
                         $('<div>').html("MTD LY").css('white-space', 'nowrap').appendTo(header);
                     }, format: { type: "fixedPoint", precision: 2 }
                 },
 
                 {
-                    dataField: "YTDLY", caption: "YTD LY", headerCellTemplate: function (header, info) {
+                    dataField: "YTDLY", caption: "YTDLY", headerCellTemplate: function (header, info) {
                         $('<div>').html("YTD LY").css('white-space', 'nowrap').appendTo(header);
-                    }, format: { type: "fixedPoint", precision: 2 }
-                },
-                {
-                    dataField: "MOMINCDEC", caption: "MOM INC DEC", headerCellTemplate: function (header, info) {
-                        $('<div>').html("MTH INC DEC").css('white-space', 'nowrap').appendTo(header);
-                    }, format: { type: "fixedPoint", precision: 2 }
-                },
-                {
-                    dataField: "YOYINCDEC", caption: "YOY INC DEC", headerCellTemplate: function (header, info) {
-                        $('<div>').html("YOY INC DEC").css('white-space', 'nowrap').appendTo(header);
-                    }, format: { type: "fixedPoint", precision: 2 }
-                },
-                {
-                    dataField: "MOMINCDECPER", caption: "MOM INC DEC PER", headerCellTemplate: function (header, info) {
-                        $('<div>').html("MTH INC DEC (%)").css('white-space', 'nowrap').appendTo(header);
-                    }, format: { type: "fixedPoint", precision: 2 }
-                },
-                {
-                    dataField: "YOYINCDECPER", caption: "YOY INC DEC PER", headerCellTemplate: function (header, info) {
-                        $('<div>').html("YOY INC DEC (%)").css('white-space', 'nowrap').appendTo(header);
                     }, format: { type: "fixedPoint", precision: 2 }
                 },
             ]
 
+        }
+
+
+       
         return retUArr;
     }
 
-
     function GetColumn1() {
         var retUArr1 = [];
-
-
-         //if ($('#chkQty').is(':checked') && $('#chkValue').is(':checked')) {
+        
+         if ($('#chkQty').is(':checked') && $('#chkValue').is(':checked')) {
             retUArr1 = [
-                { name: "PartyCode", column: "PartYCode", displayFormat: "Grand Total" },
+                { name: "PartyCode", column: "PartyCode", displayFormat: "Grand Total" },
                 { name: "MTDCY", column: "MTDCY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
                 { name: "YTDCY", column: "YTDCY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
                 { name: "MTDLY", column: "MTDLY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
                 { name: "YTDLY", column: "YTDLY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
-                { name: "MOMINCDEC", column: "MOMINCDEC", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
-                { name: "YOYINCDEC", column: "YOYINCDEC", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
-                { name: "MOMINCDECPER", column: "MOMINCDECPER", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
-                { name: "YOYINCDECPER", column: "YOYINCDECPER", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
-            
+                { name: "MTDQCY", column: "MTDQCY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                { name: "YTDQCY", column: "YTDQCY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                { name: "MTDQLY", column: "MTDQLY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                { name: "YTDQLY", column: "YTDQLY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+
             ]
-        //}
+        }
 
 
 
+        else if ($('#chkQty').is(':checked')) {
+            retUArr1 = [
+                { name: "PartyCode", column: "PartyCode", displayFormat: "Grand Total" },
+                { name: "MTDQCY", column: "MTDQCY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                { name: "YTDQCY", column: "YTDQCY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                { name: "MTDQLY", column: "MTDQLY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                { name: "YTDQLY", column: "YTDQLY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                
 
+            ]
+        }
+        else if ($('#chkValue').is(':checked')) {
+            retUArr1 = [
+                { name: "PartyCode", column: "PartyCode", displayFormat: "Grand Total" },
+                { name: "MTDCY", column: "MTDCY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                { name: "YTDCY", column: "YTDCY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                { name: "MTDLY", column: "MTDLY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                { name: "YTDLY", column: "YTDLY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                
 
+            ]
+        }
 
+       
         return retUArr1;
-    }
-    function GetColumn2() {
-
-        retUArr2 = [
-            { name: "PartyCode", column: "PartyCode", showInGroupFooter: true, displayFormat: "Total" },
-            { name: "MTDCY", column: "MTDCY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
-            { name: "YTDCY", column: "YTDCY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
-            { name: "MTDLY", column: "MTDLY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
-            { name: "YTDLY", column: "YTDLY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
-            { name: "MOMINCDEC", column: "MOMINCDEC", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
-            { name: "YOYINCDEC", column: "YOYINCDEC", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
-            { name: "MOMINCDECPER", column: "MOMINCDECPER", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
-            { name: "YOYINCDECPER", column: "YOYINCDECPER", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
-        ]
-        return retUArr2;
     }
 
 
@@ -833,13 +1038,12 @@
                 showBorders: true,
                 summary: {
                     totalItems: GetColumn1(),
-                    groupItems: GetColumn2()
             }
 
             });
     }
 
-
+    
 
     function Excel() {
         $("#tblitem").dxDataGrid("instance").exportToExcel(false);

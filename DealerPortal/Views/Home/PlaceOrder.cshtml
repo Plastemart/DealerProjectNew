@@ -101,7 +101,8 @@
    arrayCr = @Html.Raw(Json.Encode(@ViewBag.RetailCategoryList));
     if(arrayCr !=null)
     {
-        for(var i = 0; i < arrayCr.length; i++){
+        for (var i = 0; i < arrayCr.length; i++){
+            debugger;
             RetailCategoryList[i] = arrayCr[i];
         }
     }
@@ -197,6 +198,7 @@
     });
 
     function RetailCategoryMasterGetByParentId() {
+        debugger;
         try {
           if (varddlCategory == undefined || varddlCategory == null || varddlCategory == "") {
                 return true

@@ -808,6 +808,54 @@ namespace DealerPortal
 			}
 		}
 		
+		public System.Data.Linq.Table<dbmlStockBulkAdjustment> dbmlStockBulkAdjustments
+		{
+			get
+			{
+				return this.GetTable<dbmlStockBulkAdjustment>();
+			}
+		}
+		
+		public System.Data.Linq.Table<dbmlStockBulkUpload> dbmlStockBulkUploads
+		{
+			get
+			{
+				return this.GetTable<dbmlStockBulkUpload>();
+			}
+		}
+		
+		public System.Data.Linq.Table<dbmlReprimarySalesProductWise> dbmlReprimarySalesProductWises
+		{
+			get
+			{
+				return this.GetTable<dbmlReprimarySalesProductWise>();
+			}
+		}
+		
+		public System.Data.Linq.Table<dbmlZone> dbmlZones
+		{
+			get
+			{
+				return this.GetTable<dbmlZone>();
+			}
+		}
+		
+		public System.Data.Linq.Table<dbmlRegion> dbmlRegions
+		{
+			get
+			{
+				return this.GetTable<dbmlRegion>();
+			}
+		}
+		
+		public System.Data.Linq.Table<dbmlReprimarySalesProductMonthWise> dbmlReprimarySalesProductMonthWises
+		{
+			get
+			{
+				return this.GetTable<dbmlReprimarySalesProductMonthWise>();
+			}
+		}
+		
 		public System.Data.Linq.Table<dbmlReprimarySaleRegionWiseReport> dbmlReprimarySaleRegionWiseReports
 		{
 			get
@@ -18005,6 +18053,16 @@ namespace DealerPortal
 		
 		private System.Nullable<int> _CreditDays;
 		
+		private string _ContactPersons;
+		
+		private string _EmailAddress;
+		
+		private string _MobileNo;
+		
+		private string _InvoiceAddress;
+		
+		private string _ShippingAddress;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -18081,6 +18139,16 @@ namespace DealerPortal
     partial void OnFreightIdChanged();
     partial void OnCreditDaysChanging(System.Nullable<int> value);
     partial void OnCreditDaysChanged();
+    partial void OnContactPersonsChanging(string value);
+    partial void OnContactPersonsChanged();
+    partial void OnEmailAddressChanging(string value);
+    partial void OnEmailAddressChanged();
+    partial void OnMobileNoChanging(string value);
+    partial void OnMobileNoChanged();
+    partial void OnInvoiceAddressChanging(string value);
+    partial void OnInvoiceAddressChanged();
+    partial void OnShippingAddressChanging(string value);
+    partial void OnShippingAddressChanged();
     #endregion
 		
 		public TempCustomerMaster()
@@ -18804,6 +18872,106 @@ namespace DealerPortal
 					this._CreditDays = value;
 					this.SendPropertyChanged("CreditDays");
 					this.OnCreditDaysChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ContactPersons", DbType="varchar()")]
+		public string ContactPersons
+		{
+			get
+			{
+				return this._ContactPersons;
+			}
+			set
+			{
+				if ((this._ContactPersons != value))
+				{
+					this.OnContactPersonsChanging(value);
+					this.SendPropertyChanging();
+					this._ContactPersons = value;
+					this.SendPropertyChanged("ContactPersons");
+					this.OnContactPersonsChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EmailAddress", DbType="varchar()")]
+		public string EmailAddress
+		{
+			get
+			{
+				return this._EmailAddress;
+			}
+			set
+			{
+				if ((this._EmailAddress != value))
+				{
+					this.OnEmailAddressChanging(value);
+					this.SendPropertyChanging();
+					this._EmailAddress = value;
+					this.SendPropertyChanged("EmailAddress");
+					this.OnEmailAddressChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MobileNo", DbType="varchar()")]
+		public string MobileNo
+		{
+			get
+			{
+				return this._MobileNo;
+			}
+			set
+			{
+				if ((this._MobileNo != value))
+				{
+					this.OnMobileNoChanging(value);
+					this.SendPropertyChanging();
+					this._MobileNo = value;
+					this.SendPropertyChanged("MobileNo");
+					this.OnMobileNoChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_InvoiceAddress", DbType="varchar()")]
+		public string InvoiceAddress
+		{
+			get
+			{
+				return this._InvoiceAddress;
+			}
+			set
+			{
+				if ((this._InvoiceAddress != value))
+				{
+					this.OnInvoiceAddressChanging(value);
+					this.SendPropertyChanging();
+					this._InvoiceAddress = value;
+					this.SendPropertyChanged("InvoiceAddress");
+					this.OnInvoiceAddressChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ShippingAddress", DbType="varchar()")]
+		public string ShippingAddress
+		{
+			get
+			{
+				return this._ShippingAddress;
+			}
+			set
+			{
+				if ((this._ShippingAddress != value))
+				{
+					this.OnShippingAddressChanging(value);
+					this.SendPropertyChanging();
+					this._ShippingAddress = value;
+					this.SendPropertyChanged("ShippingAddress");
+					this.OnShippingAddressChanged();
 				}
 			}
 		}
@@ -28271,10 +28439,262 @@ namespace DealerPortal
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="")]
-	public partial class dbmlReprimarySaleRegionWiseReport
+	public partial class dbmlStockBulkAdjustment
 	{
 		
-		private string _Property1;
+		private string _OurCode;
+		
+		private string _OurName;
+		
+		private System.Nullable<decimal> _DPRate;
+		
+		private System.Nullable<decimal> _Rate;
+		
+		private System.Nullable<decimal> _OpnQty;
+		
+		private System.Nullable<int> _ItemID;
+		
+		public dbmlStockBulkAdjustment()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OurCode", DbType="varchar()")]
+		public string OurCode
+		{
+			get
+			{
+				return this._OurCode;
+			}
+			set
+			{
+				if ((this._OurCode != value))
+				{
+					this._OurCode = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OurName", DbType="varchar()")]
+		public string OurName
+		{
+			get
+			{
+				return this._OurName;
+			}
+			set
+			{
+				if ((this._OurName != value))
+				{
+					this._OurName = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DPRate", DbType="numeric()")]
+		public System.Nullable<decimal> DPRate
+		{
+			get
+			{
+				return this._DPRate;
+			}
+			set
+			{
+				if ((this._DPRate != value))
+				{
+					this._DPRate = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Rate", DbType="numeric()")]
+		public System.Nullable<decimal> Rate
+		{
+			get
+			{
+				return this._Rate;
+			}
+			set
+			{
+				if ((this._Rate != value))
+				{
+					this._Rate = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OpnQty", DbType="numeric()")]
+		public System.Nullable<decimal> OpnQty
+		{
+			get
+			{
+				return this._OpnQty;
+			}
+			set
+			{
+				if ((this._OpnQty != value))
+				{
+					this._OpnQty = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ItemID", DbType="int")]
+		public System.Nullable<int> ItemID
+		{
+			get
+			{
+				return this._ItemID;
+			}
+			set
+			{
+				if ((this._ItemID != value))
+				{
+					this._ItemID = value;
+				}
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="")]
+	public partial class dbmlStockBulkUpload
+	{
+		
+		private string _OurCode;
+		
+		private string _OurName;
+		
+		private decimal _DPRate;
+		
+		private decimal _Rate;
+		
+		private decimal _OpnQty;
+		
+		private string _Action;
+		
+		private int _ItemID;
+		
+		public dbmlStockBulkUpload()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OurCode", DbType="varchar()")]
+		public string OurCode
+		{
+			get
+			{
+				return this._OurCode;
+			}
+			set
+			{
+				if ((this._OurCode != value))
+				{
+					this._OurCode = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OurName", DbType="varchar()")]
+		public string OurName
+		{
+			get
+			{
+				return this._OurName;
+			}
+			set
+			{
+				if ((this._OurName != value))
+				{
+					this._OurName = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DPRate", DbType="numeric()")]
+		public decimal DPRate
+		{
+			get
+			{
+				return this._DPRate;
+			}
+			set
+			{
+				if ((this._DPRate != value))
+				{
+					this._DPRate = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Rate", DbType="numeric()")]
+		public decimal Rate
+		{
+			get
+			{
+				return this._Rate;
+			}
+			set
+			{
+				if ((this._Rate != value))
+				{
+					this._Rate = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OpnQty", DbType="decimal()")]
+		public decimal OpnQty
+		{
+			get
+			{
+				return this._OpnQty;
+			}
+			set
+			{
+				if ((this._OpnQty != value))
+				{
+					this._OpnQty = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Action", CanBeNull=false)]
+		public string Action
+		{
+			get
+			{
+				return this._Action;
+			}
+			set
+			{
+				if ((this._Action != value))
+				{
+					this._Action = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ItemID", DbType="int")]
+		public int ItemID
+		{
+			get
+			{
+				return this._ItemID;
+			}
+			set
+			{
+				if ((this._ItemID != value))
+				{
+					this._ItemID = value;
+				}
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="")]
+	public partial class dbmlReprimarySalesProductWise
+	{
+		
+		private string _PartyCode;
 		
 		private string _Party;
 		
@@ -28290,35 +28710,39 @@ namespace DealerPortal
 		
 		private System.Nullable<decimal> _YTDLY;
 		
-		private string _MOMINCDEC;
+		private string _OurCode;
 		
-		private string _YOYINCDEC;
+		private string _OurName;
 		
-		private string _MOMINCDECPER;
+		private System.Nullable<decimal> _MTDQCY;
 		
-		private string _YOYINCDECPER;
+		private System.Nullable<decimal> _YTDQCY;
 		
-		public dbmlReprimarySaleRegionWiseReport()
+		private System.Nullable<decimal> _MTDQLY;
+		
+		private System.Nullable<decimal> _YTDQLY;
+		
+		public dbmlReprimarySalesProductWise()
 		{
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Property1", DbType="varchar(100)")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PartyCode", DbType="varchar()")]
 		public string PartyCode
 		{
 			get
 			{
-				return this._Property1;
+				return this._PartyCode;
 			}
 			set
 			{
-				if ((this._Property1 != value))
+				if ((this._PartyCode != value))
 				{
-					this._Property1 = value;
+					this._PartyCode = value;
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Party", DbType="varchar(50)")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Party", DbType="varchar()")]
 		public string Party
 		{
 			get
@@ -28334,7 +28758,7 @@ namespace DealerPortal
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Region", DbType="varchar(50)")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Region", DbType="varchar()")]
 		public string Region
 		{
 			get
@@ -28350,7 +28774,7 @@ namespace DealerPortal
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SalesZone", DbType="varchar(50)")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SalesZone", DbType="varchar()")]
 		public string SalesZone
 		{
 			get
@@ -28366,7 +28790,7 @@ namespace DealerPortal
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MTDCY", DbType="numeric(18,4)")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MTDCY", DbType="numeric()")]
 		public System.Nullable<decimal> MTDCY
 		{
 			get
@@ -28382,7 +28806,7 @@ namespace DealerPortal
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_YTDCY", DbType="numeric(18,4)")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_YTDCY", DbType="numeric()")]
 		public System.Nullable<decimal> YTDCY
 		{
 			get
@@ -28398,7 +28822,7 @@ namespace DealerPortal
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MTDLY", DbType="numeric(18,4)")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MTDLY", DbType="numeric()")]
 		public System.Nullable<decimal> MTDLY
 		{
 			get
@@ -28414,7 +28838,7 @@ namespace DealerPortal
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_YTDLY", DbType="numeric(18,4)")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_YTDLY", DbType="numeric()")]
 		public System.Nullable<decimal> YTDLY
 		{
 			get
@@ -28430,8 +28854,598 @@ namespace DealerPortal
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MOMINCDEC", DbType="varchar(50)")]
-		public string MOMINCDEC
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OurCode", DbType="varchar()")]
+		public string OurCode
+		{
+			get
+			{
+				return this._OurCode;
+			}
+			set
+			{
+				if ((this._OurCode != value))
+				{
+					this._OurCode = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OurName", DbType="varchar()")]
+		public string OurName
+		{
+			get
+			{
+				return this._OurName;
+			}
+			set
+			{
+				if ((this._OurName != value))
+				{
+					this._OurName = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MTDQCY", DbType="numeric()")]
+		public System.Nullable<decimal> MTDQCY
+		{
+			get
+			{
+				return this._MTDQCY;
+			}
+			set
+			{
+				if ((this._MTDQCY != value))
+				{
+					this._MTDQCY = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_YTDQCY", DbType="numeric()")]
+		public System.Nullable<decimal> YTDQCY
+		{
+			get
+			{
+				return this._YTDQCY;
+			}
+			set
+			{
+				if ((this._YTDQCY != value))
+				{
+					this._YTDQCY = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MTDQLY", DbType="numeric()")]
+		public System.Nullable<decimal> MTDQLY
+		{
+			get
+			{
+				return this._MTDQLY;
+			}
+			set
+			{
+				if ((this._MTDQLY != value))
+				{
+					this._MTDQLY = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_YTDQLY", DbType="numeric()")]
+		public System.Nullable<decimal> YTDQLY
+		{
+			get
+			{
+				return this._YTDQLY;
+			}
+			set
+			{
+				if ((this._YTDQLY != value))
+				{
+					this._YTDQLY = value;
+				}
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="")]
+	public partial class dbmlZone
+	{
+		
+		private string _SalesZone;
+		
+		private int _SalesZoneID;
+		
+		public dbmlZone()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SalesZone", DbType="varchar()", CanBeNull=false)]
+		public string SalesZone
+		{
+			get
+			{
+				return this._SalesZone;
+			}
+			set
+			{
+				if ((this._SalesZone != value))
+				{
+					this._SalesZone = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SalesZoneID")]
+		public int SalesZoneID
+		{
+			get
+			{
+				return this._SalesZoneID;
+			}
+			set
+			{
+				if ((this._SalesZoneID != value))
+				{
+					this._SalesZoneID = value;
+				}
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="")]
+	public partial class dbmlRegion
+	{
+		
+		private string _Region;
+		
+		private int _RegionID;
+		
+		public dbmlRegion()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Region", DbType="varchar()", CanBeNull=false)]
+		public string Region
+		{
+			get
+			{
+				return this._Region;
+			}
+			set
+			{
+				if ((this._Region != value))
+				{
+					this._Region = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RegionID", DbType="Int")]
+		public int RegionID
+		{
+			get
+			{
+				return this._RegionID;
+			}
+			set
+			{
+				if ((this._RegionID != value))
+				{
+					this._RegionID = value;
+				}
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="")]
+	public partial class dbmlReprimarySalesProductMonthWise
+	{
+		
+		private int _PartyID;
+		
+		private string _SalesZone;
+		
+		private string _Region;
+		
+		private string _partycode;
+		
+		private string _Party;
+		
+		private string _OurCode;
+		
+		private string _OurName;
+		
+		private decimal _StockQty;
+		
+		private decimal _MON3QTy;
+		
+		private decimal _MON2QTy;
+		
+		private decimal _MON1QTy;
+		
+		private decimal _CMONQTy;
+		
+		private System.Nullable<decimal> _AVGSALES;
+		
+		public dbmlReprimarySalesProductMonthWise()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PartyID", DbType="int")]
+		public int PartyID
+		{
+			get
+			{
+				return this._PartyID;
+			}
+			set
+			{
+				if ((this._PartyID != value))
+				{
+					this._PartyID = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SalesZone", DbType="varchar()", CanBeNull=false)]
+		public string SalesZone
+		{
+			get
+			{
+				return this._SalesZone;
+			}
+			set
+			{
+				if ((this._SalesZone != value))
+				{
+					this._SalesZone = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Region", DbType="varchar()", CanBeNull=false)]
+		public string Region
+		{
+			get
+			{
+				return this._Region;
+			}
+			set
+			{
+				if ((this._Region != value))
+				{
+					this._Region = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_partycode", DbType="varchar()", CanBeNull=false)]
+		public string partycode
+		{
+			get
+			{
+				return this._partycode;
+			}
+			set
+			{
+				if ((this._partycode != value))
+				{
+					this._partycode = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Party", DbType="varchar()", CanBeNull=false)]
+		public string Party
+		{
+			get
+			{
+				return this._Party;
+			}
+			set
+			{
+				if ((this._Party != value))
+				{
+					this._Party = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OurCode", DbType="varchar()", CanBeNull=false)]
+		public string OurCode
+		{
+			get
+			{
+				return this._OurCode;
+			}
+			set
+			{
+				if ((this._OurCode != value))
+				{
+					this._OurCode = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OurName", DbType="varchar()", CanBeNull=false)]
+		public string OurName
+		{
+			get
+			{
+				return this._OurName;
+			}
+			set
+			{
+				if ((this._OurName != value))
+				{
+					this._OurName = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StockQty", DbType="numeric()")]
+		public decimal StockQty
+		{
+			get
+			{
+				return this._StockQty;
+			}
+			set
+			{
+				if ((this._StockQty != value))
+				{
+					this._StockQty = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MON3QTy", DbType="numeric()")]
+		public decimal MON3QTy
+		{
+			get
+			{
+				return this._MON3QTy;
+			}
+			set
+			{
+				if ((this._MON3QTy != value))
+				{
+					this._MON3QTy = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MON2QTy", DbType="numeric()")]
+		public decimal MON2QTy
+		{
+			get
+			{
+				return this._MON2QTy;
+			}
+			set
+			{
+				if ((this._MON2QTy != value))
+				{
+					this._MON2QTy = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MON1QTy", DbType="numeric()")]
+		public decimal MON1QTy
+		{
+			get
+			{
+				return this._MON1QTy;
+			}
+			set
+			{
+				if ((this._MON1QTy != value))
+				{
+					this._MON1QTy = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CMONQTy", DbType="numeric()")]
+		public decimal CMONQTy
+		{
+			get
+			{
+				return this._CMONQTy;
+			}
+			set
+			{
+				if ((this._CMONQTy != value))
+				{
+					this._CMONQTy = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AVGSALES", DbType="numeric()")]
+		public System.Nullable<decimal> AVGSALES
+		{
+			get
+			{
+				return this._AVGSALES;
+			}
+			set
+			{
+				if ((this._AVGSALES != value))
+				{
+					this._AVGSALES = value;
+				}
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="")]
+	public partial class dbmlReprimarySaleRegionWiseReport
+	{
+		
+		private string _PartyCode;
+		
+		private string _Party;
+		
+		private string _Region;
+		
+		private string _SalesZone;
+		
+		private decimal _MTDCY;
+		
+		private decimal _YTDCY;
+		
+		private decimal _MTDLY;
+		
+		private decimal _YTDLY;
+		
+		private decimal _MOMINCDEC;
+		
+		private decimal _YOYINCDEC;
+		
+		private decimal _MOMINCDECPER;
+		
+		private decimal _YOYINCDECPER;
+		
+		public dbmlReprimarySaleRegionWiseReport()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PartyCode", DbType="varchar()", CanBeNull=false)]
+		public string PartyCode
+		{
+			get
+			{
+				return this._PartyCode;
+			}
+			set
+			{
+				if ((this._PartyCode != value))
+				{
+					this._PartyCode = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Party", DbType="varchar()", CanBeNull=false)]
+		public string Party
+		{
+			get
+			{
+				return this._Party;
+			}
+			set
+			{
+				if ((this._Party != value))
+				{
+					this._Party = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Region", DbType="varchar()", CanBeNull=false)]
+		public string Region
+		{
+			get
+			{
+				return this._Region;
+			}
+			set
+			{
+				if ((this._Region != value))
+				{
+					this._Region = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SalesZone", DbType="varchar()", CanBeNull=false)]
+		public string SalesZone
+		{
+			get
+			{
+				return this._SalesZone;
+			}
+			set
+			{
+				if ((this._SalesZone != value))
+				{
+					this._SalesZone = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MTDCY", DbType="numeric()")]
+		public decimal MTDCY
+		{
+			get
+			{
+				return this._MTDCY;
+			}
+			set
+			{
+				if ((this._MTDCY != value))
+				{
+					this._MTDCY = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_YTDCY", DbType="numeric()")]
+		public decimal YTDCY
+		{
+			get
+			{
+				return this._YTDCY;
+			}
+			set
+			{
+				if ((this._YTDCY != value))
+				{
+					this._YTDCY = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MTDLY", DbType="numeric()")]
+		public decimal MTDLY
+		{
+			get
+			{
+				return this._MTDLY;
+			}
+			set
+			{
+				if ((this._MTDLY != value))
+				{
+					this._MTDLY = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_YTDLY", DbType="numeric()")]
+		public decimal YTDLY
+		{
+			get
+			{
+				return this._YTDLY;
+			}
+			set
+			{
+				if ((this._YTDLY != value))
+				{
+					this._YTDLY = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MOMINCDEC", DbType="numeric()")]
+		public decimal MOMINCDEC
 		{
 			get
 			{
@@ -28446,8 +29460,8 @@ namespace DealerPortal
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_YOYINCDEC", DbType="varchar(50)")]
-		public string YOYINCDEC
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_YOYINCDEC", DbType="numeric()")]
+		public decimal YOYINCDEC
 		{
 			get
 			{
@@ -28462,8 +29476,8 @@ namespace DealerPortal
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MOMINCDECPER", DbType="varchar(50)")]
-		public string MOMINCDECPER
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MOMINCDECPER", DbType="numeric()")]
+		public decimal MOMINCDECPER
 		{
 			get
 			{
@@ -28478,8 +29492,8 @@ namespace DealerPortal
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_YOYINCDECPER", DbType="varchar(50)")]
-		public string YOYINCDECPER
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_YOYINCDECPER", DbType="numeric()")]
+		public decimal YOYINCDECPER
 		{
 			get
 			{

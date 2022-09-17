@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "ReprimarySalesRegionWiseReport";
+    ViewBag.Title = "ReprimarySalesProductMonthWiseReport";
 }
 
 
@@ -10,7 +10,7 @@
 <div class="box box-warning">
     <div class="box-header with-border">
         <div class="box-header-left">
-            <h3 class="box-title" style="line-height:2px;">Reprimary Sales Zone Wise Report</h3>
+            <h3 class="box-title" style="line-height:2px;">Reprimary Sales Product Month WiseReport</h3>
         </div>
         <div class="box-header-right">
             <ul>
@@ -24,6 +24,12 @@
         <form class="form-horizontal">
             <div class="row">
 
+                @*<div class="col-md-3" id="DivddlZone">
+                        <span class="floating-input" id="ddlZone">
+                            <span class="highlight"></span>
+                            <label>Zone</label>
+                        </span>
+                    </div>*@
                 <div class="col-md-3">
                     <div id="ddlZone"></div>
                 </div>
@@ -49,14 +55,52 @@
                     <div id="ddlItem"></div>
                 </div>
 
+                @*<div class="col-md-3" id="DivddlParentItemType" >
+                        <span class="floating-input" id="ddlParentItemType">
+                            <span class="highlight"></span>
+                            <label>Parent Item Type</label>
+                        </span>
+                    </div>
+
+                    <div class="col-md-3" id="DivddlItemType" style="margin-top: 10px;">
+                        <span class="floating-input" id="ddlItemType">
+                            <span class="highlight"></span>
+                            <label>Item Type</label>
+                        </span>
+                    </div>*@
 
                 <div class="col-md-2" style="margin-top: 10px;">
                     <div id="txtDate"></div>
                 </div>
 
+                @*<div class="col-md-1" style="margin-top: 10px;">
+                    <div class="floating-label" style="margin-top: 7px;">
+                        <input name="ChkQty" type="checkbox" id="chkQty" /> 
+                        <span class="highlight"></span>
+                        <label style="left: 22px;top: 0px">Qty</label>
+                    </div>
+                    <div><span id="lblQTY"></span></div>
+                </div>
+
+                <div class="col-md-1" style="margin-top: 11px;">
+                    <div class="floating-label" style="margin-top: 7px;">
+                        <input name="ChkQty" type="checkbox" id="chkValue" />
+                        <span class="highlight"></span>
+                        <label style="left: 22px;top: 0px">Value</label>
+                    </div>
+                    <div><span id="lblValue"></span></div>
+                </div>*@
+
+                @*<div class="col-md-3 ">
+                        <span class="floating-input" id="txtBuyer" style="
+                        height: 31px; border-radius: 5px;  display:none">
+                            <span class="highlight"></span>
+                            <label>Select Customer</label>
+                        </span>
+                    </div>*@
 
                 <div class="col-md-2">
-                    <a href='javascript:void(0)' class='btn btn-danger btn-flat' style='background: #e32228;margin-top: 11px' onclick='ReprimarySalesRegionWiseDateToDateReport()'>Get Data</a><input type="hidden" id="HdnUserTypeId"><input type="hidden" id="HdnSelectedUser">
+                    <a href='javascript:void(0)' class='btn btn-danger btn-flat' style='background: #e32228;margin-top: 11px' onclick='ReprimarySalesProductMonthWiseDateToDateReport()'>Get Data</a><input type="hidden" id="HdnUserTypeId"><input type="hidden" id="HdnSelectedUser">
                 </div>
             </div>
 
@@ -99,7 +143,6 @@
     var varddlItem = "";
     var Regionid = "";
     var Zoneid = "";
-    
 
 
     arrayCr = @Html.Raw(Json.Encode(@ViewBag.RetailCategoryList));
@@ -182,7 +225,7 @@
             type: "date",
             value: FDate.setDate(FDate.getDate()),
             placeholder: "From Date",
-            displayFormat: "dd/MMM/yyyy"
+            displayFormat: "dd/MM/yyyy"
         });
 
 
@@ -249,7 +292,6 @@
             searchEnabled: true,
             onValueChanged: function (data) {
                 debugger;
-                //zoneid = data.value
                 ddlZoneList = data.value
                 Zoneid = data.value
                 Region(data.value)
@@ -393,7 +435,7 @@
         var Stockist = [];
 
         for (var i = 0; i < CustomerList.length; i++) {
-            if (Number(CustomerList[i].RegionId) == Number(Regionid)) {
+            if (Number(CustomerList[i].RegionId) == Number(Regionid) ) {
                 Stockist.push(CustomerList[i]);
 
             }
@@ -415,6 +457,7 @@
             }
         });
     }
+
 
     function ItemLedgerGetByItemIdFromDateToDate() {
         if (CheckHeaderValidation()) {
@@ -446,6 +489,7 @@
                     async: true,
                     data: dataWithAntiforgeryToken,
                     success: function (Response) {
+                        BindReportdata();
                         loadPanel.hide();
                         if (Response.StatusId != "99") {
                             LedgerReportList = Response.Result;
@@ -554,7 +598,7 @@
 
 
 
-    function ReprimarySalesRegionWiseDateToDateReport() {
+    function ReprimarySalesProductMonthWiseDateToDateReport() {
         debugger;
         try
         {
@@ -563,6 +607,8 @@
             var SelStockist = "";
             var SelRegion = "";
             var SelZone = "";
+
+
 
             if (strUserTypeId == "22" || strUserTypeId == "23") {
 
@@ -573,7 +619,7 @@
 
             loadPanel.show();
             var Vardate = SetDate($("#txtDate").dxDateBox('instance').option('value'));
-
+            
 
             //var VarPartyId = "0";
             var VarBuyerId = "0";
@@ -616,6 +662,7 @@
             else {
                 SelZone = Zoneid;
             }
+
             //if (strUserTypeId == "22") {
 
             //    //added by Kamini on 22 July 2022 for multiple super stockist selection
@@ -638,7 +685,7 @@
             var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
             //alert(dataWithAntiforgeryToken);
             $.ajax({
-                url: "../Report/ReprimarySalesRegionWiseDateToDateReport",
+                url: "../Report/ReprimarySalesProductMonthWiseDateToDateReport",
                 type: 'POST',
                 dataType: 'json',
                 async: true,
@@ -647,14 +694,11 @@
                     if (SelItem == -1) {
                         BindReportdata();
                     }
-                    
                     loadPanel.hide();
                     if (Response.StatusId != "99") {
                         debugger;
-                        
                         SalesReportList = Response.Result;
                         $("#tblitem").dxDataGrid('instance').option("dataSource", SalesReportList);
-                        
                         BindReportdata();
                         fillbuyer();
 
@@ -682,10 +726,20 @@
         var retUArr = [];
         debugger;
 
-         
-        retUArr = [
+         //if ($('#chkQty').is(':checked') && $('#chkValue').is(':checked')) {
+            retUArr = [
                 {
-                    dataField: "PartyCode", caption: "Party Code", headerCellTemplate: function (header, info) {
+                    dataField: "SalesZone", caption: "Sales Zone", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Sales Zone").css('white-space', 'nowrap').appendTo(header);
+                    },
+                },
+                {
+                    dataField: "Region", caption: "Region", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Region").css('white-space', 'nowrap').appendTo(header);
+                    },
+                },
+                {
+                    dataField: "partycode", caption: "Party Code", headerCellTemplate: function (header, info) {
                         $('<div>').html("Party Code").css('white-space', 'nowrap').appendTo(header);
                     },
                 },
@@ -694,62 +748,57 @@
                         $('<div>').html("Party").css('white-space', 'nowrap').appendTo(header);
                     },
                 },
-
                 {
-                    dataField: "Region", caption: "Region", headerCellTemplate: function (header, info) {
-                        $('<div>').html("Region").css('white-space', 'nowrap').appendTo(header);
+                    dataField: "OurCode", caption: "OurCode", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Our Code").css('white-space', 'nowrap').appendTo(header);
                     },
                 },
                 {
-                    dataField: "SalesZone", groupIndex: 0, caption: "Sales Zone", headerCellTemplate: function (header, info) {
-                        $('<div>').html("Sales Zone").css('white-space', 'nowrap').appendTo(header);
+                    dataField: "OurName", caption: "OurName", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Our Name").css('white-space', 'nowrap').appendTo(header);
                     },
                 },
-
                 {
-                    dataField: "MTDCY", caption: "MTD CY", headerCellTemplate: function (header, info) {
-                        $('<div>').html("MTD CY").css('white-space', 'nowrap').appendTo(header);
+                    dataField: "StockQty", caption: "Stock", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Stock").css('white-space', 'nowrap').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "MON3QTy", caption: "MTH(-3)", headerCellTemplate: function (header, info) {
+                        $('<div>').html("MTH(-3)").css('white-space', 'nowrap').appendTo(header);
                     }, format: { type: "fixedPoint", precision: 2 }
                 },
 
                 {
-                    dataField: "YTDCY", caption: "YTD CY", headerCellTemplate: function (header, info) {
-                        $('<div>').html("YTD CY").css('white-space', 'nowrap').appendTo(header);
+                    dataField: "MON2QTy", caption: "MTH(-2)", headerCellTemplate: function (header, info) {
+                        $('<div>').html("MTH(-2)").css('white-space', 'nowrap').appendTo(header);
                     }, format: { type: "fixedPoint", precision: 2 }
                 },
 
                 {
-                    dataField: "MTDLY", caption: "MTD LY", headerCellTemplate: function (header, info) {
-                        $('<div>').html("MTD LY").css('white-space', 'nowrap').appendTo(header);
+                    dataField: "MON1QTy", caption: "MTH(-1)", headerCellTemplate: function (header, info) {
+                        $('<div>').html("MTH(-1)").css('white-space', 'nowrap').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "AVGSALES", caption: "AVG", headerCellTemplate: function (header, info) {
+                        $('<div>').html("AVG").css('white-space', 'nowrap').appendTo(header);
                     }, format: { type: "fixedPoint", precision: 2 }
                 },
 
                 {
-                    dataField: "YTDLY", caption: "YTD LY", headerCellTemplate: function (header, info) {
-                        $('<div>').html("YTD LY").css('white-space', 'nowrap').appendTo(header);
-                    }, format: { type: "fixedPoint", precision: 2 }
-                },
-                {
-                    dataField: "MOMINCDEC", caption: "MOM INC DEC", headerCellTemplate: function (header, info) {
-                        $('<div>').html("MTH INC DEC").css('white-space', 'nowrap').appendTo(header);
-                    }, format: { type: "fixedPoint", precision: 2 }
-                },
-                {
-                    dataField: "YOYINCDEC", caption: "YOY INC DEC", headerCellTemplate: function (header, info) {
-                        $('<div>').html("YOY INC DEC").css('white-space', 'nowrap').appendTo(header);
-                    }, format: { type: "fixedPoint", precision: 2 }
-                },
-                {
-                    dataField: "MOMINCDECPER", caption: "MOM INC DEC PER", headerCellTemplate: function (header, info) {
-                        $('<div>').html("MTH INC DEC (%)").css('white-space', 'nowrap').appendTo(header);
-                    }, format: { type: "fixedPoint", precision: 2 }
-                },
-                {
-                    dataField: "YOYINCDECPER", caption: "YOY INC DEC PER", headerCellTemplate: function (header, info) {
-                        $('<div>').html("YOY INC DEC (%)").css('white-space', 'nowrap').appendTo(header);
+                    dataField: "CMONQTy", caption: "CUR MTH", headerCellTemplate: function (header, info) {
+                        $('<div>').html("CUR MTH").css('white-space', 'nowrap').appendTo(header);
                     }, format: { type: "fixedPoint", precision: 2 }
                 },
             ]
+        //}
+
+
+
+       
+
+
 
         return retUArr;
     }
@@ -758,43 +807,27 @@
     function GetColumn1() {
         var retUArr1 = [];
 
-
          //if ($('#chkQty').is(':checked') && $('#chkValue').is(':checked')) {
             retUArr1 = [
-                { name: "PartyCode", column: "PartYCode", displayFormat: "Grand Total" },
-                { name: "MTDCY", column: "MTDCY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
-                { name: "YTDCY", column: "YTDCY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
-                { name: "MTDLY", column: "MTDLY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
-                { name: "YTDLY", column: "YTDLY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
-                { name: "MOMINCDEC", column: "MOMINCDEC", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
-                { name: "YOYINCDEC", column: "YOYINCDEC", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
-                { name: "MOMINCDECPER", column: "MOMINCDECPER", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
-                { name: "YOYINCDECPER", column: "YOYINCDECPER", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
-            
+                { name: "SalesZone", column: "SalesZone", displayFormat: "Grand Total" },
+                { name: "StockQty", column: "StockQty", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                { name: "MON3QTy", column: "MON3QTy", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                { name: "MON2QTy", column: "MON2QTy", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                { name: "MON1QTy", column: "MON1QTy", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                { name: "CMONQTy", column: "CMONQTy", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                //{ name: "YTDQCY", column: "YTDQCY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                //{ name: "MTDQLY", column: "MTDQLY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                //{ name: "YTDQLY", column: "YTDQLY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+
             ]
         //}
 
 
 
-
+        
 
 
         return retUArr1;
-    }
-    function GetColumn2() {
-
-        retUArr2 = [
-            { name: "PartyCode", column: "PartyCode", showInGroupFooter: true, displayFormat: "Total" },
-            { name: "MTDCY", column: "MTDCY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
-            { name: "YTDCY", column: "YTDCY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
-            { name: "MTDLY", column: "MTDLY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
-            { name: "YTDLY", column: "YTDLY", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
-            { name: "MOMINCDEC", column: "MOMINCDEC", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
-            { name: "YOYINCDEC", column: "YOYINCDEC", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
-            { name: "MOMINCDECPER", column: "MOMINCDECPER", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
-            { name: "YOYINCDECPER", column: "YOYINCDECPER", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
-        ]
-        return retUArr2;
     }
 
 
@@ -833,7 +866,6 @@
                 showBorders: true,
                 summary: {
                     totalItems: GetColumn1(),
-                    groupItems: GetColumn2()
             }
 
             });

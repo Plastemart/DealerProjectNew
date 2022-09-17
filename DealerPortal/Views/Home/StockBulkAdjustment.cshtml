@@ -1,11 +1,14 @@
-﻿@{
-    ViewBag.Title = "StockAdjustment";
+﻿
+@{
+    ViewBag.Title = "StockBulkAdjustment";
 }
+
+
 
 <div class="box box-warning">
     <div class="box-header with-border">
         <div class="box-header-left">
-            <h3 class="box-title">@ViewBag.FormDisplayTitle</h3>
+            <h5>Upload Opening Stock</h5>
             <!-- <p><strong>Date :</strong> 14-09-2019 </p> -->
         </div>
         <div class="box-header-right">
@@ -19,13 +22,7 @@
         <div class="row">
             <div class="col-md-12 heads-button">
                 <br>
-                <button class="btn btn-sm btn-primary" id="btnAdd" title="Add" onclick="Add()"> Add </button>
-                <button class="btn btn-sm btn-success" id="btnEdit" title="Edit" onclick="Edit()"> Edit </button>
-                <button class="btn btn-sm btn-danger" id="btnDelete" title="Delete"> Delete </button>
                 <button class="btn btn-sm btn-primary" id="btnSubmit" title="Save" onclick="Save()"> Save </button>
-                <button class="btn btn-sm btn-danger" id="btnCancel" title="Cancel" onclick="Cancel()"> Cancel </button>
-                <button class="btn btn-sm btn-success" id="btnSearch" title="Search" onclick="Search()"> Search </button>
-
                 <input type="hidden" id="hdnSuperStockistId" value='@Session["PartyId"]' />
             </div>
         </div>
@@ -40,81 +37,92 @@
                 </div>
                 <div class="col-md-2">
                     <div class="floating-label">
-                        @*<input class="floating-input" type="text" id="dtVoucher" onclick="(this.type='date')" placeholder=" ">*@
                         <div class="floating-input" id="dtVoucher"></div>
                         <span class="highlight"></span>
                         <label>Voucher Date</label>
                     </div>
 
                 </div>
+                <div class="col-md-1">
+                    <div class="floating-label">
+                        <div id="ddlAdjustmentTypeHeader" style="display:none"> </div>
+                    </div>
+                </div>
                 <div class="col-md-2">
+                    <ul style="list-style-type: none;">
+                        <li>                          
+                            <a href='javascript:void(0)' class='btn btn-danger btn-flat' style='background: #e32228;margin-left: -160px;margin-top: 25px;' onclick='ExportToExcel()'>Excel Format</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-md-1">
                     <div class="floating-label">
-                        <div id="ddlAdjustmentTypeHeader"> </div>
+                        <input type="file"  style="margin-left: -197px; margin-top: 26px;" id="FileUpload1" />
+                    </div>
+
+                </div>
+
+                <div class="col-md-1">
+                    <div class="floating-label">
+                        <input type="button" class='btn btn-danger btn-flat' id="btnUpload" style="background: #e32228 ;margin-left: -72px;margin-top: 2px;" value="Upload " />
                     </div>
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-1">
                     <div class="floating-label">
-                        <div id="ddlCustomer" style="display:none"> </div>
+                        <div id="ddlCustomer" style="display:none"></div>
                     </div>
                 </div>
+                @*<div>
+            <div style="display:none">
+                <input type="hidden" id="hdnItemID" value="" />
+            </div>
+        </div>*@
             </div>
         </div>
         <br />
         <br />
         <div class="row">
-            <div class="col-md-12 table-responsive ">
-                <table class="tablesoter tablesorter tablesorter-blue hasFilters hasStickyHeaders">
-                    <thead>
-                        <tr>
-                            <th style="width:20px;">#</th>
-                            <th style="width:570px;">Item</th>
-                            <th style="width:150px;">Code</th>
-                            <th style="width: 100px">DPRate</th>@*Added on 08 March 2022 for multiple DP rate selection*@
-                            <th style="width:250px;display:none">Item Category</th>
-                            @*<th>SubCategory</th>*@
-                            <th style="width:180px;display:none">Adjustment</th>
-                            <th style="width:100px;">Qty</th>
-                            <th style="width:100px;">Rate</th>
-                            <th style="width:100px;">Action</th>
+        <div class="col-md-12 table-responsive ">
+            <table class="tablesoter tablesorter tablesorter-blue hasFilters hasStickyHeaders">
+                <thead>
+                    <tr>
 
-                        </tr>
-                    </thead>
-                    <tbody>
+                        <th style="width: 70px;text-align:start;">OurCode</th>
+                        <th style="width:150px;text-align: start;">OurName</th>
+                        <th style="width: 50px;text-align: end;">DPRate</th>
+                        <th style="width:50px;text-align: end;">Rate</th>
+                        <th style="width:50px;text-align: end;">OpnQty</th>
+                    </tr>
+        </thead>
+        @*<tbody>
 
-                        <tr>
-                            <td>#</td>
-                            <td>
-                                @*<select class="form-control" style="width: 100%" id="ddlItem"></select>*@
-                                <div id="ddlItem"> </div>
-                            </td>
-                            <td><span id="ItemCode"></span></td>
-                            <td>
-                                <span class="form-control" id="ddlDPRate"></span>@*Added on 08 March 2022 for multiple DP rate selection*@
-                            </td>
-                            <td style="display:none"> <span id="ItemCategory"></span></td>
-                            @*<td> <span id="ItemSubCategory"></span></td>*@
-                            <td style="display:none">
-                                @*<select class="form-control" style="width: 100%" id="ddlAdjustmentType"></select>*@
-                                <div id="ddlAdjustmentType"> </div>
-                            </td>
-                            <td style="text-align:center;"><input type="text" id="txtQty" class="form-control" /></td>
-                            <td style="text-align:center;"><input type="text" id="txtRate" class="form-control" /></td>
-                            <td class="text-center">
-                                @*<i class="fa fa-save"></i>*@
-                                <i class="fa fa-save" data-toggle="tooltip" data-placement="top" title="Save" id="btnAddNewRow" onclick="AddNewRow();"></i>
-                                @*<button type="button" class="fa fa-save" data-target="#UserModal" data-toggle="modal" id="btnAddNewRow" onclick="AddNewRow();"><i class="fa fa-save" data-toggle="tooltip" data-placement="top" title="Save"></i></button>*@
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
 
-                            </td>
+            </tr>
 
-                        </tr>
-
-                    </tbody>
-                    <tbody id="tbody"></tbody>
-                </table>
-
-            </div>
+        </tbody>*@
+        <tbody id="tbody"></tbody>
+            </table>
 
         </div>
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive ">
+                    <div id="tblitem">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
         <div class="col-md-12">
             <div class="floating-label">
                 <textarea class="floating-input floating-textarea" id="txtRemark" rows="4" placeholder=" " style=" height:80px; margin-bottom:15px;"></textarea>
@@ -128,89 +136,8 @@
 
 </div>
 
-
-
-<!-- Modal -->
-@*<div class="modal fade" id="search" role="dialog" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">
-                        ×
-                    </button>
-                    <h4 class="modal-title text-center">
-                        Search Stock Adjustment
-                    </h4>
-                </div>
-                <div class="modal-body sa-body">
-                    <form class="form-horizontal">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="floating-label">
-                                    <input class="floating-input" type="text" id="txtFromDate" onclick="(this.type='date')" placeholder=" ">
-                                    <span class="highlight"></span>
-                                    <label>From Date</label>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="floating-label">
-                                    <input class="floating-input" type="text" id="txtToDate" onclick="(this.type='date')" placeholder=" ">
-                                    <span class="highlight"></span>
-                                    <label>To Date</label>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <button class="btn btn-success" type="button" style="margin-top: 25px;" onclick="ItemAdjustmentGetByFromDateToDate()"> <i class="fa fa-search"></i></button>
-                            </div>
-
-                            <div class="table-responsive ">
-                                <table class="tablesoter tablesorter tablesorter-blue hasFilters hasStickyHeaders">
-
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Voucher No.</th>
-                                            <th width="100px">Voucher Date</th>
-                                            <th width="100px">Action</th>
-
-
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tbodySearchData">
-
-                                        <tr>
-                                                <td>1</td>
-                                                <td>Test</td>
-                                                <td>06-04-2020</td>
-                                                <td align="center"><i class="fa fa-info-circle" aria-hidden="true"></i></td>
-
-
-
-                                            </tr>
-
-                                    </tbody>
-                                </table>
-
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div>
-                    <div class="modal-footer">
-                        <!-- <button class="button btn-sm"> -->
-                        <!-- Save</button> -->
-                        <!-- <button class="button btn-sm" data-dismiss="modal"> -->
-                        <!-- Cancel</button> -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>*@
-
-
-
-
 <div id="PopupSearch"></div>
+
 <script>
     var ItemList = [];
     var OpList = [];
@@ -240,6 +167,9 @@
     var CustList = [];
     var ItemDPRateList = [];
     var AdjustTypeList = "0";
+    var blob = "";
+    var downloadURL = "";
+    var a = "";
 
 
     arrayItem = @Html.Raw(Json.Encode(@ViewBag.ItemListSA));
@@ -323,9 +253,12 @@
         //  TableSorter();
         Clear();
         ClearDetail();
-        EnDisable(true);
+        //EnDisable(true);
+        $("#txtOurCode").val("");
+        $("#txtOurName").val("");
         $("#txtQty").val("0.00");
-         $("#txtRate").val("0.00");
+        $("#txtOpnQty").val("0.00");
+        $("#txtRate").val("0.00");
         $("#dtVoucher").dxDateBox({
             applyValueMode: "useButtons",
             height: 30,
@@ -334,6 +267,52 @@
              displayFormat: "dd/MM/yyyy"
 
         });
+        ///////////////////////////////////////
+        $('#btnUpload').click(function () {
+            debugger;
+            // Checking whether FormData is available in browser  
+            if (window.FormData !== undefined) {
+
+                var fileUpload = $("#FileUpload1").get(0);
+                var files = fileUpload.files;
+
+                // Create FormData object  
+                var fileData = new FormData();
+
+                // Looping over all files and add it to FormData object  
+                for (var i = 0; i < files.length; i++) {
+                    fileData.append(files[i].name, files[i]);
+                }
+
+                // Adding one more key to FormData object  
+                fileData.append('username', 'manas');
+
+                $.ajax({
+                    url: '/Home/UploadFiles',
+                    type: "POST",
+                    contentType: false, // Not to set any content header  
+                    processData: false, // Not to process data  
+                    data: fileData,
+                    success: function (result) {
+                        StockArray = result.Result;
+                        if (result.StatusId >0)
+                            BindStock();
+                        else
+                            alert(result.Status)
+                    },
+                    error: function (err) {
+                        alert(err.statusText);
+                    }
+                });
+            } else {
+                alert("FormData is not supported.");
+            }
+
+            $("#FileUpload1").val(''); 
+        });
+       
+
+        /////////////////////////////
 
         $("#ddlAdjustmentTypeHeader").dxSelectBox({
             height: 30,
@@ -345,30 +324,30 @@
             valueExpr: "OptionListId",
             placeholder: "Select Adjustment",
             onValueChanged: function (data) {
-                varddlAdjustTypeHeader = data.value
-                varddlAdjustType = data.value 
-                if (varddlAdjustTypeHeader == "15")
-                    $("#ddlCustomer").prop('style', "display:block");
-                else
-                    $("#ddlCustomer").prop('style', "display:none");
+                varddlAdjustTypeHeader = 16
+                //varddlAdjustType = data.value
+                //if (varddlAdjustTypeHeader == "15")
+                //    $("#ddlCustomer").prop('style', "display:block");
+                //else
+                //    $("#ddlCustomer").prop('style', "display:none");
 
-                $("#ddlAdjustmentTypeHeader").dxSelectBox('instance').option('value', data.value);
-                if (varddlAdjustTypeHeader == "14" || varddlAdjustTypeHeader == "17") {
-                    $("#txtRate").prop('disabled', "disabled");
-                }
-                else {
-                    $("#txtRate").prop('disabled', "");
-                }
-                debugger;
+                //$("#ddlAdjustmentTypeHeader").dxSelectBox('instance').option('value', data.value);
+                //if (varddlAdjustTypeHeader == "14" || varddlAdjustTypeHeader == "17") {
+                //    $("#txtRate").prop('disabled', "disabled");
+                //}
+                //else {
+                //    $("#txtRate").prop('disabled', "");
+                //}
+                //debugger;
                 // SetItemDetail();
             }
 
 
         });
-        
+
         if (OpList.length == 1) {
             //var selectBox = $("#ddlAdjustmentTypeHeader").dxSelectBox("instance");
-            //selectBox.option('value', '15'); 
+            //selectBox.option('value', '15');
             //            $("#ddlAdjustmentTypeHeader").dxSelectBox('instance').option('value') = "15";
 
             AdjustTypeList = AdjustTypeList + ",15";
@@ -398,28 +377,28 @@
 
     });
 
-    function EnDisable(Status) {
-        debugger
-        $("#txtVoucherNo").prop('disabled', Status);
-         $("#dtVoucher").prop('disabled', Status);
-        $("#ddlItem").prop('disabled', Status);
-        $("#ddlAdjustmentType").prop('disabled', Status);
-        $("#txtQty").prop('disabled', Status);
-        $("#txtRate").prop('disabled', Status);
-        $("#txtRemark").prop('disabled', Status);
-        $("#ddlAdjustmentTypeHeader").prop('disabled', Status);
-        $("#ddlCustomer").prop('disabled', Status);
-    }
+    //function EnDisable(Status) {
+    //    debugger
+    //    $("#txtVoucherNo").prop('disabled', Status);
+    //     $("#dtVoucher").prop('disabled', Status);
+    //    $("#ddlItem").prop('disabled', Status);
+    //    $("#ddlAdjustmentType").prop('disabled', Status);
+    //    $("#txtQty").prop('disabled', Status);
+    //    $("#txtRate").prop('disabled', Status);
+    //    $("#txtRemark").prop('disabled', Status);
+    //    $("#ddlAdjustmentTypeHeader").prop('disabled', Status);
+    //    $("#ddlCustomer").prop('disabled', Status);
+    //}
 
-    function EnDisableDetail(Status) {
-        debugger
-        $("#ddlItem").prop('disabled', Status);
-        $("#ddlAdjustmentType").prop('disabled', Status);
-        $("#txtQty").prop('disabled', Status);
-        $("#txtRate").prop('disabled', Status);
-        //Added on 08 March 2022 for multiple DP rate selection
-        $("#ddlDPRate").prop('disabled', Status);
-    }
+    //function EnDisableDetail(Status) {
+    //    debugger
+    //    $("#ddlItem").prop('disabled', Status);
+    //    $("#ddlAdjustmentType").prop('disabled', Status);
+    //    $("#txtQty").prop('disabled', Status);
+    //    $("#txtRate").prop('disabled', Status);
+    //    //Added on 08 March 2022 for multiple DP rate selection
+    //    $("#ddlDPRate").prop('disabled', Status);
+    //}
 
     function Clear() {
         PkHid = 0;
@@ -438,15 +417,17 @@
          varItemCategory = "";
          varItemSubCat = "";
          varItemCode = "";
-        $("#ItemCode").html('');
-        $("#ItemCategory").html('');
+        //$("#ItemCode").html('');
+        //$("#ItemCategory").html('');
+        $("#txtOurCode").val("");
+        $("#txtOurName").val("");
         $("#txtQty").val("0.00");
         $("#txtRate").val("0.00");
         //$("#ddlAdjustmentType").dxSelectBox('instance').option('value', varddlAdjustType);
     }
 
     function SetDdlValue() {
-     $("#ddlItem").dxSelectBox({
+            $("#ddlItem").dxSelectBox({
                 height: 30,
                 dataSource: new DevExpress.data.ArrayStore({
                     data: ItemList,
@@ -454,7 +435,7 @@
                 }),
                 displayExpr: "ItemName",
                 valueExpr: "ItemId",
-         placeholder: "Select Item",
+                placeholder: "Select Item",
                 searchEnabled: true,
                 onValueChanged: function (data) {
                     varddlItem = data.value;
@@ -484,44 +465,44 @@
             });
     }
 
-    function Add() {
+    //function Add() {
 
-        EnDisable(false);
-        Clear();
-        ClearDetail();
-         debugger
-        SetDdlValue();
-    }
+    //    EnDisable(false);
+    //    Clear();
+    //    ClearDetail();
+    //     debugger
+    //    SetDdlValue();
+    //}
 
-    function Cancel() {
-        Clear();
-        ClearDetail();
-        StockArray = [];
-        $('#tbody').html('');
-        var varddlAdjustType = "";
-        $("#ddlAdjustmentType").dxSelectBox('instance').option('value', varddlAdjustType);
-        varddlItem = '';
-        $("#ddlItem").dxSelectBox('instance').option('value', varddlItem);
-    }
+    //function Cancel() {
+    //    Clear();
+    //    ClearDetail();
+    //    StockArray = [];
+    //    $('#tbody').html('');
+    //    var varddlAdjustType = "";
+    //    $("#ddlAdjustmentType").dxSelectBox('instance').option('value', varddlAdjustType);
+    //    varddlItem = '';
+    //    $("#ddlItem").dxSelectBox('instance').option('value', varddlItem);
+    //}
 
-    function Search() {
-        debugger
-        PopupSearch();
-      //  $('#search').modal('show');
-    }
+    //function Search() {
+    //    debugger
+    //    PopupSearch();
+    //  //  $('#search').modal('show');
+    //}
 
-    function Edit() {
-        debugger
-        EnDisable(false);
-        SetDdlValue();
-        EnDisableDetail(false);
-        varddlItem = '';
-        $("#ddlItem").dxSelectBox('instance').option('value', varddlItem);
-        blnEditValue = true;
-    }
-    function Delete() {
-        ItemAdjustmentDelete(HoldIAIdId);
-    }
+    //function Edit() {
+    //    debugger
+    //    EnDisable(false);
+    //    SetDdlValue();
+    //    EnDisableDetail(false);
+    //    varddlItem = '';
+    //    $("#ddlItem").dxSelectBox('instance').option('value', varddlItem);
+    //    blnEditValue = true;
+    //}
+    //function Delete() {
+    //    ItemAdjustmentDelete(HoldIAIdId);
+    //}
 
     function SetItemDetail(data) {
         debugger;
@@ -544,21 +525,29 @@
 
     function ValidateAddNewRow() {
 
-        if (varddlItem == undefined || varddlItem == null || varddlItem == "") {
-            alert("select Item ");
-            return false;
-        }
+        //if (varddlItem == undefined || varddlItem == null || varddlItem == "") {
+        //    alert("select Item ");
+        //    return false;
+        //}
         //if (varddlAdjustType == undefined || varddlAdjustType == null || varddlAdjustType == "") {
         //    alert("Select Adjustment .. ");
         //    return false;
         //}
 
-        if ($('#txtQty').val() == "0" || $('#txtQty').val() == "0.00" || $('#txtQty').val() == "") {
-            alert("Quantity Required ");
+        $("#txtOurCode").val("");
+        $("#txtOurName").val("");
+
+        if ($('#txtOurCode').val() == "" || $('#txtOurCode').val() == null || $('#txtOurCode').val() == undefined) {
+            alert("Our Code  Required ");
             return false;
         }
+        
          if ($('#txtRate').val() == "0" || $('#txtRate').val() == "0.00" || $('#txtRate').val() == "") {
             alert("Rate Required ");
+            return false;
+        }
+        if ($('#txtOpnQty').val() == "0" || $('#txtOpnQty').val() == "0.00" || $('#txtOpnQty').val() == "") {
+            alert("Quantity Required ");
             return false;
         }
         return true;
@@ -572,10 +561,13 @@
                 PkHid = 0;
                 debugger
                 // var ddlItem = $('#ddlItem :selected').text();
-                varItem = $("#ddlItem").dxSelectBox('instance').option('text');
-                var varADType = $("#ddlAdjustmentType").dxSelectBox('instance').option('text')//$('#ddlAdjustmentType').val(); //$('#txtUnit').val();
-                var varQty = $('#txtQty').val();
-                  var varRate = $('#txtRate').val();
+                //varItem = $("#ddlItem").dxSelectBox('instance').option('text');
+                //var varADType = $("#ddlAdjustmentType").dxSelectBox('instance').option('text')//$('#ddlAdjustmentType').val(); //$('#txtUnit').val();
+                var varOurCode = $('#txtOurCode').val();
+                var varOurName = $('#txtOurName').val();
+                
+                var varRate = $('#txtRate').val();
+                var varOpnQty = $('#txtOpnQty').val();
                 if (blnEditValue == true) {
                     StockArray = $.grep(StockArray, function (obj) {
                         return obj.TempRow != hiddenTempRow;
@@ -594,11 +586,14 @@
                 model.ItemId = varddlItem;
                 model.ItemCategory = varItemCategory;
                 model.ItemSubCategory = varItemSubCat;
-                model.AdjustmentTypeId = varddlAdjustType;
+                model.AdjustmentTypeId = 16;
                 model.ItemCode = varItemCode;
                 model.ItemName = varItem;
                 model.AdjustmentType = varADType;
-                model.Quantity = varQty;
+
+                model.OURCODE = varOurCode;
+                model.OURNAME = varOurName;
+                model.OPNQTY = varOpnQty;
                 model.Rate = varRate;
                 //Added on 23 feb 2022 for multiple DP rate selection
                 model.DPRate = $("#ddlDPRate").dxSelectBox('instance').option('value');
@@ -607,7 +602,7 @@
                 ClearDetail();
                 varddlItem = '';
                 $("#ddlItem").dxSelectBox('instance').option('value', varddlItem);
-                // varddlItem = '';
+                // varddlItem = '';F
         //$("#ddlItem").dxSelectBox('instance').option('value', varddlItem);
         //        varddlAdjustType = '';
         //$("#ddlAdjustmentType").dxSelectBox('instance').option('value', varddlAdjustType);
@@ -623,7 +618,7 @@
 
     function BindStock() {
         try {
-            debugger
+            debugger;
             var html = '';
             $('#tbody').html('');
             // TotalQty = 0.00;
@@ -633,26 +628,14 @@
                 StockArray[Index].TempRow = Index + 1;
                 var varIndex = 0;
                 varIndex = Index + 1;
-                html += "<tr id='trSDetail_'" + Object.ItemAdjustmentDetailId + "')'>";
-                html +=  '<td> # </td>';
-                html += '<td>' + Nullhandler(Object.ItemName) + ' </td>';
-                html += '<td>' + Nullhandler(Object.ItemCode) + ' </td>';
-                //Added on 08 March 2022 for multiple DP rate selection
-                html += '<td>' + Nullhandler(Object.DPRate) + '</td>';
-                html += '<td style="display:none">' + Nullhandler(Object.ItemCategory) + ' </td>';
-                //html += '<td>' + Nullhandler(Object.ItemSubCategory) + ' </td>';
-                //commented on 24 nov 2021 since adjustment dropdown is moved to header table
-                //html += '<td>' + Nullhandler(Object.AdjustmentType) + '</td>';
-                html += '<td>' + Nullhandler(Object.Quantity) + ' </td>';
-                 html += '<td>' + Nullhandler(Object.Rate) + ' </td>';
-                //html += '<td> </td>';
-                if (Object.ItemAdjustmentDetailId == 0) {
-                    html += "<td style='text-align: center;width:30px;'><button class='label label-info smallBtn' id='btnEdit1' placeholder='Edit' style='padding:0 3px;'><i class='fa fa-edit'></i></button><button class='label label-danger smallBtn' id='btndelete1' placeholder='Delete' style='padding:0 3px;'><i class='fa fa-trash'></i></button></td>"
-                }
-                else if (Object.ItemAdjustmentDetailId > 0) {
-                    html += "<td style='text-align: center;width:30px;'><button class='label label-info smallBtn' id='btnEdit1' placeholder='Edit' style='padding:0 3px;'  onclick='EditStockDetail(" + Object.ItemAdjustmentDetailId + "," + Index + "," + 1 + ");' ><i class='fa fa-edit'></i></button><button class='label label-danger smallBtn' id='btndelete1' placeholder='Delete' onclick='DeleteStockDetails(" + Object.ItemAdjustmentDetailId + "," + Index + ");'  style='padding:0 3px;'><i class='fa fa-trash'></i></button></td>"
-                }
-                else {  html +=  '<td>  </td>';}
+                html += "<tr id='trSDetail_'" + Index + "')'>";
+                
+                html += '<td>' + Nullhandler(Object.OurCode) + ' </td>';
+                html += '<td>' + Nullhandler(Object.OurName) + ' </td>';            
+                html += '<td style="text-align: end;">' + Nullhandler(Object.DPRate) + '</td>';
+                html += '<td style=" text-align: end;">' + Nullhandler(Object.Rate) + ' </td>';               
+                html += '<td style="text-align: end;">' + Nullhandler(Object.OpnQty) + ' </td>';
+                //html +=  '<td>  </td>';
                 html += '</tr>';
             });
 
@@ -665,11 +648,11 @@
         }
     }
 
-    //function DeleteStockDetails(RowIndex) {
-    //    debugger
-    //    StockArray.splice(RowIndex, 1);
-    //    BindStock();
-    //}
+    function DeleteStockDetails(RowIndex) {
+        debugger
+        StockArray.splice(RowIndex, 1);
+        BindStock();
+    }
     function DeleteStockDetails(IADtlId, RowIndex) {
         debugger
         var result = DevExpress.ui.dialog.confirm("Do you want to delete ...?", "Confirm changes");
@@ -682,45 +665,45 @@
         });
     }
 
-    function EditStockDetail(IADetailId, RowNo, ChkIsEdit) {
-        debugger
+    //function EditStockDetail(IADetailId, RowNo, ChkIsEdit) {
+    //    debugger
 
-        SetDdlValue();
-        EnDisableDetail(false);
-        varRowNo = RowNo;
-        try {
-            debugger
-            IsEdit = ChkIsEdit;
-            if (blnAddRow) {
-                var ModelTemp = $.grep(StockArray, function (obj) {
-                    return obj.TempRow == RowNo + 1;
-                });
-                SetValue(ModelTemp[0]);
-                $("#HiddenItemAdjustmentDetailId").val(BDetailId);
-            }
+    //    SetDdlValue();
+    //    EnDisableDetail(false);
+    //    varRowNo = RowNo;
+    //    try {
+    //        debugger
+    //        IsEdit = ChkIsEdit;
+    //        if (blnAddRow) {
+    //            var ModelTemp = $.grep(StockArray, function (obj) {
+    //                return obj.TempRow == RowNo + 1;
+    //            });
+    //            SetValue(ModelTemp[0]);
+    //            $("#HiddenItemAdjustmentDetailId").val(BDetailId);
+    //        }
 
-            else {
-                if (IADetailId != 0) {
-                    var ModelTemp = $.grep(StockArray, function (obj) {
-                        return obj.ItemAdjustmentDetailId == IADetailId;
-                    });
-                    SetValue(ModelTemp[0]);
-                    $("#HiddenItemAdjustmentDetailId").val(IADetailId);
-                }
-                else {
-                    var ModelTemp = $.grep(StockArray, function (obj) {
-                        return obj.TempRow == RowNo + 1;
-                    });
-                    SetValue(ModelTemp[0]);
-                    $("#HiddenItemAdjustmentDetailId").val(IADetailId);
-                }
-            }
-        } catch (e) {
-            alert(e.message);
+    //        else {
+    //            if (IADetailId != 0) {
+    //                var ModelTemp = $.grep(StockArray, function (obj) {
+    //                    return obj.ItemAdjustmentDetailId == IADetailId;
+    //                });
+    //                SetValue(ModelTemp[0]);
+    //                $("#HiddenItemAdjustmentDetailId").val(IADetailId);
+    //            }
+    //            else {
+    //                var ModelTemp = $.grep(StockArray, function (obj) {
+    //                    return obj.TempRow == RowNo + 1;
+    //                });
+    //                SetValue(ModelTemp[0]);
+    //                $("#HiddenItemAdjustmentDetailId").val(IADetailId);
+    //            }
+    //        }
+    //    } catch (e) {
+    //        alert(e.message);
 
 
-        }
-    }
+    //    }
+    //}
 
     function SetValue(data) {
         debugger;
@@ -733,12 +716,17 @@
             var objBrand = $.grep(OpList, function (object) {
                 return object.OptionListId == data.AdjustmentTypeId;
             })
-            $("#ddlItem").dxSelectBox('instance').option('value', objItm[0].ItemId);
-            $("#ddlAdjustmentType").dxSelectBox('instance').option('value', objBrand[0].OptionListId);
-            hiddeenDetailId = data.ItemAdjustmentDetailId;
-             $("#ItemCode").html(data.ItemCode);
-            $("#ItemCategory").html(data.ItemCategory);
+            //$("#ddlItem").dxSelectBox('instance').option('value', objItm[0].ItemId);
+            //$("#ddlAdjustmentType").dxSelectBox('instance').option('value', objBrand[0].OptionListId);
+            //hiddeenDetailId = data.ItemAdjustmentDetailId;
+            // $("#ItemCode").html(data.ItemCode);
+            //$("#ItemCategory").html(data.ItemCategory);
+            $('#txtOurCode').val(data.ourcode);
+            $('#txtOurName').val(data.ourname);
+
+
             $('#txtQty').val(data.Quantity);
+            $('#txtOpnQty').val(data.OpnQty);
             $('#txtRate').val(data.Rate);
             //Added on 08 March 2022 for multiple DP rate selection
             if (objBrand[0].OptionListId == "14" || objBrand[0].OptionListId == "17") {
@@ -748,7 +736,7 @@
                 $("#txtRate").prop('disabled', "");
             }
             GetAllItemsDPRate(objItm[0].ItemId);
-            
+
             $("#ddlDPRate").dxSelectBox('instance').option('value', data.DPRate);
             hiddenTempRow = data.TempRow;
             blnEditValue = true;
@@ -764,41 +752,36 @@
         var List = [];
         var model = {};
         //alert(HoldIAIdId);
-        model.ItemAdjustmentId = HoldIAIdId;//PkHid;
+        model.ItemAdjustmentId = 0;//PkHid;
         model.PartyId = document.getElementById("hdnSuperStockistId").value; //$("#hdnSuperStockistId").val();//0;
         model.VoucherNo = $("#txtVoucherNo").val();
         model.VoucherDate = $("#dtVoucher").dxDateBox('instance').option('value');
         model.StatusPropId = 0;
         model.Remark = $("#txtRemark").val();
-        model.HdrAdjustmentTypeID = varddlAdjustTypeHeader;
-        if (varddlAdjustTypeHeader == "15")
-            model.CustomerID = varddlCustomer;
-        else
-            model.CustomerID = '';
+        model.HdrAdjustmentTypeID = 16; 
+        model.CustomerID = varddlCustomer;
         List.push(model);
         return List;
     }
 
     function DetailModel() {
+        debugger;
         var DList = [];
         $.each(StockArray, function (Index, Object) {
             var model = {};
             debugger
-            model.ItemAdjustmentDetailId = Object.ItemAdjustmentDetailId;
-            model.ItemAdjustmentId = HoldIAIdId;
-            model.ItemId = Object.ItemId;
-            model.AdjustmentTypeId = varddlAdjustTypeHeader;//Object.AdjustmentTypeId;
-            if (varddlAdjustTypeHeader == 15 || varddlAdjustTypeHeader == 16) {
-                model.QuantityIn = Object.Quantity;
-                model.QuantityOut = 0.00;
-            }
-            else {
-                model.QuantityOut = Object.Quantity;
-                model.QuantityIn = 0.00;
-            }
-            model.Rate = Object.Rate;
+            model.ItemAdjustmentDetailId = 0;
+            model.ItemAdjustmentId = 0;
+            model.ItemId = Object.ItemID;
+            model.OURCODE = Object.OurCode;
+            model.OURNAME = Object.OurName;
+
+            model.AdjustmentTypeId = 16;//Object.AdjustmentTypeId;          
             //Added on 23 feb 2022 for multiple DP rate selection
-            model.DPRate = $("#ddlDPRate").dxSelectBox('instance').option('value');
+            model.DPRate = Object.DPRate;
+            model.Rate = Object.Rate;
+            model.QuantityIn = Object.OpnQty;
+            model.QuantityOut = 0.00;
             DList.push(model);
             //}
         });
@@ -825,12 +808,12 @@
             return false;
         }
 
-        if (varddlAdjustTypeHeader == "15" && varddlCustomer == "")
-        {
-            alert("Please select Customer");
-            $("#ddlCustomer").focus();
-            return false;
-        }
+        //if (varddlAdjustTypeHeader == "15" && varddlCustomer == "")
+        //{
+        //    alert("Please select Customer");
+        //    $("#ddlCustomer").focus();
+        //    return false;
+        //}
 
         return true;
     }
@@ -867,9 +850,11 @@
                                 $('#tbody').html('');
                                 hiddenTempRow = 0;
                                 $("#HiddenItemAdjustmentDetailId").val(0);
-
-                                $("#ddlAdjustmentTypeHeader").dxSelectBox('instance').option('value', '');
+                                
+                                $("#ddlAdjustmentTypeHeader").dxSelectBox('instance').option('value', 16);
                                 $("#ddlCustomer").dxSelectBox('instance').option('value', '');
+
+
                                 // ClearForm();
                                 TempRow = 0;
                                 //varddlAdjustType = '';
@@ -890,7 +875,7 @@
                 }
                 else {
                     // $('#spinner').hide();
-                    alert("Item Details are required.");
+                    //alert("Item Details are required.");
                 }
             }
         } catch (e) {
@@ -915,47 +900,47 @@
         return strDate;
     }
 
-    function ItemAdjustmentGetByFromDateToDate() {
-        debugger
-             try {
-                 if ($("#dtFrom").dxDateBox('instance').option('value') == null || $("#dtFrom").dxDateBox('instance').option('value') == "" || $("#dtFrom").dxDateBox('instance').option('value') == undefined ||
-                     $("#dtTo").dxDateBox('instance').option('value') == null || $("#dtTo").dxDateBox('instance').option('value') == "" || $("#dtTo").dxDateBox('instance').option('value') == undefined) {
-                     return false
-                 }
+    //function ItemAdjustmentGetByFromDateToDate() {
+    //    debugger
+    //         try {
+    //             if ($("#dtFrom").dxDateBox('instance').option('value') == null || $("#dtFrom").dxDateBox('instance').option('value') == "" || $("#dtFrom").dxDateBox('instance').option('value') == undefined ||
+    //                 $("#dtTo").dxDateBox('instance').option('value') == null || $("#dtTo").dxDateBox('instance').option('value') == "" || $("#dtTo").dxDateBox('instance').option('value') == undefined) {
+    //                 return false
+    //             }
 
-            var FromDate = SetDate($("#dtFrom").dxDateBox('instance').option('value'));
-            var ToDate = SetDate($("#dtTo").dxDateBox('instance').option('value'));
-                 var data = { 'FromDate': FromDate, 'ToDate': ToDate, 'AdjustTypeList': AdjustTypeList };
+    //        var FromDate = SetDate($("#dtFrom").dxDateBox('instance').option('value'));
+    //        var ToDate = SetDate($("#dtTo").dxDateBox('instance').option('value'));
+    //             var data = { 'FromDate': FromDate, 'ToDate': ToDate, 'AdjustTypeList': AdjustTypeList };
 
-            var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
-            $.ajax({
-                url: "../Home/ItemAdjustmentGetByFromDateToDate",
-                type: 'POST',
-                dataType: 'json',
-                async: true,
-                data: dataWithAntiforgeryToken,
-                success: function (Response) {
-                   debugger
-                    if (Response.StatusId != "99") {
-                        DataList = Response.Result;
-                        debugger
-                     //   $("#tbody").html(DataList);
-                      //  $("#tblitem").dxDataGrid('instance').option("dataSource", ItemList);
-                        BindSearchData();
-                    }
-                    else {
-                        alert(Response.Status);
-                    }
-                },
-                error: function (xhr) {
-                    alert("Data size is too large!");
-                }
-            });
-        }
-        catch (e) {
-            alert("Data size is too large!");
-        }
-    }
+    //        var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
+    //        $.ajax({
+    //            url: "../Home/ItemAdjustmentGetByFromDateToDate",
+    //            type: 'POST',
+    //            dataType: 'json',
+    //            async: true,
+    //            data: dataWithAntiforgeryToken,
+    //            success: function (Response) {
+    //               debugger
+    //                if (Response.StatusId != "99") {
+    //                    DataList = Response.Result;
+    //                    debugger
+    //                 //   $("#tbody").html(DataList);
+    //                  //  $("#tblitem").dxDataGrid('instance').option("dataSource", ItemList);
+    //                    BindSearchData();
+    //                }
+    //                else {
+    //                    alert(Response.Status);
+    //                }
+    //            },
+    //            error: function (xhr) {
+    //                alert("Data size is too large!");
+    //            }
+    //        });
+    //    }
+    //    catch (e) {
+    //        alert("Data size is too large!");
+    //    }
+    //}
 
     function BindSearchData() {
         debugger
@@ -1022,9 +1007,9 @@
         $('#txtVoucherNo').val(data[0].VoucherNo);
         $('#txtRemark').val(data[0].Remark);
         HoldIAIdId = data[0].ItemAdjustmentId;
-        $("#ddlAdjustmentTypeHeader").dxSelectBox('instance').option('value', data[0].HdrAdjustmentTypeID);
+        $("#ddlAdjustmentTypeHeader").dxSelectBox('instance').option('value', data[16].HdrAdjustmentTypeID);
         $("#ddlCustomer").dxSelectBox('instance').option('value', data[0].CustomerID);
-        varddlAdjustTypeHeader = data[0].HdrAdjustmentTypeID;
+        varddlAdjustTypeHeader = data[16].HdrAdjustmentTypeID;
 
         EnDisable(true);
     }
@@ -1043,9 +1028,13 @@
             model.ItemAdjustmentDetailId = Object.ItemAdjustmentDetailId;
             model.ItemAdjustmentId = Object.ItemAdjustmentId;
             model.ItemId = varddlItem;
+            model.ItemId = varItemID;
+            model.OURCODE = varOurCode;
+            model.OURNAME = varOurName;
+            model.OPNQTY = varOpnQty;
 
             model.ItemCategory = varItemCategory;
-            model.AdjustmentTypeId = Object.AdjustmentTypeId;
+            model.AdjustmentTypeId =16;
             model.ItemCode = varItemCode;
             model.ItemName = varItem;
 
@@ -1082,7 +1071,7 @@
       // StockArray = [];
        DataList = [];
 
-        }
+   }
 
     function ItemAdjustmentDelete(intItemAdjustId) {
         try {
@@ -1231,7 +1220,7 @@
             var data = { 'VoucherDate': date, 'ItemId': itemId };
             //var dataWithAntiforgeryToken = $.extend(data, { '__RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() });
             //alert(date);
-            
+
             $.ajax({
                 url: "../Home/GetAllItemsDPRate",
                 type: 'POST',
@@ -1253,7 +1242,7 @@
                             onValueChanged: function (data) {
                                 if (data.value != undefined && data.value != "") {
                                     $("#txtRate").val(data.value);
-                                    
+
                                     //var selectedItem = $("#ddlDPRate").dxSelectBox('instance').option('selectedItem');
                                     //const myJSON = JSON.stringify(selectedItem);
                                     //localStorage.setItem("testJSON", myJSON);
@@ -1280,6 +1269,101 @@
         catch (e) {
             alert("Data size is too large!");
         }
+
     }
+    function BindReportdata() {
+        debugger;     
+        $("#tblitem").dxDataGrid({
+            dataSource: SalesReportList,
+            loadPanel: {
+                enabled: true
+            },
+            height: 500,
+            allowSorting: true,
+            columnAutoWidth: true,
+            allowColumnResizing: true,
+            filterRow: { visible: true },
+            headerFilter: {
+                visible: true,
+                allowSearch: true
+            },
+            paging: {
+                pageSize: 20,
+                enabled: false
+            },
+            columnFixing: {
+                enabled: true
+            },
+
+            columns: [
+                {
+                    dataField: "OurCode", groupIndex: 0, width: '10%', caption: "OurCode",/* displayFormat: "OurCode: {0}",*/
+                    sortOrder: 'asc', headerCellTemplate: function (header, info) {
+                        $('<div>').html("Our<br/>Code").css('text-align', 'center').appendTo(header);
+                    },
+                },
+                {
+                    dataField: "OurName", caption: "Our Name", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Party<br/>Code").css('text-align', 'center').appendTo(header);
+                    },
+                },
+                { dataField: "DPRate", caption: "DP Rate" },
+                { dataField: "Rate", caption: "Rate" },
+                { dataField: "OpnQty", caption: "OpnQty" },
+                
+
+            ],
+            //export: {
+            //    fileName: "Invoice Statistics Data Report"
+            //},
+            showRowLines: true,
+            showBorders: true,
+
+        });
+    }
+
+    
+
+    function ExportToExcel() {
+        debugger;
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: '../Home/ExportToExcel',
+            @*url: '@Url.Action("ExportToExcel", "Export")',*@
+            beforeSend: function () {
+                startLoader();
+            },            
+            success: function (response) {              
+                    var blob = new Blob([response], { type: 'application/ms-excel'});
+                    var downloadUrl = URL.createObjectURL(blob);
+                    var a = document.createElement("a");
+                    a.href = downloadUrl;
+                    a.download = "StockBulkAdjustment.xls";
+                    document.body.appendChild(a);
+                    a.click();
+                
+            },
+            complete: function () {
+                stopLoader();
+            }
+        });
+        return false;
+    }
+
+    function startLoader() {
+        $("#btnExportToExcel").text('Loading..');
+        $("#btnExportToExcel").attr('disabled',true);
+    }
+    function stopLoader() {
+        $("#btnExportToExcel").text('Export To Excel');
+        $("#btnExportToExcel").attr('disabled', false);
+    }
+
+    //function Excel() {
+    //    $("#tblitem").dxDataGrid("instance").exportToExcel(false);
+    //}
 </script>
 @*</div>*@
+
+

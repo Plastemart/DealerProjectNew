@@ -45,6 +45,9 @@
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.9.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
+      <HintPath>..\packages\BouncyCastle.1.8.9\lib\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
     <Reference Include="DevExtreme.AspNet.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=982f5dab1439d0f7, processorArchitecture=MSIL">
       <HintPath>..\packages\DevExtreme.AspNet.Data.2.0.0\lib\net452\DevExtreme.AspNet.Data.dll</HintPath>
       <Private>True</Private>
@@ -62,6 +65,18 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Backup\29 Apr 2020\DealerPortal\DealerPortal\bin\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="HtmlRenderer, Version=1.5.0.5, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlRenderer.Core.1.5.0.5\lib\net45\HtmlRenderer.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlRenderer.PdfSharp, Version=1.5.0.6, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlRenderer.PdfSharp.1.5.0.6\lib\net45\HtmlRenderer.PdfSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.3, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.3\lib\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.xmlworker">
+      <HintPath>C:\Users\sajjan.SMARTECH\Desktop\itextsharp.xmlworker.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp">
       <Private>True</Private>
@@ -98,6 +113,12 @@
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="PdfSharp, Version=1.32.3057.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PDFsharp.1.32.3057.0\lib\net20\PdfSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="PdfSharp.Charting, Version=1.32.3057.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PDFsharp.1.32.3057.0\lib\net20\PdfSharp.Charting.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Private>True</Private>
@@ -185,6 +206,7 @@
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml">
       <Private>True</Private>
     </Reference>
@@ -398,8 +420,8 @@
     </Content>
     <Content Include="DealerPortal.dbml">
       <Generator>MSLinqToSQLGenerator</Generator>
-      <LastGenOutput>DealerPortal.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>DealerPortal.designer.cs</LastGenOutput>
     </Content>
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
@@ -503,6 +525,9 @@
     <Content Include="Views\Report\PartyProductWiseSummarySalesReport.cshtml" />
     <Content Include="Views\Report\InvoiceStatisticsDataReport.cshtml" />
     <Content Include="Views\Report\ReprimarySaleReport.cshtml" />
+    <Content Include="Views\Home\StockBulkAdjustment.cshtml" />
+    <Content Include="Views\Report\ReprimarySalesProductwiseReport.cshtml" />
+    <Content Include="Views\Report\ReprimarySalesProductMonthWiseReport.cshtml" />
     <Content Include="Views\Report\ReprimarySalesRegionWiseReport.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -610,9 +635,9 @@
       <DependentUpon>DealerPortal.dbml</DependentUpon>
     </Compile>
     <Compile Include="DealerPortal.designer.cs">
-      <DependentUpon>DealerPortal.dbml</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <DependentUpon>DealerPortal.dbml</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -669,6 +694,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="upload\PdfFiles\" />
     <Folder Include="upload\QRCode\" />
     <Folder Include="Views\test\" />
   </ItemGroup>

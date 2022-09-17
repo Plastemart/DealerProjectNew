@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "ReprimarySaleReport";
 }
 
@@ -34,11 +33,19 @@
                 <div class="col-md-3">
                     <div id="ddlReportType"></div>
                 </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div id="ddlSubCategory"></div>
+                </div>
+                <div class="col-md-3">
+                    <div id="ddlItem"></div>
+                </div>
                 <div class="col-md-1">
                     <a href='javascript:void(0)' class='btn btn-danger btn-flat' style='background: #e32228;' onclick='ReprimarySaleReportFromDateToDateReport()'>Get Data</a><input type="hidden" id="HdnUserTypeId"><input type="hidden" id="HdnSelectedUser">
                 </div>
             </div>
-        </form>
+</form>
 
      
 
@@ -84,7 +91,7 @@
 
     strUserTypeId = @Html.Raw(@ViewBag.UserTypeID);
     arrayCr1 = @Html.Raw(Json.Encode(@ViewBag.CustomerList));
-    arrayRT = @Html.Raw("[{\"ReportType\":\"Partywise Summary\",\"ReportID\":1}, {\"ReportType\":\"Productwise Summary\",\"ReportID\":2}]");
+    arrayRT = @Html.Raw("[{\"ReportType\":\"Partywise Summary\",\"ReportID\":1}, {\"ReportType\":\"Productwise Summary\",\"ReportID\":2}, {\"ReportType\":\"Party Productwise Summary\",\"ReportID\":3}, {\"ReportType\":\"Product Partywise Summary\",\"ReportID\":4}]");
     //, {\"ReportType\":\"Party Productwise Summary\",\"ReportID\":3}, {\"ReportType\":\"Product Partywise Summary\",\"ReportID\":4}
     if(arrayCr1 !=null)
     {
@@ -154,6 +161,38 @@
             }
         });
         GetBuyersbyPartyID();
+
+
+
+        $("#ddlSubCategory").dxSelectBox({
+            height: 30,
+            dataSource: new DevExpress.data.ArrayStore({
+                data: RetailCategoryList,
+                key: "RetailCategoryID"
+            }),
+            displayExpr: "RetailCategory",
+            valueExpr: "RetailCategoryID",
+            placeholder: "Select Category",
+            searchEnabled: true,
+            onValueChanged: function (data) {
+                varddlSubCategory = data.value
+                ItemMasterGetByRetailCategoryId()
+            }
+        });
+        $("#ddlItem").dxSelectBox({
+            height: 30,
+            dataSource: new DevExpress.data.ArrayStore({
+                data: ItemList,
+                key: "ItemId"
+            }),
+            displayExpr: "ItemName",
+            valueExpr: "ItemId",
+            placeholder: "Select Item",
+            searchEnabled: true,
+            onValueChanged: function (data) {
+                varddlItem = data.value
+            }
+        });
     });
 
     function SetDate(dateStr) {
@@ -273,6 +312,8 @@
         try
         {
             var PartyIdList = "";
+            var SelCat = "";
+            var SelItem = "";
             if ( strUserTypeId == "22" || strUserTypeId == "23") {
                 //if (varddlCustomer == "" && (strUserTypeId == "21" || strUserTypeId == "22" || strUserTypeId == "23")) {
                 //    alert("Please select Stockist.");
@@ -318,10 +359,24 @@
           
             if (VarPartyId == "")
                 VarPartyId = "0";
-       
+
+
+            if (varddlSubCategory == "") {
+                SelCat = "-1";
+            }
+            else {
+                SelCat = varddlSubCategory;
+            }
+
+            if (varddlItem == "") {
+                SelItem = "-1";
+            }
+            else {
+                SelItem = varddlItem;
+            }
 
             var data = {
-                'SuperStockistID': VarPartyId, 'ReportTypeID': varddlReportType,'Fromdate': VarFromdate, 'Todate': VarToDate};
+                'SuperStockistID': VarPartyId, 'ReportTypeID': varddlReportType, 'Fromdate': VarFromdate, 'Todate': VarToDate, 'ProductTypeID': SelCat, 'ProductID': SelItem};
 
 
 
@@ -361,8 +416,7 @@
     function GetColumn() {
         var retUArr = [];    
         if (Number(varddlReportType) == 1) {
-            retUArr = [
-               
+            retUArr = [             
                 {
                     dataField: "PartyCode", caption: "PartyCode",  headerCellTemplate: function (header, info) {
                         $('<div>').html("Party<br/>Code").css('text-align', 'center').appendTo(header);
@@ -473,6 +527,147 @@
 
             ]
         }
+        else if (Number(varddlReportType) == 3) {
+            retUArr = [
+                {
+                    dataField: "PartyCode",  caption: "PartyCode", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Party<br/>Code").css('text-align', 'center').appendTo(header);
+                    },
+                },
+                {
+                    dataField: "Party", groupIndex: 0, caption: "Party", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Party").css('text-align', 'center').appendTo(header);
+                    },
+                },
+                {
+                    dataField: "Region", caption: "Region"
+                },
+                {
+                    dataField: "ParentProductType", groupIndex: 1, groupIndex: 0, caption: "ParentProductType", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Parent<br/>Product<br/>Type").css('text-align', 'center').appendTo(header);
+                    },
+                },
+                {
+                    dataField: "ProductType",  caption: "ProductType", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Product<br/>Type").css('text-align', 'center').appendTo(header);
+                    },
+                },
+                {
+                    dataField: "ItemCode", caption: "Item Code"
+                },
+                {
+                    dataField: "ItemName", caption: "ItemName", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Item<br/>Name").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "Quantity", caption: "Quantity", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Quantity").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "GrossItemAmount", caption: "GrossItemAmount", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Gross<br/>Item<br/>Amount").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "DiscountAmount", caption: "Discount Amount", format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "TaxableAmount", caption: "Taxable Amount", format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "CGST", caption: "CGST", format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "SGST", caption: "SGST", headerCellTemplate: function (header, info) {
+                        $('<div>').html("SGST").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "IGST", caption: "IGST", headerCellTemplate: function (header, info) {
+                        $('<div>').html("IGST").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "NetValue", caption: "Net Value", format: { type: "fixedPoint", precision: 2 }
+                }
+
+            ]
+        }
+        else if (Number(varddlReportType) == 4) {
+            retUArr = [
+                {
+                    dataField: "ParentProductType", groupIndex: 0,caption: "ParentProductType", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Parent<br/>Product<br/>Type").css('text-align', 'center').appendTo(header);
+                    },
+                },
+                {
+                    dataField: "ProductType", caption: "ProductType", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Product<br/>Type").css('text-align', 'center').appendTo(header);
+                    },
+                },
+                {
+                    dataField: "ItemCode", caption: "Item Code"
+                },
+                {
+                    dataField: "ItemName", caption: "ItemName", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Item<br/>Name").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "PartyCode", caption: "PartyCode", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Party<br/>Code").css('text-align', 'center').appendTo(header);
+                    },
+                },
+                {
+                    dataField: "Party", groupIndex: 1, caption: "Party", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Party").css('text-align', 'center').appendTo(header);
+                    },
+                },
+                {
+                    dataField: "Region", caption: "Region"
+                },
+                
+              
+                {
+                    dataField: "Quantity", caption: "Quantity", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Quantity").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "GrossItemAmount", caption: "GrossItemAmount", headerCellTemplate: function (header, info) {
+                        $('<div>').html("Gross<br/>Item<br/>Amount").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "DiscountAmount", caption: "Discount Amount", format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "TaxableAmount", caption: "Taxable Amount", format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "CGST", caption: "CGST", format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "SGST", caption: "SGST", headerCellTemplate: function (header, info) {
+                        $('<div>').html("SGST").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "IGST", caption: "IGST", headerCellTemplate: function (header, info) {
+                        $('<div>').html("IGST").css('text-align', 'center').appendTo(header);
+                    }, format: { type: "fixedPoint", precision: 2 }
+                },
+                {
+                    dataField: "NetValue", caption: "Net Value", format: { type: "fixedPoint", precision: 2 }
+                }
+
+            ]
+        }
+
+
+
         debugger;
         return retUArr;
         
@@ -507,6 +702,32 @@
                 { name: "NetValue", column: "NetValue", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
             ]
         }
+        if (Number(varddlReportType) == 3) {
+            retUArr1 = [
+                { name: "ItemName", column: "ItemName", displayFormat: "Grand Total" },
+                { name: "Quantity", column: "Quantity", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                { name: "GrossItemAmount", column: "GrossItemAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                { name: "DiscountAmount", column: "DiscountAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                { name: "TaxableAmount", column: "TaxableAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                { name: "CGST", column: "CGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                { name: "SGST", column: "SGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                { name: "IGST", column: "IGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                { name: "NetValue", column: "NetValue", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+            ]
+        }
+        if (Number(varddlReportType) == 4) {
+            retUArr1 = [
+                { name: "Region", column: "Region", displayFormat: "Grand Total" },
+                { name: "Quantity", column: "Quantity", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                { name: "GrossItemAmount", column: "GrossItemAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                { name: "DiscountAmount", column: "DiscountAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                { name: "TaxableAmount", column: "TaxableAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                { name: "CGST", column: "CGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                { name: "SGST", column: "SGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                { name: "IGST", column: "IGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+                { name: "NetValue", column: "NetValue", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+            ]
+        }
         return retUArr1;
     }
 
@@ -528,6 +749,32 @@
         if (Number(varddlReportType) == 2) {
             retUArr2 = [
                 { name: "ItemName", column: "ItemName", showInGroupFooter: true, displayFormat: "Total" },
+                { name: "Quantity", column: "Quantity", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                { name: "GrossItemAmount", column: "GrossItemAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                { name: "DiscountAmount", column: "DiscountAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                { name: "TaxableValue", column: "TaxableValue", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                { name: "CGST", column: "CGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                { name: "SGST", column: "SGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                { name: "IGST", column: "IGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                { name: "NetValue", column: "NetValue", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+            ]
+        }
+        if (Number(varddlReportType) == 3) {
+            retUArr2 = [
+                { name: "ItemName", column: "ItemName", showInGroupFooter: true, displayFormat: "Total" },
+                { name: "Quantity", column: "Quantity", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                { name: "GrossItemAmount", column: "GrossItemAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                { name: "DiscountAmount", column: "DiscountAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                { name: "TaxableValue", column: "TaxableValue", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                { name: "CGST", column: "CGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                { name: "SGST", column: "SGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                { name: "IGST", column: "IGST", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+                { name: "NetValue", column: "NetValue", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
+            ]
+        }
+        if (Number(varddlReportType) == 4) {
+            retUArr2 = [
+                { name: "Region", column: "Region", showInGroupFooter: true, displayFormat: "Total" },
                 { name: "Quantity", column: "Quantity", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
                 { name: "GrossItemAmount", column: "GrossItemAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
                 { name: "DiscountAmount", column: "DiscountAmount", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, showInGroupFooter: true, displayFormat: "{0}" },
